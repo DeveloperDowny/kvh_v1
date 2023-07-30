@@ -49,9 +49,6 @@ class BlockController {
         throw new Error('Invalid address');
     }
 
-
-    // https://services.tokenview.io/vipapi/address/btc/bc1q34aq5drpuwy3wgl9lhup9892qp6svr8ldzyy7c/1/50?apikey=uBbFr7GiFhyXWMRmDfgm
-
     test = async (req, res) => {
 
         try {
