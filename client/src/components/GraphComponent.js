@@ -7,25 +7,16 @@ const GraphComponent = ({ graphData }) => {
   const containerRef = React.useRef(null);
   const networkRef = React.useRef(null);
 
-  //   let options = {
-  //     physics: {
-  //       barnesHut: {
-  //         gravitationalConstant: -2000,
-  //         centralGravity: 0.3,
-  //         springLength: 200,
-  //         springConstant: 0.05,
-  //         damping: 0.09,
-  //         avoidOverlap: 0.2,
-  //       },
-  //       stabilization: {
-  //         enabled: true,
-  //         iterations: 1000,
-  //         updateInterval: 50,
-  //         onlyDynamicEdges: false,
-  //         fit: true,
-  //       },
-  //     },
-  //   };
+  function handleHoverNode(event) {
+    console.log("in handleHoverNode");
+    const { node } = event;
+    const { nodes } = networkRef.current.body;
+    const { edges } = networkRef.current.body;
+
+    console.log(node);
+    console.log(nodes);
+    console.log(edges);
+  }
 
   const optionsv1 = {
     nodes: {
@@ -168,78 +159,13 @@ const GraphComponent = ({ graphData }) => {
         },
       },
     },
-    // physics: {
-    //   forceAtlas2Based: {
-    //       gravitationalConstant: -200,
-    //       centralGravity: 0.05,
-    //       springLength: 230,
-    //       springConstant: 0.08,
-    //       avoidOverlap:9
-    //   },
-    //   solver: 'forceAtlas2Based',
-    //   timestep: 0.35,
-    //   stabilization: {enabled:true,iterations: 10}
-    // },
     physics: {
       enabled: false,
-      //   barnesHut: {
-      //     gravitationalConstant: -30000,
-      //     centralGravity: 1,
-      //     springLength: 70,
-      //     avoidOverlap: 1,
-      //   },
-      //   stabilization: { iterations: 2500 },
     },
     interaction: {
       hover: true,
     },
-    // interaction: {
-    //   hover: true,
-    //   hoverConnectedEdges: true,
-    //   hoverEdges: true,
-    //   selectable: false,
-    //   selectConnectedEdges: false,
-    //   zoomView: false,
-    //   dragView: false,
-    // },
   };
-
-  // Use useMemo to memoize the Network instance
-  //   const network = React.useMemo(() => {
-  //     if (!networkRef.current) {
-  //       const options = {
-  //         layout: {
-  //           improvedLayout: false,
-  //         },
-  //         physics: {
-  //           barnesHut: {
-  //             gravitationalConstant: -2000,
-  //             centralGravity: 0.3,
-  //             springLength: 200,
-  //             springConstant: 0.05,
-  //             damping: 0.09,
-  //             avoidOverlap: 0.2,
-  //           },
-  //           stabilization: {
-  //             enabled: true,
-  //             iterations: 1000,
-  //             updateInterval: 50,
-  //             onlyDynamicEdges: false,
-  //             fit: true,
-  //           },
-  //         },
-  //       };
-  //       networkRef.current = new Network(
-  //         containerRef.current,
-  //         graphData,
-  //         options
-  //       );
-  //     } else {
-  //       networkRef.current.setData(graphData);
-  //     }
-
-  //     return networkRef.current;
-  //   }, [graphData]);
 
   React.useEffect(() => {
     if (!networkRef.current) {
@@ -250,10 +176,23 @@ const GraphComponent = ({ graphData }) => {
       );
     } else {
       networkRef.current.setData(graphData);
+
+      const timelineInstance = networkRef.current.$el;
+      console.log("timelineInstance: ", timelineInstance);
+      // Add the hoverNode event listener
+      timelineInstance.on("hoverNode", handleHoverNode);
     }
   }, [graphData]);
 
-  return <div ref={containerRef} style={{ height: "500px" }}></div>;
+  return (
+    <div
+      ref={containerRef}
+      style={{ height: "500px" }}
+      //   hoverNode={() => {
+      //     console.log("in hovvvver node");
+      //   }}
+    ></div>
+  );
 };
 
 export default GraphComponent;
