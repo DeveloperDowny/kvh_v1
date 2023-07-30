@@ -8,8 +8,19 @@ import Test2 from "./components/Test2";
 import Layout from "./Layout";
 import Login from "./CFG components/Login";
 import SignupCardOg from "./CFG components/SignUp";
+import generateRandomGraphData from "./sampleData/graphData";
+import GraphComponent from "./components/GraphComponent";
 
 const App = () => {
+  const graphData = generateRandomGraphData();
+
+  return (
+    <div className="App">
+      <h1>Sample Graph using vis-react</h1>
+      <GraphComponent graphData={graphData} />
+    </div>
+  );
+
   return (
     <Layout>
       <BrowserRouter>
