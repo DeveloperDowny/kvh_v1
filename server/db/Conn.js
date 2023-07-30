@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config()
 
-const DB = 'mongodb+srv://Saneha:shiaa1234@cluster0.7wscy5g.mongodb.net/JPMC?retryWrites=true&w=majority'
+const DB = process.env.MONGO;
 
 mongoose.connect(DB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
-    console.log(`connnection successful`);
-}).catch((err) => console.log(`no connection`));
+    console.log(`DB connected`);
+}).catch((err) => console.log(`DB connection failed`));
