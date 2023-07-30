@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const router = express.Router();
 
-require("../db/conn");
+require("../db/Conn");
 const User = require("../models/Schema");
 router.get("/", (req, res) => {
   console.log("Received a GET HTTP method");

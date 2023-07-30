@@ -8,7 +8,7 @@ class BlockController {
     constructor() { }
 
     checkBlockchainAddress(address) {
-        console.log(address);
+        console.log("Addres", address);
         const regexes = {
             btc: [
                 /^1[a-zA-Z0-9]{25,33}$/,
@@ -27,6 +27,9 @@ class BlockController {
                 /^DdzFF[1-9A-HJ-NP-Za-km-z]+$/,
                 /^addr1[a-z0-9]+$/,
                 /^stake1[a-z0-9]+$/
+            ],
+            tron: [
+                /^T[A-HJ-NP-Za-km-z1-9]{33}$/
             ],
             sol: [
                 /^[1-9A-HJ-NP-Za-km-z]{32,44}$/
@@ -59,6 +62,19 @@ class BlockController {
             const nw = this.checkBlockchainAddress(id);
             console.log("test",nw);
 
+            //retrive normal transaction list for trons
+            if (nw === 'tron'){
+                let data = await axios.get(`https://services.tokenview.io/vipapi/trx/address/normal/${id}/1/50?apikey=${process.env.vTOKEN}`)
+                console.log(data.data);
+                if(data.data.code !== 1){
+                    //alternative tron api
+                }
+                return res.status(200).json({ message: "Successfully Retrieved", network: nw, data: data.data })
+            }
+
+            if (nw === 'xmr'){
+
+            }
             let data = await axios.get(`https://services.tokenview.io/vipapi/address/${nw}/${id}/1/50?apikey=${process.env.vTOKEN}`);
             console.log(data.data);
             if (data.data.code !== 1) {

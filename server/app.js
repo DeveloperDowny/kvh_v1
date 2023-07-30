@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 
-require("./db/conn");
+require("./db/Conn");
 const User = require("./models/Schema");
 const auth = require("./middlewares/auth");
 // const { default: auth } = require("./middlewares/auth");
