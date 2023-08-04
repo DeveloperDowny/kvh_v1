@@ -4,7 +4,7 @@ const app = express();
 app.use(cors());
 
 require("./db/Conn");
-const User = require("./models/Schema");
+const User = require("./models/UserSchema");
 const auth = require("./middlewares/auth");
 // const { default: auth } = require("./middlewares/auth");
 
