@@ -14,6 +14,7 @@ const ReportComponent = ({ open, address, close }) => {
     if (open) {
       setIsOpen(true);
       APIRequests.explore(address).then((res) => {
+        console.log("res", res)
         setData(res.data.data);
       });
     } else {
@@ -115,6 +116,7 @@ const ReportBody = ({ data }) => {
   //   console.log("balance", data.balance); 
   
   // }
+  data = data == null ? null : data.data;
   let firstDate = "-";
   let lastDate = "-";
   if(data != null) {
