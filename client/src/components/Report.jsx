@@ -2,9 +2,21 @@ import React from "react";
 import './Report.css';
 
 
-import { EditIcon, CopyIcon, CloseIcon } from "@chakra-ui/icons";
+import { EditIcon, CopyIcon, CloseIcon, CheckIcon } from "@chakra-ui/icons";
 import APIRequests from "../api";
 import { CircularProgress } from "@chakra-ui/react";
+
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Box,
+  Text,
+  TableCaption,
+} from "@chakra-ui/react";
 
 const ReportComponent = ({ open, address, close }) => {
 
@@ -14,7 +26,8 @@ const ReportComponent = ({ open, address, close }) => {
     if (open) {
       setIsOpen(true);
       APIRequests.explore(address).then((res) => {
-        console.log("res", res)
+        // console.log("res", res)
+        console.log("data", res.data.data)
         setData(res.data.data);
       });
     } else {
@@ -40,29 +53,66 @@ export default ReportComponent;
 
 
 const TopBar = ({ address, close, data }) => {
-  const [title, setTitle] = React.useState("Untitled");
-  // get title from db if required
+  const [title, setTitle] = React.useState("Loading...");
   const [isEditing, setIsEditing] = React.useState(false);
+  const [tempTitle, setTempTitle] = React.useState("");  // temporary title when editing
+
   const inputRef = React.useRef(null);
 
 
   const handleEditClick = () => {
+    setTempTitle(title);
     setIsEditing(true);
   };
 
-  const handleBlur = () => {
+  const handleBlur = (e) => {
+    e.preventDefault();
+  };
+
+  const handleCancel = () => {
     setIsEditing(false);
+    console.log("canceling, old title: ", tempTitle)
+    setTitle(prev => prev = tempTitle);
+  };
+
+
+  const handleSave = async () => {
+    // here, you can add logic to u
+    setIsEditing(false);
+    const res = await APIRequests.changeTitle(address, { title: title });
+
+    console.log("update res", res);
+    if (res.status === 200) {
+      console.log("success")
+    }
+    else {
+      setTitle(prev => prev = tempTitle);
+    }
   };
 
   const handleChange = (e) => {
     setTitle(e.target.value);
   };
 
+  // on change of title is completed, update db
+
+
+
   React.useEffect(() => {
     if (isEditing) {
       inputRef.current.style.width = `${title.length}ch`;
     }
   }, [title, isEditing]);
+
+
+  React.useEffect(() => {
+    if (data) {
+      setTitle(data.title);
+      setTempTitle(data.title);
+    } else {
+      setTitle("Loading...");
+    }
+  }, [data]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(address).then(() => {
@@ -76,25 +126,31 @@ const TopBar = ({ address, close, data }) => {
     <div className="top-bar">
       <div className="top-bar-1">
         {isEditing ? (
-          <input
-            type="text"
-            ref={inputRef} // Set the ref
-            value={title}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            className={`top-bar-title ${isEditing ? "editing" : ""}`}
-          />
+          <React.Fragment>
+            <input
+              type="text"
+              ref={inputRef} // Set the ref
+              value={title}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              className={`top-bar-title ${isEditing ? "editing" : ""}`}
+            />
+            <CheckIcon className="top-bar-check-icon" onClick={handleSave} style={{ color: "#ffffff", marginRight: "4px" }} />
+            <CloseIcon className="top-bar-cross-icon" onClick={handleCancel} style={{ color: "#ffffff", width: "12px" }} />
+          </React.Fragment>
         ) : (
-          <h1 className="top-bar-title">{title}</h1>
+          <React.Fragment>
+            <h1 className="top-bar-title">{title}</h1>
+            <EditIcon
+              className="top-bar-edit-icon"
+              onClick={handleEditClick}
+              style={{
+                color: "#ffffff",
+              }}
+            />
+            <CloseIcon className="top-bar-close-icon" onClick={close} style={{ color: "#ffffff" }} />
+          </React.Fragment>
         )}
-        <EditIcon
-          className="top-bar-edit-icon"
-          onClick={handleEditClick}
-          style={{
-            color: "#ffffff",
-          }}
-        />
-        <CloseIcon className="top-bar-close-icon" onClick={close} style={{ color: "#ffffff" }} />
       </div>
       <div className="top-bar-2">
         <p className="top-bar-address">{address}</p>
@@ -114,18 +170,18 @@ const ReportBody = ({ data }) => {
   // if (data != null) { 
   //   console.log("datarbody", data);
   //   console.log("balance", data.balance); 
-  
+
   // }
   data = data == null ? null : data.data;
   let firstDate = "-";
   let lastDate = "-";
-  if(data != null) {
-    if(data.first != null) {
+  if (data != null) {
+    if (data.first != null) {
       firstDate = new Date(data.first);
       // convert to dd/mm/yyyy format string
       firstDate = firstDate.toLocaleDateString();
     }
-    if(data.last != null) {
+    if (data.last != null) {
       lastDate = new Date(data.last);
 
       lastDate = lastDate.toLocaleDateString();
@@ -137,7 +193,6 @@ const ReportBody = ({ data }) => {
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Balance:</h2>
         <p className="side-bar-section-text">
-          {/* 148,377.199 ETH($272,719,065 USD) */}
           {data === null ? (
             <Loader />
           ) : (
@@ -154,28 +209,114 @@ const ReportBody = ({ data }) => {
           <p className="side-bar-section-text">
             {data === null ? (
               <Loader />
-            ): (firstDate)}
+            ) : (firstDate)}
           </p>
         </div>
         <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">Last Tx: </h2>
           <p className="side-bar-section-text"> {data === null ? (
-              <Loader />
-            ): (lastDate)}</p>
+            <Loader />
+          ) : (lastDate)}</p>
         </div>
 
       </div>
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Incoming Volume</h2>
-        <p className="side-bar-section-text">1000</p>
+        <p className="side-bar-section-text">
+          {data === null ? (
+            <Loader />
+          ) : (
+            `${data.receive} ${data.network}`
+          )}
+        </p>
       </div>
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Outgoing Volume</h2>
-        <p className="side-bar-section-text">500</p>
+        <p className="side-bar-section-text">
+          {data === null ? (
+            <Loader />
+          ) : (
+            `${data.spend * -1} ${data.network}`
+          )}
+        </p>
       </div>
+      {data && <TransactionsTable txs={data.txs} />}
     </div>
   );
 }
+
+const TransactionsTable = ({ txs }) => {
+  if (!txs || txs.length === 0) {
+    return (
+      <Box p={5}>
+        <Text>No transactions found.</Text>
+      </Box>
+    );
+  }
+
+  console.log("txs", txs);
+
+  // format
+  // 
+
+  return (
+    <Box overflowY="auto" maxH="400px" width="100%">
+      <Table variant="striped" colorScheme="messenger" padding={0} size="sm" width="100%">
+          <TableCaption style={{
+          textAlign: "center", 
+          padding: "5px 0px 0px 0px",
+          margin: 0,
+        }} placement="top" fontSize={14}>
+         Transactions
+          </TableCaption>
+        <Thead>
+          <Tr>
+            <Th>Date</Th>
+            <Th>Receiver</Th>
+            <Th>Amount</Th>
+          </Tr>
+        </Thead>
+        <Tbody padding={0} whiteSpace={0} columnGap={0}>
+          {txs.map((tx, index) => {
+            // tx.time (ms to epoch)
+
+            // convert to dd/mm/yyyy format string
+            let time = new Date(tx.time);
+            time = time.toLocaleDateString();
+
+            let recv = tx.to;
+            if(tx.network === "BTC") {
+              recv = tx.outputs[0].address;
+            }
+
+            let val = tx.value;
+            if(tx.network === "BTC") {
+              val = tx.outputs[0].value;
+            }
+
+            return (
+              <Tr key={index}>
+                <Td isNumeric>
+                  <Text isTruncated fontSize={12}>{time}</Text>
+                </Td>
+                <Td isNumeric>
+                  <Text isTruncated fontSize={12}>{recv}</Text>
+                </Td>
+                <Td isNumeric fontSize={12}>
+                  {val} {tx.network}
+                </Td>
+              </Tr>
+
+            )
+          }
+
+          )}
+        </Tbody>
+      </Table>
+    </Box>
+
+  );
+};
 
 
 const Loader = () => {

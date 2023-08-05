@@ -11,9 +11,6 @@ import SignupCardOg from "./CFG components/SignUp";
 import generateRandomGraphData from "./sampleData/graphData";
 import GraphComponent from "./components/GraphComponent";
 import GraphVisualization from "./components/GraphViz";
-import MenuProvider from "react-flexible-sliding-menu"
-import ReportComponent from "./components/Report";
-
 const App = () => {
   const graphData = generateRandomGraphData();
 
