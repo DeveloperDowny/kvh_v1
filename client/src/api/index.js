@@ -25,6 +25,15 @@ class APIRequests {
   static async testGet() {
     return await API.get("/users");
   }
+
+  static async explore(address) {
+    return await API.get(`/api/explore/${address}`);
+  }
+
+  static async changeTitle(address, data) {
+    return await API.post(`/api/explore/title/${address}`, data);
+  }
+
 }
 
 export default APIRequests;
