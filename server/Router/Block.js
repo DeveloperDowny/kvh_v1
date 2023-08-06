@@ -8,6 +8,9 @@ blockC = new blockC();
 
 blockR.get("/:id", blockC.test);
 blockR.post("/title/:id", blockC.changeTitle);
+blockR.get("/risk/:id", blockC.getRisk);
+
+
 
 module.exports = blockR;
 

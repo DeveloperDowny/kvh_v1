@@ -212,6 +212,72 @@ class BlockController {
             return res.status(500).send({ message: err.message });
         }
     }
+
+    getRisk = async (req, res) => {
+        try {
+            // const { id } = req.params;
+            
+            // // Assuming you have a function to fetch eth_address from your data source
+            const address = req.params.id;
+
+            if(!address) {
+                return res.status(404).json({ error: 'Address not valid' });
+            }
+
+            const nw = this.checkBlockchainAddress(address);
+            let payload = {};
+            if(nw === "eth") {
+                payload = {
+                    ethAddresses: [address],
+                };
+
+            }
+            else if(nw === "btc") {
+                payload = {
+                    btcAddresses: [address],
+                };
+            }
+            console.log(`${nw}address: ${address}`);
+    
+
+            // const payload = {
+            //     ethAddresses: [ethAddress],
+            //     // btcAddresses: [],
+            // };
+    
+            // if (!payload.ethAddresses.some(addr => addr)) {
+            //     return res.status(400).json({ error: 'RequestedNullReport' });
+            // }
+
+            const url = 'https://risk.charybdis.januus.io/';
+
+    
+            const axiosConfig = {
+                method: 'POST',
+                url: url,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: payload,
+            };
+    
+            const response = await axios(axiosConfig);
+            const jsonResponse = response.data;
+    
+            // const riskReport = handleRiskReport(jsonResponse);
+    
+            res.status(200).json(jsonResponse);
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                res.status(400).json({ error: 'RequestedNullReport' });
+            } else if (error.response && error.response.status === 500) {
+                res.status(500).json({ error: 'EndPointException' });
+            } else {
+                console.error('Error fetching risk report:', error);
+                res.status(500).json({ error: 'Internal server error' });
+            }
+        }
+    };
 }
 
 module.exports = BlockController;
