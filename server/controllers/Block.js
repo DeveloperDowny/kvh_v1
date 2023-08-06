@@ -1,6 +1,8 @@
 require('dotenv').config();
 
 const axios = require('axios');
+const csv = require('csv-parser');
+const fs = require('fs');
 const Transactions = require('../models/TransactionSchema');
 
 // const sources = {
@@ -18,6 +20,24 @@ const addTransaction = async (transaction) => {
     } catch (e) {
         return { status: 0, msg: e };
     }
+}
+const checkCurrencyInCSV = async (currency, filename)  => {
+    return new Promise((resolve, reject) => {
+        const filePath = __dirname + '/../currency_list/' + filename;
+        const currencies = [];
+
+        fs.createReadStream(filePath)
+            .pipe(csv())
+            .on('data', (row) => {
+                currencies.push(row.currency_code);
+            })
+            .on('end', () => { 
+                resolve(currencies.includes(currency));
+            })
+            .on('error', (error) => {
+                reject(error);
+            });
+    });
 }
 class BlockController {
     constructor() { }
@@ -268,6 +288,28 @@ class BlockController {
             }
         }
     };
-}
+
+    getExchangeRate = async (req, res) => {
+        try {
+            const { from_currency, to_currency } = req.params;
+
+            // Check if both currencies are present in their respective CSV files
+            const isFromCurrencyValid = await checkCurrencyInCSV(from_currency, 'digital_currency_list.csv');
+            const isToCurrencyValid = await checkCurrencyInCSV(to_currency, 'physical_currency_list.csv');
+
+            if (!isFromCurrencyValid || !isToCurrencyValid) {
+                return res.status(400).json({ error: "Invalid currency selection" });
+            }
+
+            const data = await axios.get(`https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${from_currency}&to_currency=${to_currency}&apikey=${process.env.aTOKEN}`)
+            return res.status(200).json(data.data);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ error: "An error occurred" });
+        }
+    };
+};
+
+
 
 module.exports = BlockController;

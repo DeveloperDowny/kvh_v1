@@ -9,7 +9,7 @@ blockC = new blockC();
 blockR.get("/:id", blockC.test);
 blockR.post("/title/:id", blockC.changeTitle);
 blockR.get("/risk/:id", blockC.getRisk);
-
+blockR.get("/exchange/:from_currency/:to_currency", blockC.getExchangeRate);
 
 
 module.exports = blockR;
