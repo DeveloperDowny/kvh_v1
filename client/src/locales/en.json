@@ -1,0 +1,12 @@
+{
+    "signup.title": "Sign up",
+    "signup.description": "to enjoy all of our cool features ✌️",
+    "firstName.label": "First Name",
+    "lastName.label": "Last Name",
+    "email.label": "Email address",
+    "password.label": "Password",
+    "signup.button": "Sign up",
+    "alreadyUser.text": "Already a user?",
+    "signIn.link": "Sign In"
+  }
+  

@@ -1,0 +1,11 @@
+{
+  "signup.title": "साइन अप करें",
+  "signup.description": "हमारे सभी शानदार सुविधाओं का आनंद लें ✌️",
+  "firstName.label": "पहला नाम",
+  "lastName.label": "अंतिम नाम",
+  "email.label": "ईमेल पता",
+  "password.label": "पासवर्ड",
+  "signup.button": "साइन अप करें",
+  "alreadyUser.text": "पहले से ही उपयोगकर्ता हैं?",
+  "signIn.link": "साइन इन करें"
+}
