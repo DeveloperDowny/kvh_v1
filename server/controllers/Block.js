@@ -214,44 +214,36 @@ class BlockController {
     }
 
     getRisk = async (req, res) => {
+        console.log("risk")
         try {
-            // const { id } = req.params;
-            
-            // // Assuming you have a function to fetch eth_address from your data source
             const address = req.params.id;
 
-            if(!address) {
+            if (!address) {
                 return res.status(404).json({ error: 'Address not valid' });
             }
 
             const nw = this.checkBlockchainAddress(address);
             let payload = {};
-            if(nw === "eth") {
+            if (nw === "eth") {
                 payload = {
                     ethAddresses: [address],
                 };
 
             }
-            else if(nw === "btc") {
+            else if (nw === "btc") {
                 payload = {
                     btcAddresses: [address],
                 };
             }
-            console.log(`${nw}address: ${address}`);
-    
 
-            // const payload = {
-            //     ethAddresses: [ethAddress],
-            //     // btcAddresses: [],
-            // };
-    
-            // if (!payload.ethAddresses.some(addr => addr)) {
-            //     return res.status(400).json({ error: 'RequestedNullReport' });
-            // }
+            else {
+                return res.status(404).json({ error: 'Only for ETH and BTC networks' });
+            }
+            console.log(`${nw}address: ${address}`);
 
             const url = 'https://risk.charybdis.januus.io/';
 
-    
+
             const axiosConfig = {
                 method: 'POST',
                 url: url,
@@ -260,12 +252,10 @@ class BlockController {
                 },
                 data: payload,
             };
-    
+
             const response = await axios(axiosConfig);
             const jsonResponse = response.data;
-    
-            // const riskReport = handleRiskReport(jsonResponse);
-    
+
             res.status(200).json(jsonResponse);
         } catch (error) {
             if (error.response && error.response.status === 400) {
