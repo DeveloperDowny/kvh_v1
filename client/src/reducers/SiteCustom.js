@@ -4,6 +4,7 @@ const siteCustom = createSlice({
   name: "site_custom",
   initialState: {
     shouldShowBars: true,
+    // shouldShowSideBar: true,
     shouldShowSideBar: true,
     navbarTitle: "",
     userRole: "USER", // Assuming UserRole.USER is a string constant

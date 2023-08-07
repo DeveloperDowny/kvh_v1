@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Graph from "react-graph-vis";
 import { useLocation, useParams } from "react-router-dom";
+import { useAppDispatch } from "../store";
+import { setShouldShowSideBar } from "../reducers/SiteCustom";
 
 const GraphVisualization = () => {
+  const dispatch = useAppDispatch();
   const { board_id } = useParams();
   console.log("board_id:", board_id);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   // const showResults = queryParams.get("show_results");
   // Sample graph data in visjs format
+
+  useEffect(() => {
+    dispatch(setShouldShowSideBar(false));
+  }, []);
   const graphData = {
     nodes: [
       { id: 1, label: "Node 1" },
