@@ -17,13 +17,14 @@ import {
   Link,
   Select, // Add Select import
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import APIRequests from "../api";
 import { ActionTypes, auth } from "../reducers/auth";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../store";
 import { useTranslation } from "react-i18next";
+import { setShouldShowSideBar } from "../reducers/SiteCustom";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -42,6 +43,10 @@ export default function SignupCardOg() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(setShouldShowSideBar(false));
+  }, []);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (values, actions) => {
@@ -91,7 +96,7 @@ export default function SignupCardOg() {
   return (
     <Flex
       // minH={"100vh"}
-      className="t-min-h-[calc(100vh-60px)]"
+      className="t-min-h-[calc(100vh-172px)]"
       align={"center"}
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}
