@@ -3,6 +3,7 @@ import WithSubnavigation from "./CFG components/Navbar";
 import Sidebar from "./CFG components/Sidebar";
 import { useSelector } from "react-redux";
 import { NavbarImg, NavbarImgWO } from "./assets";
+import { Select } from "@chakra-ui/react";
 
 const Layout = ({ children }) => {
   const shouldShowSidebar = useSelector(
@@ -14,7 +15,23 @@ const Layout = ({ children }) => {
     <div className="layout">
       <div className="t-h-[42px] t-bg-[#0262AF] t-flex t-flex-row t-justify-between t-items-center t-text-white t-px-[1rem]">
         <div>GOVERNMENT OF INDIA</div>
-        <div>Select Language</div>
+        <div>
+          <Select
+            color="black"
+            variant="unstyled"
+            iconSize="0rem" // Adjust the size of the dropdown arrow icon
+            iconColor="white" // Set the color of the dropdown arrow icon
+            marginLeft="0.5rem" // Add margin to the left of the dropdown button
+            // marginTop="2rem"
+            onChange={(e) => {
+              const selectedLanguage = e.target.value;
+              // Handle language change logic here
+            }}
+          >
+            <option value="hindi">Hindi</option>
+            <option value="english">English</option>
+          </Select>
+        </div>
       </div>
       <img src={NavbarImgWO} />
       <WithSubnavigation />
