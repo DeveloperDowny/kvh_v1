@@ -22,6 +22,7 @@ const ReportComponent = ({ open, address, close }) => {
 
   const [isOpen, setIsOpen] = React.useState(open);
   const [data, setData] = React.useState(null);
+  const [riskData, setRisk] = React.useState(null);
   React.useEffect(() => {
     if (open) {
       setIsOpen(true);
@@ -30,6 +31,14 @@ const ReportComponent = ({ open, address, close }) => {
         console.log("data", res.data.data)
         setData(res.data.data);
       });
+      APIRequests.getRisk(address).then((res) => {
+        console.log("risk", res.data)
+        setRisk(res.data);
+      }).catch((err) => {
+        console.log("error", err);
+      });
+
+
     } else {
       setTimeout(() => {
         setIsOpen(false);
@@ -43,7 +52,7 @@ const ReportComponent = ({ open, address, close }) => {
   return (
     <div className={`side-bar ${open ? "" : "closed"}`}>
       <TopBar address={address} close={close} data={data} />
-      <ReportBody data={data} />
+      <ReportBody data={data} risk={riskData} />
     </div>
 
   );
@@ -77,7 +86,6 @@ const TopBar = ({ address, close, data }) => {
 
 
   const handleSave = async () => {
-    // here, you can add logic to u
     setIsEditing(false);
     const res = await APIRequests.changeTitle(address, { title: title });
 
@@ -129,7 +137,7 @@ const TopBar = ({ address, close, data }) => {
           <React.Fragment>
             <input
               type="text"
-              ref={inputRef} // Set the ref
+              ref={inputRef}
               value={title}
               onBlur={handleBlur}
               onChange={handleChange}
@@ -166,19 +174,14 @@ const TopBar = ({ address, close, data }) => {
   );
 };
 
-const ReportBody = ({ data }) => {
-  // if (data != null) { 
-  //   console.log("datarbody", data);
-  //   console.log("balance", data.balance); 
+const ReportBody = ({ data, risk }) => {
 
-  // }
   data = data == null ? null : data.data;
   let firstDate = "-";
   let lastDate = "-";
   if (data != null) {
     if (data.first != null) {
       firstDate = new Date(data.first);
-      // convert to dd/mm/yyyy format string
       firstDate = firstDate.toLocaleDateString();
     }
     if (data.last != null) {
@@ -188,6 +191,8 @@ const ReportBody = ({ data }) => {
     }
   }
 
+  // const cRisk = risk == null ? null : risk.riskScores.combinedRisk.toFixed(2) + "%";
+
   return (
     <div className="side-bar-body">
       <div className="side-bar-section">
@@ -196,7 +201,7 @@ const ReportBody = ({ data }) => {
           {data === null ? (
             <Loader />
           ) : (
-            `${data.balance} ${data.network}`
+            `${parseFloat(data.balance).toFixed(4)} ${data.network}`
           )}
 
         </p>
@@ -226,7 +231,7 @@ const ReportBody = ({ data }) => {
           {data === null ? (
             <Loader />
           ) : (
-            `${data.receive} ${data.network}`
+            `${parseFloat(data.receive).toFixed(4)} ${data.network}`
           )}
         </p>
       </div>
@@ -236,9 +241,53 @@ const ReportBody = ({ data }) => {
           {data === null ? (
             <Loader />
           ) : (
-            `${data.spend * -1} ${data.network}`
+            `${parseFloat(data.spend).toFixed(4) * -1} ${data.network}`
           )}
         </p>
+      </div>
+      <div className="side-bar-section-main">
+        <div className="side-bar-section-sec">
+          <h2 className="side-bar-section-title">Combined Risk:</h2>
+          <p className="side-bar-section-text">
+            {risk === null ? (
+              <Loader />
+            ) : (
+              risk.riskScores.combinedRisk.toFixed(2) + "%"
+            )}
+          </p>
+        </div>
+        <div className="side-bar-section-sec">
+          <h2 className="side-bar-section-title">Fraud Risk:</h2>
+          <p className="side-bar-section-text">
+            {risk === null ? (
+              <Loader />
+            ) : (
+              risk.riskScores.fraudRisk.toFixed(2) + "%"
+            )}
+          </p>
+        </div>
+      </div>
+      <div className="side-bar-section-main">
+        <div className="side-bar-section-sec">
+          <h2 className="side-bar-section-title">Lending Risk:</h2>
+          <p className="side-bar-section-text">
+            {risk === null ? (
+              <Loader />
+            ) : (
+              risk.riskScores.lendingRisk.toFixed(2) + "%"
+            )}
+          </p>
+        </div>
+        <div className="side-bar-section-sec">
+          <h2 className="side-bar-section-title">Reputation Risk:</h2>
+          <p className="side-bar-section-text">
+            {risk === null ? (
+              <Loader />
+            ) : (
+              risk.riskScores.reputationRisk.toFixed(2) + "%"
+            )}
+          </p>
+        </div>
       </div>
       {data && <TransactionsTable txs={data.txs} />}
     </div>
@@ -254,21 +303,21 @@ const TransactionsTable = ({ txs }) => {
     );
   }
 
-  console.log("txs", txs);
+  // console.log("txs", txs);
 
   // format
   // 
 
   return (
-    <Box overflowY="auto" maxH="400px" width="100%">
+    <Box overflowY="auto" maxH="369px" width="100%">
       <Table variant="striped" colorScheme="messenger" padding={0} size="sm" width="100%">
-          <TableCaption style={{
-          textAlign: "center", 
+        <TableCaption style={{
+          textAlign: "center",
           padding: "5px 0px 0px 0px",
           margin: 0,
         }} placement="top" fontSize={14}>
-         Transactions
-          </TableCaption>
+          Transactions
+        </TableCaption>
         <Thead>
           <Tr>
             <Th>Date</Th>
@@ -285,12 +334,12 @@ const TransactionsTable = ({ txs }) => {
             time = time.toLocaleDateString();
 
             let recv = tx.to;
-            if(tx.network === "BTC") {
+            if (tx.network === "BTC") {
               recv = tx.outputs[0].address;
             }
 
             let val = tx.value;
-            if(tx.network === "BTC") {
+            if (tx.network === "BTC") {
               val = tx.outputs[0].value;
             }
 

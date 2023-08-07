@@ -1,6 +1,8 @@
 require('dotenv').config();
 
 const axios = require('axios');
+const csv = require('csv-parser');
+const fs = require('fs');
 const Transactions = require('../models/TransactionSchema');
 
 // const sources = {
@@ -18,6 +20,24 @@ const addTransaction = async (transaction) => {
     } catch (e) {
         return { status: 0, msg: e };
     }
+}
+const checkCurrencyInCSV = async (currency, filename)  => {
+    return new Promise((resolve, reject) => {
+        const filePath = __dirname + '/../currency_list/' + filename;
+        const currencies = [];
+
+        fs.createReadStream(filePath)
+            .pipe(csv())
+            .on('data', (row) => {
+                currencies.push(row.currency_code);
+            })
+            .on('end', () => { 
+                resolve(currencies.includes(currency));
+            })
+            .on('error', (error) => {
+                reject(error);
+            });
+    });
 }
 class BlockController {
     constructor() { }
@@ -212,6 +232,84 @@ class BlockController {
             return res.status(500).send({ message: err.message });
         }
     }
-}
+
+    getRisk = async (req, res) => {
+        console.log("risk")
+        try {
+            const address = req.params.id;
+
+            if (!address) {
+                return res.status(404).json({ error: 'Address not valid' });
+            }
+
+            const nw = this.checkBlockchainAddress(address);
+            let payload = {};
+            if (nw === "eth") {
+                payload = {
+                    ethAddresses: [address],
+                };
+
+            }
+            else if (nw === "btc") {
+                payload = {
+                    btcAddresses: [address],
+                };
+            }
+
+            else {
+                return res.status(404).json({ error: 'Only for ETH and BTC networks' });
+            }
+            console.log(`${nw}address: ${address}`);
+
+            const url = 'https://risk.charybdis.januus.io/';
+
+
+            const axiosConfig = {
+                method: 'POST',
+                url: url,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: payload,
+            };
+
+            const response = await axios(axiosConfig);
+            const jsonResponse = response.data;
+
+            res.status(200).json(jsonResponse);
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                res.status(400).json({ error: 'RequestedNullReport' });
+            } else if (error.response && error.response.status === 500) {
+                res.status(500).json({ error: 'EndPointException' });
+            } else {
+                console.error('Error fetching risk report:', error);
+                res.status(500).json({ error: 'Internal server error' });
+            }
+        }
+    };
+
+    getExchangeRate = async (req, res) => {
+        try {
+            const { from_currency, to_currency } = req.params;
+
+            // Check if both currencies are present in their respective CSV files
+            const isFromCurrencyValid = await checkCurrencyInCSV(from_currency, 'digital_currency_list.csv');
+            const isToCurrencyValid = await checkCurrencyInCSV(to_currency, 'physical_currency_list.csv');
+
+            if (!isFromCurrencyValid || !isToCurrencyValid) {
+                return res.status(400).json({ error: "Invalid currency selection" });
+            }
+
+            const data = await axios.get(`https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${from_currency}&to_currency=${to_currency}&apikey=${process.env.aTOKEN}`)
+            return res.status(200).json(data.data);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ error: "An error occurred" });
+        }
+    };
+};
+
+
 
 module.exports = BlockController;

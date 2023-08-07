@@ -30,6 +30,10 @@ class APIRequests {
     return await API.get(`/api/explore/${address}`);
   }
 
+  static async getRisk(address) {
+    return await API.get(`/api/explore/risk/${address}`);
+  }
+
   static async changeTitle(address, data) {
     return await API.post(`/api/explore/title/${address}`, data);
   }
