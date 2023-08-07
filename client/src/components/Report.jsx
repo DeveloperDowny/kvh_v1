@@ -1,6 +1,5 @@
 import React from "react";
-import './Report.css';
-
+import "./Report.css";
 
 import { EditIcon, CopyIcon, CloseIcon, CheckIcon } from "@chakra-ui/icons";
 import APIRequests from "../api";
@@ -19,24 +18,29 @@ import {
 } from "@chakra-ui/react";
 
 const ReportComponent = ({ open, address, close }) => {
-
   const [isOpen, setIsOpen] = React.useState(open);
   const [data, setData] = React.useState(null);
-  React.useEffect(() => {
+  React.useEffect(async () => {
     if (open) {
       setIsOpen(true);
-      APIRequests.explore(address).then((res) => {
-        // console.log("res", res)
-        console.log("data", res.data.data)
-        setData(res.data.data);
+      const res = await APIRequests.explore(address).catch((err) => {
+        console.log("err", err);
       });
+      if (!res) return;
+      console.log("data", res.data.data);
+      setData(res.data.data);
+
+      // .then((res) => {
+      //   // console.log("res", res)
+      //   console.log("data", res.data.data);
+      //   setData(res.data.data);
+      // });
     } else {
       setTimeout(() => {
         setIsOpen(false);
       }, 500);
     }
   }, [open]);
-
 
   if (!isOpen) return null;
 
@@ -45,20 +49,17 @@ const ReportComponent = ({ open, address, close }) => {
       <TopBar address={address} close={close} data={data} />
       <ReportBody data={data} />
     </div>
-
   );
 };
 
 export default ReportComponent;
 
-
 const TopBar = ({ address, close, data }) => {
   const [title, setTitle] = React.useState("Loading...");
   const [isEditing, setIsEditing] = React.useState(false);
-  const [tempTitle, setTempTitle] = React.useState("");  // temporary title when editing
+  const [tempTitle, setTempTitle] = React.useState(""); // temporary title when editing
 
   const inputRef = React.useRef(null);
-
 
   const handleEditClick = () => {
     setTempTitle(title);
@@ -71,10 +72,9 @@ const TopBar = ({ address, close, data }) => {
 
   const handleCancel = () => {
     setIsEditing(false);
-    console.log("canceling, old title: ", tempTitle)
-    setTitle(prev => prev = tempTitle);
+    console.log("canceling, old title: ", tempTitle);
+    setTitle((prev) => (prev = tempTitle));
   };
-
 
   const handleSave = async () => {
     // here, you can add logic to u
@@ -83,10 +83,9 @@ const TopBar = ({ address, close, data }) => {
 
     console.log("update res", res);
     if (res.status === 200) {
-      console.log("success")
-    }
-    else {
-      setTitle(prev => prev = tempTitle);
+      console.log("success");
+    } else {
+      setTitle((prev) => (prev = tempTitle));
     }
   };
 
@@ -96,14 +95,11 @@ const TopBar = ({ address, close, data }) => {
 
   // on change of title is completed, update db
 
-
-
   React.useEffect(() => {
     if (isEditing) {
       inputRef.current.style.width = `${title.length}ch`;
     }
   }, [title, isEditing]);
-
 
   React.useEffect(() => {
     if (data) {
@@ -115,11 +111,14 @@ const TopBar = ({ address, close, data }) => {
   }, [data]);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(address).then(() => {
-      console.log('Copying to clipboard was successful!');
-    }, (err) => {
-      console.error('Could not copy text: ', err);
-    });
+    navigator.clipboard.writeText(address).then(
+      () => {
+        console.log("Copying to clipboard was successful!");
+      },
+      (err) => {
+        console.error("Could not copy text: ", err);
+      }
+    );
   };
 
   return (
@@ -135,8 +134,16 @@ const TopBar = ({ address, close, data }) => {
               onChange={handleChange}
               className={`top-bar-title ${isEditing ? "editing" : ""}`}
             />
-            <CheckIcon className="top-bar-check-icon" onClick={handleSave} style={{ color: "#ffffff", marginRight: "4px" }} />
-            <CloseIcon className="top-bar-cross-icon" onClick={handleCancel} style={{ color: "#ffffff", width: "12px" }} />
+            <CheckIcon
+              className="top-bar-check-icon"
+              onClick={handleSave}
+              style={{ color: "#ffffff", marginRight: "4px" }}
+            />
+            <CloseIcon
+              className="top-bar-cross-icon"
+              onClick={handleCancel}
+              style={{ color: "#ffffff", width: "12px" }}
+            />
           </React.Fragment>
         ) : (
           <React.Fragment>
@@ -148,28 +155,33 @@ const TopBar = ({ address, close, data }) => {
                 color: "#ffffff",
               }}
             />
-            <CloseIcon className="top-bar-close-icon" onClick={close} style={{ color: "#ffffff" }} />
+            <CloseIcon
+              className="top-bar-close-icon"
+              onClick={close}
+              style={{ color: "#ffffff" }}
+            />
           </React.Fragment>
         )}
       </div>
       <div className="top-bar-2">
         <p className="top-bar-address">{address}</p>
-        <CopyIcon className="top-bar-copy-icon" onClick={handleCopy} style={{
-          color: "#ffffff",
-        }} />
-        {data === null ? (
-          <Loader />
-        ) : null
-        }
+        <CopyIcon
+          className="top-bar-copy-icon"
+          onClick={handleCopy}
+          style={{
+            color: "#ffffff",
+          }}
+        />
+        {data === null ? <Loader /> : null}
       </div>
     </div>
   );
 };
 
 const ReportBody = ({ data }) => {
-  // if (data != null) { 
+  // if (data != null) {
   //   console.log("datarbody", data);
-  //   console.log("balance", data.balance); 
+  //   console.log("balance", data.balance);
 
   // }
   data = data == null ? null : data.data;
@@ -193,57 +205,41 @@ const ReportBody = ({ data }) => {
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Balance:</h2>
         <p className="side-bar-section-text">
-          {data === null ? (
-            <Loader />
-          ) : (
-            `${data.balance} ${data.network}`
-          )}
-
+          {data === null ? <Loader /> : `${data.balance} ${data.network}`}
         </p>
       </div>
 
       <div className="side-bar-section-main">
-
         <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">First Tx: </h2>
           <p className="side-bar-section-text">
-            {data === null ? (
-              <Loader />
-            ) : (firstDate)}
+            {data === null ? <Loader /> : firstDate}
           </p>
         </div>
         <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">Last Tx: </h2>
-          <p className="side-bar-section-text"> {data === null ? (
-            <Loader />
-          ) : (lastDate)}</p>
+          <p className="side-bar-section-text">
+            {" "}
+            {data === null ? <Loader /> : lastDate}
+          </p>
         </div>
-
       </div>
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Incoming Volume</h2>
         <p className="side-bar-section-text">
-          {data === null ? (
-            <Loader />
-          ) : (
-            `${data.receive} ${data.network}`
-          )}
+          {data === null ? <Loader /> : `${data.receive} ${data.network}`}
         </p>
       </div>
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Outgoing Volume</h2>
         <p className="side-bar-section-text">
-          {data === null ? (
-            <Loader />
-          ) : (
-            `${data.spend * -1} ${data.network}`
-          )}
+          {data === null ? <Loader /> : `${data.spend * -1} ${data.network}`}
         </p>
       </div>
       {data && <TransactionsTable txs={data.txs} />}
     </div>
   );
-}
+};
 
 const TransactionsTable = ({ txs }) => {
   if (!txs || txs.length === 0) {
@@ -257,18 +253,28 @@ const TransactionsTable = ({ txs }) => {
   console.log("txs", txs);
 
   // format
-  // 
+  //
 
   return (
     <Box overflowY="auto" maxH="400px" width="100%">
-      <Table variant="striped" colorScheme="messenger" padding={0} size="sm" width="100%">
-          <TableCaption style={{
-          textAlign: "center", 
-          padding: "5px 0px 0px 0px",
-          margin: 0,
-        }} placement="top" fontSize={14}>
-         Transactions
-          </TableCaption>
+      <Table
+        variant="striped"
+        colorScheme="messenger"
+        padding={0}
+        size="sm"
+        width="100%"
+      >
+        <TableCaption
+          style={{
+            textAlign: "center",
+            padding: "5px 0px 0px 0px",
+            margin: 0,
+          }}
+          placement="top"
+          fontSize={14}
+        >
+          Transactions
+        </TableCaption>
         <Thead>
           <Tr>
             <Th>Date</Th>
@@ -285,39 +291,38 @@ const TransactionsTable = ({ txs }) => {
             time = time.toLocaleDateString();
 
             let recv = tx.to;
-            if(tx.network === "BTC") {
+            if (tx.network === "BTC") {
               recv = tx.outputs[0].address;
             }
 
             let val = tx.value;
-            if(tx.network === "BTC") {
+            if (tx.network === "BTC") {
               val = tx.outputs[0].value;
             }
 
             return (
               <Tr key={index}>
                 <Td isNumeric>
-                  <Text isTruncated fontSize={12}>{time}</Text>
+                  <Text isTruncated fontSize={12}>
+                    {time}
+                  </Text>
                 </Td>
                 <Td isNumeric>
-                  <Text isTruncated fontSize={12}>{recv}</Text>
+                  <Text isTruncated fontSize={12}>
+                    {recv}
+                  </Text>
                 </Td>
                 <Td isNumeric fontSize={12}>
                   {val} {tx.network}
                 </Td>
               </Tr>
-
-            )
-          }
-
-          )}
+            );
+          })}
         </Tbody>
       </Table>
     </Box>
-
   );
 };
-
 
 const Loader = () => {
   return (
@@ -325,4 +330,4 @@ const Loader = () => {
       <CircularProgress isIndeterminate color="white" size={4} />
     </div>
   );
-}
+};

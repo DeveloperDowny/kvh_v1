@@ -26,6 +26,10 @@ const siteCustom = createSlice({
   },
 });
 
-const siteCustomReducer = siteCustom.reducer;
-const { setShouldShowBars, setShouldShowSideBar, setNavbarTitle, setUserRole } =
-  siteCustom.actions;
+export const siteCustomReducer = siteCustom.reducer;
+export const {
+  setShouldShowBars,
+  setShouldShowSideBar,
+  setNavbarTitle,
+  setUserRole,
+} = siteCustom.actions;
