@@ -1,6 +1,5 @@
 import React from "react";
-import './Report.css';
-
+import "./Report.css";
 
 import { EditIcon, CopyIcon, CloseIcon, CheckIcon } from "@chakra-ui/icons";
 import APIRequests from "../api";
@@ -19,7 +18,6 @@ import {
 } from "@chakra-ui/react";
 
 const ReportComponent = ({ open, address, close }) => {
-
   const [isOpen, setIsOpen] = React.useState(open);
   const [data, setData] = React.useState(null);
   const [riskData, setRisk] = React.useState(null);
@@ -28,24 +26,24 @@ const ReportComponent = ({ open, address, close }) => {
       setIsOpen(true);
       APIRequests.explore(address).then((res) => {
         // console.log("res", res)
-        console.log("data", res.data.data)
+        console.log("data", res.data.data);
         setData(res.data.data);
+        console.log("red data", res.data.data);
       });
-      APIRequests.getRisk(address).then((res) => {
-        console.log("risk", res.data)
-        setRisk(res.data);
-      }).catch((err) => {
-        console.log("error", err);
-      });
-
-
+      APIRequests.getRisk(address)
+        .then((res) => {
+          console.log("risk", res.data);
+          setRisk(res.data);
+        })
+        .catch((err) => {
+          console.log("error", err);
+        });
     } else {
       setTimeout(() => {
         setIsOpen(false);
       }, 500);
     }
   }, [open]);
-
 
   if (!isOpen) return null;
 
@@ -54,20 +52,17 @@ const ReportComponent = ({ open, address, close }) => {
       <TopBar address={address} close={close} data={data} />
       <ReportBody data={data} risk={riskData} />
     </div>
-
   );
 };
 
 export default ReportComponent;
 
-
 const TopBar = ({ address, close, data }) => {
   const [title, setTitle] = React.useState("Loading...");
   const [isEditing, setIsEditing] = React.useState(false);
-  const [tempTitle, setTempTitle] = React.useState("");  // temporary title when editing
+  const [tempTitle, setTempTitle] = React.useState(""); // temporary title when editing
 
   const inputRef = React.useRef(null);
-
 
   const handleEditClick = () => {
     setTempTitle(title);
@@ -80,10 +75,9 @@ const TopBar = ({ address, close, data }) => {
 
   const handleCancel = () => {
     setIsEditing(false);
-    console.log("canceling, old title: ", tempTitle)
-    setTitle(prev => prev = tempTitle);
+    console.log("canceling, old title: ", tempTitle);
+    setTitle((prev) => (prev = tempTitle));
   };
-
 
   const handleSave = async () => {
     setIsEditing(false);
@@ -91,10 +85,9 @@ const TopBar = ({ address, close, data }) => {
 
     console.log("update res", res);
     if (res.status === 200) {
-      console.log("success")
-    }
-    else {
-      setTitle(prev => prev = tempTitle);
+      console.log("success");
+    } else {
+      setTitle((prev) => (prev = tempTitle));
     }
   };
 
@@ -104,14 +97,11 @@ const TopBar = ({ address, close, data }) => {
 
   // on change of title is completed, update db
 
-
-
   React.useEffect(() => {
     if (isEditing) {
       inputRef.current.style.width = `${title.length}ch`;
     }
   }, [title, isEditing]);
-
 
   React.useEffect(() => {
     if (data) {
@@ -123,11 +113,14 @@ const TopBar = ({ address, close, data }) => {
   }, [data]);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(address).then(() => {
-      console.log('Copying to clipboard was successful!');
-    }, (err) => {
-      console.error('Could not copy text: ', err);
-    });
+    navigator.clipboard.writeText(address).then(
+      () => {
+        console.log("Copying to clipboard was successful!");
+      },
+      (err) => {
+        console.error("Could not copy text: ", err);
+      }
+    );
   };
 
   return (
@@ -143,8 +136,16 @@ const TopBar = ({ address, close, data }) => {
               onChange={handleChange}
               className={`top-bar-title ${isEditing ? "editing" : ""}`}
             />
-            <CheckIcon className="top-bar-check-icon" onClick={handleSave} style={{ color: "#ffffff", marginRight: "4px" }} />
-            <CloseIcon className="top-bar-cross-icon" onClick={handleCancel} style={{ color: "#ffffff", width: "12px" }} />
+            <CheckIcon
+              className="top-bar-check-icon"
+              onClick={handleSave}
+              style={{ color: "#ffffff", marginRight: "4px" }}
+            />
+            <CloseIcon
+              className="top-bar-cross-icon"
+              onClick={handleCancel}
+              style={{ color: "#ffffff", width: "12px" }}
+            />
           </React.Fragment>
         ) : (
           <React.Fragment>
@@ -156,26 +157,30 @@ const TopBar = ({ address, close, data }) => {
                 color: "#ffffff",
               }}
             />
-            <CloseIcon className="top-bar-close-icon" onClick={close} style={{ color: "#ffffff" }} />
+            <CloseIcon
+              className="top-bar-close-icon"
+              onClick={close}
+              style={{ color: "#ffffff" }}
+            />
           </React.Fragment>
         )}
       </div>
       <div className="top-bar-2">
         <p className="top-bar-address">{address}</p>
-        <CopyIcon className="top-bar-copy-icon" onClick={handleCopy} style={{
-          color: "#ffffff",
-        }} />
-        {data === null ? (
-          <Loader />
-        ) : null
-        }
+        <CopyIcon
+          className="top-bar-copy-icon"
+          onClick={handleCopy}
+          style={{
+            color: "#ffffff",
+          }}
+        />
+        {data === null || data === undefined ? <Loader /> : null}
       </div>
     </div>
   );
 };
 
 const ReportBody = ({ data, risk }) => {
-
   data = data == null ? null : data.data;
   let firstDate = "-";
   let lastDate = "-";
@@ -198,37 +203,33 @@ const ReportBody = ({ data, risk }) => {
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Balance:</h2>
         <p className="side-bar-section-text">
-          {data === null ? (
+          {data === null || data === undefined ? (
             <Loader />
           ) : (
             `${parseFloat(data.balance).toFixed(4)} ${data.network}`
           )}
-
         </p>
       </div>
 
       <div className="side-bar-section-main">
-
         <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">First Tx: </h2>
           <p className="side-bar-section-text">
-            {data === null ? (
-              <Loader />
-            ) : (firstDate)}
+            {data === null || data === undefined ? <Loader /> : firstDate}
           </p>
         </div>
         <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">Last Tx: </h2>
-          <p className="side-bar-section-text"> {data === null ? (
-            <Loader />
-          ) : (lastDate)}</p>
+          <p className="side-bar-section-text">
+            {" "}
+            {data === null || data === undefined ? <Loader /> : lastDate}
+          </p>
         </div>
-
       </div>
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Incoming Volume</h2>
         <p className="side-bar-section-text">
-          {data === null ? (
+          {data === null || data === undefined ? (
             <Loader />
           ) : (
             `${parseFloat(data.receive).toFixed(4)} ${data.network}`
@@ -238,7 +239,7 @@ const ReportBody = ({ data, risk }) => {
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Outgoing Volume</h2>
         <p className="side-bar-section-text">
-          {data === null ? (
+          {data === null || data === undefined ? (
             <Loader />
           ) : (
             `${parseFloat(data.spend).toFixed(4) * -1} ${data.network}`
@@ -249,7 +250,7 @@ const ReportBody = ({ data, risk }) => {
         <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">Combined Risk:</h2>
           <p className="side-bar-section-text">
-            {risk === null ? (
+            {risk === null || data === undefined ? (
               <Loader />
             ) : (
               risk.riskScores.combinedRisk.toFixed(2) + "%"
@@ -259,7 +260,7 @@ const ReportBody = ({ data, risk }) => {
         <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">Fraud Risk:</h2>
           <p className="side-bar-section-text">
-            {risk === null ? (
+            {risk === null || data === undefined ? (
               <Loader />
             ) : (
               risk.riskScores.fraudRisk.toFixed(2) + "%"
@@ -271,7 +272,7 @@ const ReportBody = ({ data, risk }) => {
         <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">Lending Risk:</h2>
           <p className="side-bar-section-text">
-            {risk === null ? (
+            {risk === null || data === undefined ? (
               <Loader />
             ) : (
               risk.riskScores.lendingRisk.toFixed(2) + "%"
@@ -281,7 +282,7 @@ const ReportBody = ({ data, risk }) => {
         <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">Reputation Risk:</h2>
           <p className="side-bar-section-text">
-            {risk === null ? (
+            {risk === null || data === undefined ? (
               <Loader />
             ) : (
               risk.riskScores.reputationRisk.toFixed(2) + "%"
@@ -292,7 +293,7 @@ const ReportBody = ({ data, risk }) => {
       {data && <TransactionsTable txs={data.txs} />}
     </div>
   );
-}
+};
 
 const TransactionsTable = ({ txs }) => {
   if (!txs || txs.length === 0) {
@@ -306,16 +307,26 @@ const TransactionsTable = ({ txs }) => {
   // console.log("txs", txs);
 
   // format
-  // 
+  //
 
   return (
     <Box overflowY="auto" maxH="369px" width="100%">
-      <Table variant="striped" colorScheme="messenger" padding={0} size="sm" width="100%">
-        <TableCaption style={{
-          textAlign: "center",
-          padding: "5px 0px 0px 0px",
-          margin: 0,
-        }} placement="top" fontSize={14}>
+      <Table
+        variant="striped"
+        colorScheme="messenger"
+        padding={0}
+        size="sm"
+        width="100%"
+      >
+        <TableCaption
+          style={{
+            textAlign: "center",
+            padding: "5px 0px 0px 0px",
+            margin: 0,
+          }}
+          placement="top"
+          fontSize={14}
+        >
           Transactions
         </TableCaption>
         <Thead>
@@ -346,27 +357,26 @@ const TransactionsTable = ({ txs }) => {
             return (
               <Tr key={index}>
                 <Td isNumeric>
-                  <Text isTruncated fontSize={12}>{time}</Text>
+                  <Text isTruncated fontSize={12}>
+                    {time}
+                  </Text>
                 </Td>
                 <Td isNumeric>
-                  <Text isTruncated fontSize={12}>{recv}</Text>
+                  <Text isTruncated fontSize={12}>
+                    {recv}
+                  </Text>
                 </Td>
                 <Td isNumeric fontSize={12}>
                   {val} {tx.network}
                 </Td>
               </Tr>
-
-            )
-          }
-
-          )}
+            );
+          })}
         </Tbody>
       </Table>
     </Box>
-
   );
 };
-
 
 const Loader = () => {
   return (
@@ -374,4 +384,4 @@ const Loader = () => {
       <CircularProgress isIndeterminate color="white" size={4} />
     </div>
   );
-}
+};

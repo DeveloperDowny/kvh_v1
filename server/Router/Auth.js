@@ -4,25 +4,34 @@ const express = require("express");
 const router = express.Router();
 
 require("../db/Conn");
-const User = require("../models/Schema");
+const User = require("../models/UserSchema");
 router.get("/", (req, res) => {
   console.log("Received a GET HTTP method");
   res.send(`Hello world from the server rotuer js`);
 });
 
 router.post("/register", async (req, res) => {
-  const { name, email, phone, work, password, cpassword } = req.body;
-  if (!name || !email || !phone || !work || !password || !cpassword) {
+  console.log("Received a POST HTTP method");
+  // const { name, email, phone, work, password, cpassword } = req.body;
+  // const { name, email, work, password } = req.body;
+  const { name, email, user_role, password } = req.body;
+  // if (!name || !email || !phone || !work || !password || !cpassword) {
+  // if (!name || !email || !work || !password) {
+  if (!name || !email || !user_role || !password) {
     return res.status(422).json({ error: "plz fill data properly" });
   }
   try {
     const userExist = await User.findOne({ email: email });
     if (userExist) {
       return res.status(422).json({ error: "already exits" });
-    } else if (password != cpassword) {
-      return res.status(422).json({ error: "passwords doesnt match" });
-    } else {
-      const user = new User({ name, email, phone, work, password, cpassword });
+    }
+    // else if (password != cpassword) {
+    //   return res.status(422).json({ error: "passwords doesnt match" });
+    // }
+    else {
+      // const user = new User({ name, email, phone, work, password, cpassword });
+      // const user = new User({ name, email, work, password });
+      const user = new User({ name, email, user_role, password });
       await user.save();
       res.status(201).json({ message: "user registered successfully" });
     }
@@ -51,12 +60,19 @@ router.post("/login", async (req, res) => {
       // privilige 0 for superadmin 1 for admin 2 for user
       // currently hardcoded to 2, change it later []
       // TODO
-      const token = jwt.sign({ uid: userLogin._id, privilege: 2 }, secretKey, {
-        expiresIn: "24h",
-      });
+      const token = jwt.sign(
+        { uid: userLogin._id, privilege: 2, user_role: userLogin.user_role },
+        secretKey,
+        {
+          expiresIn: "24h",
+        }
+      );
       res.json({
         message: "user signed in successfully",
         token: token,
+        // work: userLogin.work,
+        user_role: userLogin.user_role,
+        email: userLogin.email,
         name: userLogin.name,
         uid: userLogin._id,
         privilege: 2,

@@ -12,6 +12,7 @@ import {
   Heading,
   Text,
   useColorModeValue,
+  Select, // Import Select component
 } from "@chakra-ui/react";
 import { object, string } from "yup";
 import APIRequests from "../api";
@@ -22,18 +23,14 @@ import { useAppDispatch } from "../store";
 const validationSchema = object({
   email: string().email("Invalid email address").required("Email is required"),
   password: string().required("Password is required"),
+  // userRole: string().required("User role is required"), // Add userRole validation
 });
 
 export default function Login() {
-  // use history
   const dispatch = useAppDispatch();
-
   const navigate = useNavigate();
+
   const handleSubmit = async (values) => {
-    console.log(values); // Add your form submission logic here
-    // email password as json hai
-    values.email = "sgarg@gmail.com";
-    values.password = "saneha";
     const res = await APIRequests.signIn(values).catch((err) => {
       console.log("Error in SignIn", err);
     });
@@ -45,9 +42,6 @@ export default function Login() {
 
     console.log("res", res);
 
-    // check how much of it is sent from backend
-
-    //  todo
     dispatch(
       auth({
         result: {
@@ -56,13 +50,13 @@ export default function Login() {
           token: res.data.token || "",
           privilege: res.data.privilege || 0,
           uid: res.data.uid || "",
+          user_role: res.data.user_role || "",
         },
         type: ActionTypes.AUTH,
       })
     );
 
-    navigate("/");
-    // navigate to root
+    navigate("/boards/71a0d6d8");
   };
 
   return (
@@ -86,7 +80,11 @@ export default function Login() {
           p={8}
         >
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{
+              email: "",
+              password: "",
+              // , userRole: ""
+            }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
@@ -105,6 +103,17 @@ export default function Login() {
                   <FormLabel>Password</FormLabel>
                   <Field as={Input} type="password" name="password" />
                 </FormControl>
+                {/* <FormControl id="userRole">
+                  <FormLabel>User Role</FormLabel>
+                  <Field
+                    as={Select}
+                    name="userRole"
+                    placeholder="Select a role"
+                  >
+                    <option value="student">Student</option>
+                    <option value="instructor">Instructor</option>
+                  </Field>
+                </FormControl> */}
                 <Stack spacing={10}>
                   <Stack
                     direction={{ base: "column", sm: "row" }}

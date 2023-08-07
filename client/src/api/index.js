@@ -21,6 +21,37 @@ class APIRequests {
   static async signIn(data) {
     return await API.post("/auth/login", data);
   }
+  static async signUp(data) {
+    return await API.post("/auth/register", data);
+  }
+
+  static async signUp(data) {
+    return await API.post("/auth/register", data);
+  }
+
+  static async testGet() {
+    return await API.get("/users");
+  }
+
+  static async getRoomData(gameID, userID) {
+    return await API.post("/auth/getRoomDetails", {
+      gameID,
+      userID,
+    });
+  }
+
+  static async createRoom(userID) {
+    return await API.post("/auth/createGameRoom", {
+      uid: userID,
+    });
+  }
+
+  static async joinRoom(userID, gameID) {
+    return await API.post("/auth/joinGameRoom", {
+      _id: userID,
+      gameID: gameID,
+    });
+  }
 
   static async testGet() {
     return await API.get("/users");
@@ -37,7 +68,6 @@ class APIRequests {
   static async changeTitle(address, data) {
     return await API.post(`/api/explore/title/${address}`, data);
   }
-
 }
 
 export default APIRequests;
