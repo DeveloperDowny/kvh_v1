@@ -45,7 +45,7 @@ const Layout = ({ children }) => {
             </Select>
           </div>
         </div>
-        <div className="t-w-full t-bg-white">
+        <div className="t-w-full t-bg-white t-flex t-justify-center">
           <img src={NavbarImgWO} className="t-h-[80px] t-object-contain" />
         </div>
         {/* <WithSubnavigation /> */}
