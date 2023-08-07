@@ -44,11 +44,14 @@ const GraphVisualization = () => {
     const edgeArr = [];
     const nodeSet = new Set();
     const edgeSet = new Set();
-
+    let specialIndex = 0; // Index of the specialId in the data array
     let yPos = 0; // Initialize y position
     const incrementCont = 20; // Increment y position by 100 for each node
     console.log("mtransData:", data);
     for (let index in data) {
+      // if (specialId === data[index].to || specialId === data[index].from) {
+      //   specialIndex = index;
+      // }
       const arrayData = data[index];
       console.log("arrayData:", arrayData);
       const from = arrayData.from;
@@ -68,6 +71,10 @@ const GraphVisualization = () => {
           y: yPos,
           color: specialId === to ? "red" : undefined,
         });
+        if (specialId === to) {
+          specialIndex = index;
+          console.log("specialIndex:", specialIndex);
+        }
 
         nodeSet.add(to);
         yPos += incrementCont;
@@ -81,6 +88,12 @@ const GraphVisualization = () => {
           y: yPos,
           color: specialId === from ? "red" : undefined,
         });
+
+        if (specialId === from) {
+          specialIndex = index;
+          console.log("specialIndex:", specialIndex);
+        }
+
         nodeSet.add(from);
         yPos += incrementCont;
       }
@@ -92,6 +105,15 @@ const GraphVisualization = () => {
 
       // Rest of the code...
     }
+
+    const calcY = yPos / 2;
+    console.log("yPos:", yPos);
+    console.log("calcY:", calcY);
+    const specialIdData = nodeArr[specialIndex];
+    console.log("specialIdData:", specialIdData);
+    nodeArr[specialIndex] = { ...specialIdData, y: calcY };
+    console.log("nodeArr:", nodeArr[specialIndex]);
+
     setGraphData({
       nodes: nodeArr,
       edges: edgeArr,
