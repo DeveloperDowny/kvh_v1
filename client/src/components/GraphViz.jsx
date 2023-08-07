@@ -12,14 +12,14 @@ const GraphVisualization = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
-  const [data, setData] = React.useState(null);
+  const [data, setData] = useState(null);
   const [graphData, setGraphData] = useState({
     nodes: [],
     edges: [],
   });
 
   const [specialId, setSpecialId] = useState(
-    "0x1111111254eeb25477b68fb85ed929f73a960582"
+    "TRpn2AWwXLfYSVtRaxKGm5oMCPvrRyvBJv"
   ); // Replace this with your special ID
   // const showResults = queryParams.get("show_results");
   // Sample graph data in visjs format
@@ -32,46 +32,73 @@ const GraphVisualization = () => {
     APIRequests.explore(specialId).then((res) => {
       // console.log("res", res)
       console.log("data", res.data.data);
-      setData(res.data.data);
-      console.log("red data of exploer", res.data.data);
+      setData(res.data.data.data.txs);
+
+      console.log("red data of exploer", res.data.data.data.txs);
     });
   }, []);
 
-  // useEffect(() => {
-  //   const nodeArr = [];
-  //   const edgeArr = [];
-  //   const nodeSet = new Set();
-  //   const edgeSet = new Set();
-  //   console.log("mtransData:", mtransData.data.items);
-  //   for (let index in mtransData.data.items) {
-  //     // Rest of the code...
+  useEffect(() => {
+    console.log("dataffsdf:", data);
+  }, [data]);
 
-  //     if (!nodeSet.has(toAddress)) {
-  //       nodeArr.push({
-  //         id: toAddress,
-  //         label: "Add",
-  //         x: specialId === toAddress ? 0 : -200, // Position nodes sending money to specialId on the left
-  //         color: specialId === toAddress ? "red" : undefined,
-  //       });
+  useEffect(() => {
+    const nodeArr = [];
+    const edgeArr = [];
+    const nodeSet = new Set();
+    const edgeSet = new Set();
+    console.log("mtransData:", data);
+    for (let index in data) {
+      const arrayData = data[index];
+      console.log("arrayData:", arrayData);
+      const from = arrayData.from;
+      const to = arrayData.to;
+      // Rest of the code...
 
-  //       nodeSet.add(toAddress);
-  //     }
+      edgeArr.push({
+        from: from,
+        to: to,
+        // label: transactionAddress,
+      });
+      if (!nodeSet.has(to)) {
+        nodeArr.push({
+          id: to,
+          label: "Add",
+          x: specialId === to ? 0 : 200, // Position nodes sending money to specialId on the left
+          color: specialId === to ? "red" : undefined,
+        });
 
-  //     if (!nodeSet.has(fromAddress)) {
-  //       nodeArr.push({
-  //         id: fromAddress,
-  //         label: "Add",
-  //         x: specialId === fromAddress ? 0 : 200, // Position nodes receiving money from specialId on the right
-  //         color: specialId === fromAddress ? "red" : undefined,
-  //       });
-  //       nodeSet.add(fromAddress);
-  //     }
+        nodeSet.add(to);
+      }
 
-  //     // Rest of the code...
-  //   }
+      if (!nodeSet.has(from)) {
+        nodeArr.push({
+          id: from,
+          label: "Add",
+          x: specialId === from ? 0 : -200, // Position nodes receiving money from specialId on the right
+          color: specialId === from ? "red" : undefined,
+        });
+        nodeSet.add(from);
+      }
+      edgeSet.add({
+        from: from,
+        to: to,
+        label: "m",
+      });
 
-  //   // Rest of the code...
-  // }, []);
+      // Rest of the code...
+    }
+    setGraphData({
+      nodes: nodeArr,
+      edges: edgeArr,
+    });
+
+    console.log("graphData:", {
+      nodes: nodeArr,
+      edges: edgeArr,
+    });
+    // Rest of the code...
+  }, [data]);
 
   const graphData2 = {
     nodes: [

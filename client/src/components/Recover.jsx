@@ -44,86 +44,86 @@ const GraphVisualization = () => {
   //   edges: [],
   // };
 
-  //   useEffect(() => {
-  //     const nodeArr = [];
-  //     const edgeArr = [];
-  //     const nodeSet = new Set();
-  //     const edgeSet = new Set();
-  //     console.log("mtransData:", mtransData.data.items);
-  //     for (let index in mtransData.data.items) {
-  //       const arrayData = mtransData.data.items[index];
-  //       console.log("arrayData:", arrayData);
-  //       const fromAddress = arrayData.from_address;
-  //       const toAddress = arrayData.to_address;
-  //       // const senderAddress = arrayData.log_events[0].sender_address;
-  //       const transactionAddress = arrayData.tx_hash;
+  useEffect(() => {
+    const nodeArr = [];
+    const edgeArr = [];
+    const nodeSet = new Set();
+    const edgeSet = new Set();
+    console.log("mtransData:", mtransData.data.items);
+    for (let index in mtransData.data.items) {
+      const arrayData = mtransData.data.items[index];
+      console.log("arrayData:", arrayData);
+      const fromAddress = arrayData.from_address;
+      const toAddress = arrayData.to_address;
+      // const senderAddress = arrayData.log_events[0].sender_address;
+      const transactionAddress = arrayData.tx_hash;
 
-  //       console.log("fromAddress:", fromAddress);
-  //       console.log("toAddress:", toAddress);
+      console.log("fromAddress:", fromAddress);
+      console.log("toAddress:", toAddress);
 
-  //       edgeArr.push({
-  //         from: fromAddress,
-  //         to: toAddress,
-  //         // label: transactionAddress,
-  //       });
+      edgeArr.push({
+        from: fromAddress,
+        to: toAddress,
+        // label: transactionAddress,
+      });
 
-  //       if (!nodeSet.has(toAddress)) {
-  //         nodeArr.push({
-  //           id: toAddress,
-  //           // label: toAddress,
-  //           label: "Add",
-  //           // title: fromAddress,
-  //         });
+      if (!nodeSet.has(toAddress)) {
+        nodeArr.push({
+          id: toAddress,
+          // label: toAddress,
+          label: "Add",
+          // title: fromAddress,
+        });
 
-  //         nodeSet.add(toAddress);
-  //       }
+        nodeSet.add(toAddress);
+      }
 
-  //       if (!nodeSet.has(fromAddress)) {
-  //         nodeArr.push({
-  //           id: fromAddress,
-  //           // label: fromAddress,
-  //           label: "Add",
-  //           // title: fromAddress,
-  //         });
-  //         nodeSet.add(fromAddress);
-  //       }
+      if (!nodeSet.has(fromAddress)) {
+        nodeArr.push({
+          id: fromAddress,
+          // label: fromAddress,
+          label: "Add",
+          // title: fromAddress,
+        });
+        nodeSet.add(fromAddress);
+      }
 
-  //       // nodeArr.push({
-  //       //   id: fromAddress,
-  //       //   label: fromAddress,
-  //       //   // title: fromAddress,
-  //       // });
+      // nodeArr.push({
+      //   id: fromAddress,
+      //   label: fromAddress,
+      //   // title: fromAddress,
+      // });
 
-  //       edgeSet.add({
-  //         from: fromAddress,
-  //         to: toAddress,
-  //         label: transactionAddress,
-  //       });
-  //     }
+      edgeSet.add({
+        from: fromAddress,
+        to: toAddress,
+        label: transactionAddress,
+      });
+    }
 
-  //     // multiple transactions hue rahenge toh humko cumulative lena padga []
+    // multiple transactions hue rahenge toh humko cumulative lena padga []
 
-  //     // graphData.nodes = nodeArr;
-  //     // graphData.edges = edgeArr;
-  //     // setGraphData({
-  //     //   nodes: Array.from(nodeSet),
-  //     //   edges: Array.from(edgeSet),
-  //     // });
-  //     setGraphData({
-  //       nodes: nodeArr,
-  //       edges: edgeArr,
-  //     });
+    // graphData.nodes = nodeArr;
+    // graphData.edges = edgeArr;
+    // setGraphData({
+    //   nodes: Array.from(nodeSet),
+    //   edges: Array.from(edgeSet),
+    // });
+    setGraphData({
+      nodes: nodeArr,
+      edges: edgeArr,
+    });
 
-  //     console.log("graphData:", {
-  //       nodes: nodeArr,
-  //       edges: edgeArr,
-  //     });
-  //   }, []);
+    console.log("graphData:", {
+      nodes: nodeArr,
+      edges: edgeArr,
+    });
+  }, []);
 
-  // Options for graph visualization
-  //   const options = {
-  //     interaction: { hover: true },
-  //   };
+  //   Options for graph visualization
+  //     const options = {
+  //       interaction: { hover: true },
+  //     };
 
   // Define the hoverNode event handler
   const handleNodeHover = (event) => {
