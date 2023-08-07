@@ -12,7 +12,10 @@ const Layout = ({ children }) => {
   console.log("shouldShowSidebar", shouldShowSidebar);
   return (
     <div className="layout">
-      <div className="t-h-[42px] t-bg-[#0262AF]"></div>
+      <div className="t-h-[42px] t-bg-[#0262AF] t-flex t-flex-row t-justify-between t-items-center t-text-white t-px-[1rem]">
+        <div>GOVERNMENT OF INDIA</div>
+        <div>Select Language</div>
+      </div>
       <img src={NavbarImgWO} />
       <WithSubnavigation />
       {shouldShowSidebar ? (
