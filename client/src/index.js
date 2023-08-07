@@ -26,7 +26,8 @@ i18n.use(initReactI18next).init({
     en: { translation: enTranslations },
     hi: { translation: hiTranslations },
   },
-  lng: "hi", // Set the default language to English
+  // lng: "hi", // Set the default language to English
+  lng: "en", // Set the default language to English
   fallbackLng: "en", // Fallback language if translation not found for a specific key
   interpolation: { escapeValue: false }, // React already does escaping
 });

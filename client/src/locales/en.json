@@ -1,12 +1,18 @@
 {
-    "signup.title": "Sign up",
-    "signup.description": "to enjoy all of our cool features ✌️",
-    "firstName.label": "First Name",
-    "lastName.label": "Last Name",
-    "email.label": "Email address",
-    "password.label": "Password",
-    "signup.button": "Sign up",
-    "alreadyUser.text": "Already a user?",
-    "signIn.link": "Sign In"
-  }
-  
+  "signup.title": "Sign Up",
+  "signup.description": "Please enter your email and password.",
+  "name": "Name",
+  "email": "Email Address",
+  "password": "Password",
+  "userRole": "User Role",
+  "signup.button": "Sign Up",
+  "signup.alreadyUser": "Already a user?",
+
+  "signin.title": "Sign In",
+  "signin.description": "Please enter your email and password.",
+  "signin.button": "Sign In",
+  "signin.newUser": "New user?",
+  "signup.studentRole": "Student",
+  "signup.instructorRole": "Instructor",
+  "signup.selectRole": "Select a role"
+}

@@ -23,9 +23,10 @@ import APIRequests from "../api";
 import { ActionTypes, auth } from "../reducers/auth";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../store";
+import { useTranslation } from "react-i18next";
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("name is required"),
+  name: Yup.string().required("Name is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
@@ -38,6 +39,7 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function SignupCardOg() {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -128,7 +130,7 @@ export default function SignupCardOg() {
                     isRequired
                     isInvalid={errors.name && touched.name}
                   >
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>{t("name")}</FormLabel>
                     <Field name="name" as={Input} type="text" />
                     <ErrorMessage
                       name="name"
@@ -142,7 +144,7 @@ export default function SignupCardOg() {
                     isRequired
                     isInvalid={errors.email && touched.email}
                   >
-                    <FormLabel>Email address</FormLabel>
+                    <FormLabel>{t("email")}</FormLabel>
                     <Field name="email" as={Input} type="email" />
                     <ErrorMessage
                       name="email"
@@ -165,7 +167,7 @@ export default function SignupCardOg() {
                     isRequired
                     isInvalid={errors.password && touched.password}
                   >
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("password")}</FormLabel>
                     <InputGroup>
                       <Field name="password">
                         {({ field }) => (
@@ -197,11 +199,13 @@ export default function SignupCardOg() {
                     isRequired
                     isInvalid={errors.userRole && touched.userRole}
                   >
-                    <FormLabel>User Role</FormLabel>
+                    <FormLabel>{t("userRole")}</FormLabel>
                     <Field name="userRole" as={Select}>
-                      <option value="">Select a role</option>
-                      <option value="student">Student</option>
-                      <option value="instructor">Instructor</option>
+                      <option value="">{t("signup.selectRole")}</option>
+                      <option value="student">{t("signup.studentRole")}</option>
+                      <option value="instructor">
+                        {t("signup.instructorRole")}
+                      </option>
                     </Field>
                     <ErrorMessage
                       name="userRole"
@@ -221,14 +225,14 @@ export default function SignupCardOg() {
                         bg: "blue.500",
                       }}
                     >
-                      Sign up
+                      {t("signup.button")}
                     </Button>
                   </Stack>
                   <Stack pt={6}>
                     <Text align={"center"}>
                       Already a user?{" "}
                       <Link color={"blue.400"} href="/auth/signin">
-                        Sign In
+                        {t("signin.title")}
                       </Link>
                     </Text>
                   </Stack>
