@@ -43,7 +43,7 @@ const ReportComponent = ({ open, address, close }) => {
         setIsOpen(false);
       }, 500);
     }
-  }, [open]);
+  }, [open, address]);
 
   if (!isOpen) return null;
 
@@ -196,20 +196,52 @@ const ReportBody = ({ data, risk }) => {
     }
   }
 
+  const [exRate, setExRate] = React.useState(null);
+
+  React.useEffect(() => {
+    // call api to get balance in INR
+    // data = data == null ? null : data.data;
+    if (data != null) {
+
+      APIRequests.getExchangeRate(
+        data.network, "inr"
+      ).then((res) => {
+        // console.log("ex rate", res.data.exRate);
+        setExRate(res.data.exRate);
+      }).catch((err) => {
+        setExRate(null);
+      });
+    }
+  }, [data]);
+
+
+
   // const cRisk = risk == null ? null : risk.riskScores.combinedRisk.toFixed(2) + "%";
 
   return (
     <div className="side-bar-body">
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Balance:</h2>
-        <p className="side-bar-section-text">
-          {data === null || data === undefined ? (
-            <Loader />
-          ) : (
-            `${parseFloat(data.balance).toFixed(4)} ${data.network}`
-          )}
-        </p>
+
+        {data === null || data === undefined ? (
+          <Loader />
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p className="side-bar-section-text">
+              {`${parseFloat(data.balance).toFixed(4)} ${data.network}`}
+            </p>
+            {exRate !== null && (
+              <>
+                <div style={{ margin: '0 10px' }}>|</div>
+                <p className="side-bar-section-text">
+                  {`INR ${parseFloat(data.balance * exRate).toFixed(4)}`}
+                </p>
+              </>
+            )}
+          </div>
+        )}
       </div>
+
 
       <div className="side-bar-section-main">
         <div className="side-bar-section-sec">
@@ -228,24 +260,46 @@ const ReportBody = ({ data, risk }) => {
       </div>
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Incoming Volume</h2>
-        <p className="side-bar-section-text">
-          {data === null || data === undefined ? (
-            <Loader />
-          ) : (
-            `${parseFloat(data.receive).toFixed(4)} ${data.network}`
-          )}
-        </p>
+        {data === null || data === undefined ? (
+          <Loader />
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p className="side-bar-section-text">
+              {`${parseFloat(data.receive).toFixed(4)} ${data.network}`}
+            </p>
+            {exRate !== null && (
+              <>
+                <div style={{ margin: '0 10px' }}>|</div>
+                <p className="side-bar-section-text">
+                  {`INR ${parseFloat(data.receive * exRate).toFixed(4)}`}
+                </p>
+              </>
+            )}
+          </div>
+        )}
       </div>
+
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Outgoing Volume</h2>
-        <p className="side-bar-section-text">
-          {data === null || data === undefined ? (
-            <Loader />
-          ) : (
-            `${parseFloat(data.spend).toFixed(4) * -1} ${data.network}`
-          )}
-        </p>
+        {data === null || data === undefined ? (
+          <Loader />
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p className="side-bar-section-text">
+              {`${parseFloat(data.spend).toFixed(4) * -1} ${data.network}`}
+            </p>
+            {exRate !== null && (
+              <>
+                <div style={{ margin: '0 10px' }}>|</div>
+                <p className="side-bar-section-text">
+                  {`INR ${parseFloat(data.spend * exRate).toFixed(4) * -1}`}
+                </p>
+              </>
+            )}
+          </div>
+        )}
       </div>
+
       <div className="side-bar-section-main">
         <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">Combined Risk:</h2>

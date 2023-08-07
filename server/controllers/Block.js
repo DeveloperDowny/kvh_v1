@@ -21,7 +21,7 @@ const addTransaction = async (transaction) => {
         return { status: 0, msg: e };
     }
 }
-const checkCurrencyInCSV = async (currency, filename)  => {
+const checkCurrencyInCSV = async (currency, filename) => {
     return new Promise((resolve, reject) => {
         const filePath = __dirname + '/../currency_list/' + filename;
         const currencies = [];
@@ -31,7 +31,7 @@ const checkCurrencyInCSV = async (currency, filename)  => {
             .on('data', (row) => {
                 currencies.push(row.currency_code);
             })
-            .on('end', () => { 
+            .on('end', () => {
                 resolve(currencies.includes(currency));
             })
             .on('error', (error) => {
@@ -96,17 +96,11 @@ class BlockController {
             const id = req.params.id;
             // use regex to check if address is valid
             const nw = this.checkBlockchainAddress(id);
-            console.log("test", nw);
             const previousTransaction = await Transactions.findOne({ addr: id }).sort({ date: -1 });
-            console.log("Previous Transactions: ", previousTransaction);
             if (previousTransaction) {
-                console.log("in prev");
                 if (Date.now() - previousTransaction.date < 120000) {
-                    // console.log("Previous Transactions: ", previousTransaction);
-                    console.log("sending prev");
                     return res.status(200).json({ dbStatus, message: "Successfully Retrieved old", network: nw, data: previousTransaction })
                 } else {
-                    console.log("deleting prev");
                     var prevTitle = previousTransaction.title;
                     var prevFlag = previousTransaction.flag;
                     await previousTransaction.deleteOne();
@@ -146,8 +140,6 @@ class BlockController {
                 // no last tx api for eth
                 data.data.data.first = firstTx;
                 transaction = { addr: id, network: nw, source: 0, data: data.data.data, flag: prevFlag || flag, title: prevTitle || title, date: Date.now() };
-                console.log("time", firstTx);
-
                 dbStatus = await addTransaction(transaction);
                 return res.status(200).json({ dbStatus, message: "Successfully Retrieved", network: nw, data: transaction })
 
@@ -163,48 +155,6 @@ class BlockController {
                 dbStatus = await addTransaction(transaction);
                 return res.status(200).json({ dbStatus, message: "Successfully Retrieved", network: nw, data: transaction })
             }
-
-            // let data = await axios.get(`https://services.tokenview.io/vipapi/address/${nw}/${id}/1/50?apikey=${process.env.vTOKEN}`);
-            // transaction = {addr:id, network:nw, source:0, data:data.data.data, flag:prevFlag || flag, title:prevTitle || title, date:Date.now()};
-            // if (data.data.code !== 1) {
-            //     // https://blockchain.info/rawaddr/
-            //     // let data = await axios.get(`https://blockchain.info/rawaddr/${id}`);
-            //     // console.log("test2",data);
-
-            //     // try using etherscan if nw is eth and tokenview fails
-
-            //     if (nw === "eth") {
-            //         data = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${id}&startblock=0&endblock=99999999&sort=asc&apikey=${process.env.eTOKEN}`);
-            //         // console.log("etherscan", data);
-            //         transaction = {addr:id, network:nw, source:1, data:data.data.result, flag:prevFlag || flag, title:prevTitle || title, date:Date.now()};
-            //     }
-            // }
-
-            // dbStatus = await addTransaction(transaction);                
-            // return res.status(200).json({ dbStatus, message: "Successfully Retrieved", network: nw, data: transaction.data });
-            // else if(nw === 'btc') {
-            //     // https://services.tokenview.io/vipapi/address/btc/bc1qxhmdufsvnuaaaer4ynz88fspdsxq2h9e9cetdj/1/50?apikey=3fzm9zalWMCc8m8cqZhU
-            //     let data = await axios.get(`https://services.tokenview.io/vipapi/address/${nw}/${id}/1/50?apikey=${process.env.vTOKEN}`);
-            //     let ndata = data.data.data[0]
-            //     ndata.balance = parseFloat(ndata.receive) + parseFloat(ndata.spend);
-            //     return res.status(200).json({ message: "Successfully Retrieved", network: nw, data: ndata })
-            // }
-
-            // let data = await axios.get(`https://services.tokenview.io/vipapi/address/${nw}/${id}/1/50?apikey=${process.env.vTOKEN}`);
-
-
-            // console.log("tkv, ether",data.data);
-            // if (data.data.code !== 1) {
-            //     // https://blockchain.info/rawaddr/
-            //     // let data = await axios.get(`https://blockchain.info/rawaddr/${id}`);
-
-            //     if (nw === "eth") {
-            //         data = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${id}&startblock=0&endblock=99999999&sort=asc&apikey=${process.env.eTOKEN}`);
-            //         // console.log("etherscan", data);
-            //         return res.status(200).json({ message: "Successfully Retrieved", network: nw, data: data.data.result });
-            //     }
-            // }
-
 
             else {
                 return res.status(200).json({ message: "Address Incorrect", network: nw });
@@ -234,7 +184,6 @@ class BlockController {
     }
 
     getRisk = async (req, res) => {
-        console.log("risk")
         try {
             const address = req.params.id;
 
@@ -259,7 +208,7 @@ class BlockController {
             else {
                 return res.status(404).json({ error: 'Only for ETH and BTC networks' });
             }
-            console.log(`${nw}address: ${address}`);
+            // console.log(`${nw}address: ${address}`);
 
             const url = 'https://risk.charybdis.januus.io/';
 
@@ -289,28 +238,62 @@ class BlockController {
         }
     };
 
+    async exchangeFallback(from_currency, to_currency) {
+        const options = {
+            method: 'GET',
+            url: 'https://currency-exchange.p.rapidapi.com/exchange',
+            params: {
+                from: from_currency,
+                to: to_currency,
+                q: '1.0'
+            },
+            headers: {
+                'X-RapidAPI-Key': process.env.cTOKEN,
+                'X-RapidAPI-Host': 'currency-exchange.p.rapidapi.com'
+            }
+        };
+
+        const response = await axios.request(options);
+        // console.log(response.data);
+        return response.data;
+    }
+
     getExchangeRate = async (req, res) => {
         try {
             let { from_currency, to_currency } = req.params;
             from_currency = from_currency.toUpperCase();
             to_currency = to_currency.toUpperCase();
 
-
-            // Check if both currencies are present in their respective CSV files
             const isFromCurrencyValid = await checkCurrencyInCSV(from_currency, 'digital_currency_list.csv');
             const isToCurrencyValid = await checkCurrencyInCSV(to_currency, 'physical_currency_list.csv');
 
             if (!isFromCurrencyValid || !isToCurrencyValid) {
                 return res.status(400).json({ error: "Invalid currency selection" });
             }
+            // hit api 1
+            const resp = await axios.get(`https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${from_currency}&to_currency=${to_currency}&apikey=${process.env.aTOKEN}`)
+            let data = null
 
-            const data = await axios.get(`https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${from_currency}&to_currency=${to_currency}&apikey=${process.env.aTOKEN}`)
-            return res.status(200).json(data.data);
+            // console.log("Note", resp.data)
+            if (resp.data.Note != undefined || resp.data.Information != undefined) {
+                // console.log("api2 called")
+                data = await this.exchangeFallback(from_currency, to_currency);
+            }
+            else {
+                // console.log("api1 called")
+                data = resp.data['Realtime Currency Exchange Rate']['5. Exchange Rate'];
+            }
+            return res.status(200).json({
+                message: "Successfully Retrieved",
+                exRate: data
+            });
         } catch (error) {
             console.log(error);
             return res.status(500).json({ error: "An error occurred" });
         }
     };
+
+
 };
 
 

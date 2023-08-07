@@ -68,6 +68,12 @@ class APIRequests {
   static async changeTitle(address, data) {
     return await API.post(`/api/explore/title/${address}`, data);
   }
+
+  static async getExchangeRate(from_currency, to_currency) {
+    return await API.get(`/api/explore/exchange/${from_currency}/${to_currency}`);
+  }
 }
+
+  
 
 export default APIRequests;
