@@ -291,7 +291,10 @@ class BlockController {
 
     getExchangeRate = async (req, res) => {
         try {
-            const { from_currency, to_currency } = req.params;
+            let { from_currency, to_currency } = req.params;
+            from_currency = from_currency.toUpperCase();
+            to_currency = to_currency.toUpperCase();
+
 
             // Check if both currencies are present in their respective CSV files
             const isFromCurrencyValid = await checkCurrencyInCSV(from_currency, 'digital_currency_list.csv');
