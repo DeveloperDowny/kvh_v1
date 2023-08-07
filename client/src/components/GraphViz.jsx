@@ -30,11 +30,7 @@ const GraphVisualization = () => {
 
   useEffect(() => {
     APIRequests.explore(specialId).then((res) => {
-      // console.log("res", res)
-      console.log("data", res.data.data);
       setData(res.data.data.data.txs);
-
-      console.log("red data of exploer", res.data.data.data.txs);
     });
   }, []);
 
@@ -43,10 +39,14 @@ const GraphVisualization = () => {
   }, [data]);
 
   useEffect(() => {
+    if (!data) return;
     const nodeArr = [];
     const edgeArr = [];
     const nodeSet = new Set();
     const edgeSet = new Set();
+
+    let yPos = 0; // Initialize y position
+    const incrementCont = 20; // Increment y position by 100 for each node
     console.log("mtransData:", data);
     for (let index in data) {
       const arrayData = data[index];
@@ -65,10 +65,12 @@ const GraphVisualization = () => {
           id: to,
           label: "Add",
           x: specialId === to ? 0 : 200, // Position nodes sending money to specialId on the left
+          y: yPos,
           color: specialId === to ? "red" : undefined,
         });
 
         nodeSet.add(to);
+        yPos += incrementCont;
       }
 
       if (!nodeSet.has(from)) {
@@ -76,9 +78,11 @@ const GraphVisualization = () => {
           id: from,
           label: "Add",
           x: specialId === from ? 0 : -200, // Position nodes receiving money from specialId on the right
+          y: yPos,
           color: specialId === from ? "red" : undefined,
         });
         nodeSet.add(from);
+        yPos += incrementCont;
       }
       edgeSet.add({
         from: from,
