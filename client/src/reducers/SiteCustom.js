@@ -8,8 +8,13 @@ const siteCustom = createSlice({
     shouldShowSideBar: true,
     navbarTitle: "",
     userRole: "USER", // Assuming UserRole.USER is a string constant
+    lang: "en",
   },
   reducers: {
+    setLang: (state, action) => {
+      state.lang = action.payload;
+    },
+
     setShouldShowSideBar: (state, action) => {
       state.shouldShowSideBar = action.payload;
     },
@@ -33,4 +38,5 @@ export const {
   setShouldShowSideBar,
   setNavbarTitle,
   setUserRole,
+  setLang,
 } = siteCustom.actions;

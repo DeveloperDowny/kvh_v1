@@ -4,11 +4,17 @@ import Sidebar from "./CFG components/Sidebar";
 import { useSelector } from "react-redux";
 import { NavbarImg, NavbarImgWO } from "./assets";
 import { Select } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 const Layout = ({ children }) => {
   const shouldShowSidebar = useSelector(
     (state) => state.siteCustom.shouldShowSideBar
   );
+  const { i18n } = useTranslation();
+
+  const changeLanguage = (newLanguage) => {
+    i18n.changeLanguage(newLanguage);
+  };
 
   console.log("shouldShowSidebar", shouldShowSidebar);
   return (
@@ -25,11 +31,13 @@ const Layout = ({ children }) => {
             // marginTop="2rem"
             onChange={(e) => {
               const selectedLanguage = e.target.value;
+              changeLanguage(selectedLanguage);
+
               // Handle language change logic here
             }}
           >
-            <option value="hindi">Hindi</option>
-            <option value="english">English</option>
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
           </Select>
         </div>
       </div>
