@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 import { NavbarImg, NavbarImgWO } from "./assets";
 import { Select } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import Navbar from "./components/navbar/navbar";
+import Navbar2 from "./components/navbar2/navbar2";
 
 const Layout = ({ children }) => {
   const shouldShowSidebar = useSelector(
@@ -46,7 +48,9 @@ const Layout = ({ children }) => {
         <div className="t-w-full t-bg-white">
           <img src={NavbarImgWO} className="t-h-[80px] t-object-contain" />
         </div>
-        <WithSubnavigation />
+        {/* <WithSubnavigation /> */}
+        <Navbar />
+        <Navbar2 />
       </div>
       {shouldShowSidebar ? (
         // <div className="content t-flex t-flex-row t-pt-[60px] t-pl-[240px]">
