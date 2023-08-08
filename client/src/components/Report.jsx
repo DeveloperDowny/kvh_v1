@@ -374,7 +374,7 @@ const TransactionsTable = ({ txs }) => {
   //
 
   return (
-    <Box overflowY="auto" maxH="369px" width="100%">
+    <Box overflowY="auto" maxH="350px" width="100%">
       <Table
         variant="striped"
         colorScheme="messenger"
@@ -405,7 +405,7 @@ const TransactionsTable = ({ txs }) => {
             // tx.time (ms to epoch)
 
             // convert to dd/mm/yyyy format string
-            let time = new Date(tx.time);
+            var time = new Date(tx.time * 1000); // JavaScript uses milliseconds
             time = time.toLocaleDateString();
 
             let recv = tx.to;
