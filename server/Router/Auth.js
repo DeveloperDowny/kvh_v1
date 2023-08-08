@@ -15,7 +15,6 @@ router.get("/", (req, res) => {
   res.send(`Hello world from the server rotuer js`);
 });
 
-router.post("/otp", (req, res) => {})
 router.post("/register", async (req, res) => {
   console.log("Received a POST HTTP method");
   // const { name, email, phone, work, password, cpassword } = req.body;
@@ -61,11 +60,38 @@ router.post("/login", async (req, res) => {
       res.status(400).json({ error: "user error" });
     } else {
       console.log(userLogin);
-      const secretKey = "your_secret_key"; // Replace with your own secret key
+      // Replace with your own secret key
 
-      // privilige 0 for superadmin 1 for admin 2 for user
-      // currently hardcoded to 2, change it later []
-      // TODO
+      // // privilige 0 for superadmin 1 for admin 2 for user
+      // // currently hardcoded to 2, change it later []
+      // // TODO
+      // const token = jwt.sign(
+      //   { uid: userLogin._id, privilege: 2, user_role: userLogin.user_role },
+      //   secretKey,
+      //   {
+      //     expiresIn: "24h",
+      //   }
+      // );
+
+      sendEmail(email)
+      res.status(200).json({ "message": "success" })
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.post('/otp', async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    console.log(email, otp);
+    let userLogin = await User.findOne({ email: email });
+    console.log(userLogin);
+
+    console.log("otp", userLogin.otp);
+
+    if (userLogin.otp == otp) {
+      const secretKey = "your_secret_key"; 
       const token = jwt.sign(
         { uid: userLogin._id, privilege: 2, user_role: userLogin.user_role },
         secretKey,
@@ -73,9 +99,7 @@ router.post("/login", async (req, res) => {
           expiresIn: "24h",
         }
       );
-
-      sendEmail(email)
-      res.json({
+      return res.status(200).json({
         message: "user signed in successfully",
         token: token,
         // work: userLogin.work,
@@ -85,11 +109,15 @@ router.post("/login", async (req, res) => {
         uid: userLogin._id,
         privilege: 2,
       });
+    } else {
+      return res.status(403).json({ "error": "Invalid credentials" });
     }
   } catch (err) {
-    console.log(err);
+    console.log(err)
+    return res.status(500).json({ "error": "Interal Server Error" });
   }
-});
+})
+
 
 
 async function sendEmail(toEmail) {
@@ -97,12 +125,23 @@ async function sendEmail(toEmail) {
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.MAIL, 
-      pass: process.env.MAILPASS 
+      user: process.env.MAIL,
+      pass: process.env.MAILPASS
     }
   });
 
   let otp = generateOTP();
+  let user = await User.findOne({ email: toEmail });
+  user.otp = otp;
+
+  await user.save();
+  // Schedule a task to set otp to null after 3 minutes
+  setTimeout(async () => {
+    // console.log("setting otp to null")
+    user.otp = null;
+    await user.save();
+    // console.log("done")
+  }, 3 * 60 * 1000); // 3 minutes in milliseconds
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
