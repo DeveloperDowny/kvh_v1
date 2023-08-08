@@ -49,6 +49,10 @@ const GraphVisualization = () => {
   }, [data]);
 
   useEffect(() => {
+    dispatch(setShouldShowSideBar(true));
+  }, []);
+
+  useEffect(() => {
     if (!data) return;
     const nodeArr = [];
     const edgeArr = [];

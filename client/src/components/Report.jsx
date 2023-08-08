@@ -249,21 +249,21 @@ const ReportBody = ({ data, risk }) => {
         )}
       </div>
 
-      <div className="side-bar-section-main">
-        <div className="side-bar-section-sec">
+      {data?.first && data.last && <div className="side-bar-section-main">
+        {data?.first && <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">First Tx: </h2>
           <p className="side-bar-section-text">
             {data === null || data === undefined ? <Loader /> : firstDate}
           </p>
-        </div>
-        <div className="side-bar-section-sec">
+        </div>}
+        {data?.last && <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">Last Tx: </h2>
           <p className="side-bar-section-text">
             {" "}
-            {data === null || data === undefined ? <Loader /> : lastDate}
+            {data.last ?? <Loader />}
           </p>
-        </div>
-      </div>
+        </div>}
+      </div>}
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Incoming Volume</h2>
         {data === null || data === undefined ? (
@@ -273,14 +273,14 @@ const ReportBody = ({ data, risk }) => {
             <p className="side-bar-section-text">
               {`${parseFloat(data.receive).toFixed(4)} ${data.network}`}
             </p>
-            {exRate !== null && (
+            {/* {exRate !== null && (
               <>
                 <div style={{ margin: "0 10px" }}>|</div>
                 <p className="side-bar-section-text">
                   {`INR ${parseFloat(data.receive * exRate).toFixed(4)}`}
                 </p>
               </>
-            )}
+            )} */}
           </div>
         )}
       </div>
@@ -294,14 +294,14 @@ const ReportBody = ({ data, risk }) => {
             <p className="side-bar-section-text">
               {`${parseFloat(data.spend).toFixed(4) * -1} ${data.network}`}
             </p>
-            {exRate !== null && (
+            {/* {exRate !== null && (
               <>
                 <div style={{ margin: "0 10px" }}>|</div>
                 <p className="side-bar-section-text">
                   {`INR ${parseFloat(data.spend * exRate).toFixed(4) * -1}`}
                 </p>
               </>
-            )}
+            )} */}
           </div>
         )}
       </div>
