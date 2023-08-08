@@ -39,6 +39,9 @@ const checkCurrencyInCSV = async (currency, filename) => {
             });
     });
 }
+
+
+
 class BlockController {
     constructor() { }
 
@@ -140,6 +143,7 @@ class BlockController {
                 // no last tx api for eth
                 data.data.data.first = firstTx;
                 transaction = { addr: id, network: nw, source: 0, data: data.data.data, flag: prevFlag || flag, title: prevTitle || title, date: Date.now() };
+                console.log(data.data.data);
                 dbStatus = await addTransaction(transaction);
                 return res.status(200).json({ dbStatus, message: "Successfully Retrieved", network: nw, data: transaction })
 
@@ -149,7 +153,7 @@ class BlockController {
                 let data = await axios.get(`https://services.tokenview.io/vipapi/address/${nw}/${id}/1/50?apikey=${process.env.vTOKEN}`);
                 let ndata = data.data.data[0]
                 ndata.balance = parseFloat(ndata.receive) + parseFloat(ndata.spend);
-
+                console.log(ndata);
                 transaction = { addr: id, network: nw, source: 0, data: ndata, flag: prevFlag || flag, title: prevTitle || title, date: Date.now() };
 
                 dbStatus = await addTransaction(transaction);
@@ -165,6 +169,8 @@ class BlockController {
             return res.status(400).json({ message: err });
         }
     }
+
+    
 
     //change transaction title
     changeTitle = async (req, res) => {
@@ -292,6 +298,30 @@ class BlockController {
             return res.status(500).json({ error: "An error occurred" });
         }
     };
+
+    setWebhookUrl = async (req, res) => {
+        try {
+            // Endpoint URL for setting the webhook URL
+            const endpointUrl = `https://services.tokenview.io/vipapi/monitor/setwebhookurl?apikey=${process.env.vaTOKEN}`;
+            const webhookUrl = 'https://ca2969c3-26b6-4826-8727-da2179570efd.mock.pstmn.io/test'
+
+            // Set up the POST request
+            console.log(webhookUrl)
+            const axiosConfig = {
+                method: 'POST',
+                url: endpointUrl,
+                data: webhookUrl,
+            };
+
+            const response = await axios(axiosConfig);
+            const jsonResponse = response.data;
+            console.log(jsonResponse);
+            return res.status(200).json({ data: jsonResponse });
+        }catch (error) {
+            console.log(error);
+            return res.status(500).json({ error: "An error occurred" });
+        }
+    }
 
 
 };
