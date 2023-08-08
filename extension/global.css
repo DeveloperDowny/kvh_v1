@@ -1,0 +1,9 @@
+.nazar-logo-btn {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.nazar-logo-btn:hover{
+    transform: translateY(10px);
+}

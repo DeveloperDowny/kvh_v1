@@ -9,6 +9,7 @@ const auth = require("./middlewares/auth");
 // const { default: auth } = require("./middlewares/auth");
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const baseR = express.Router();
 app.use("/api", baseR);
