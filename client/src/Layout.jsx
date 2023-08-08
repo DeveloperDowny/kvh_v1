@@ -23,7 +23,8 @@ const Layout = ({ children }) => {
     <div className="layout">
       <div className="t-fixed t-z-[100] t-w-full t-flex t-flex-col">
         {/* <div className="t-h-[42px] t-bg-[#0262AF] t-flex t-flex-row t-justify-between t-items-center t-text-white t-px-[1rem] "> */}
-        <div className="t-h-[32px] t-bg-[#0262AF] t-flex t-flex-row t-justify-between t-items-center t-text-white t-px-[1rem] ">
+        {/* <div className="t-h-[32px] t-bg-[#0262AF] t-flex t-flex-row t-justify-between t-items-center t-text-white t-px-[1rem] "> */}
+        <div className="t-h-[25px] t-bg-[#0262AF] t-flex t-flex-row t-justify-between t-items-center t-text-white t-px-[1rem] t-text-sm">
           <div>GOVERNMENT OF INDIA</div>
           <div>
             <Select
@@ -45,21 +46,21 @@ const Layout = ({ children }) => {
             </Select>
           </div>
         </div>
-        <div className="t-w-full t-bg-white t-flex t-justify-center">
+        {/* <div className="t-w-full t-bg-white t-flex t-justify-center">
           <img src={NavbarImgWO} className="t-h-[80px] t-object-contain" />
-        </div>
+        </div> */}
         {/* <WithSubnavigation /> */}
         <Navbar />
         <Navbar2 />
       </div>
       {shouldShowSidebar ? (
         // <div className="content t-flex t-flex-row t-pt-[60px] t-pl-[240px]">
-        <div className="content t-flex t-flex-row t-pt-[172px] t-pl-[240px]">
+        <div className="content t-flex t-flex-row t-pt-[92px] t-pl-[240px]">
           <Sidebar />
           <main className="t-w-full">{children}</main>
         </div>
       ) : (
-        <div className="content t-flex t-flex-row t-pt-[172px]">
+        <div className="content t-flex t-flex-row t-pt-[92px]">
           {/* <Sidebar /> */}
           <main className="t-w-full">{children}</main>
         </div>

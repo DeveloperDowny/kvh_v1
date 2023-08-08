@@ -109,17 +109,6 @@ export default function Login() {
                   <FormLabel>Password</FormLabel>
                   <Field as={Input} type="password" name="password" />
                 </FormControl>
-                {/* <FormControl id="userRole">
-                  <FormLabel>User Role</FormLabel>
-                  <Field
-                    as={Select}
-                    name="userRole"
-                    placeholder="Select a role"
-                  >
-                    <option value="student">Student</option>
-                    <option value="instructor">Instructor</option>
-                  </Field>
-                </FormControl> */}
                 <Stack spacing={10}>
                   <Stack
                     direction={{ base: "column", sm: "row" }}
