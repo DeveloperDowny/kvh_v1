@@ -10,10 +10,13 @@ const siteCustom = createSlice({
     userRole: "USER", // Assuming UserRole.USER is a string constant
     lang: "en",
     isOpen2: false,
-    address: '',
+    address: "",
+    mCryptoType: "unk",
   },
   reducers: {
-    
+    setMCryptoType: (state, action) => {
+      state.mCryptoType = action.payload;
+    },
     setAddress: (state, action) => {
       state.address = action.payload;
     },
@@ -52,4 +55,5 @@ export const {
   setLang,
   setIsOpen2,
   setAddress,
+  setMCryptoType,
 } = siteCustom.actions;

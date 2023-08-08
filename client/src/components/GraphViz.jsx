@@ -5,6 +5,7 @@ import { useAppDispatch } from "../store";
 import { setIsOpen2, setShouldShowSideBar } from "../reducers/SiteCustom";
 import APIRequests from "../api";
 import ReportComponent from "./Report";
+import { EthImg } from "../assets";
 
 const GraphVisualization = () => {
   const dispatch = useAppDispatch();
@@ -86,6 +87,11 @@ const GraphVisualization = () => {
         nodeArr.push({
           id: to,
           label: "Add",
+          // image: EthImg,
+          // image: "https://cdn-images-1.medium.com/max/529/1*XmHUL5DeySv_dGmvbPqdDQ.png",
+          image: process.env.PUBLIC_URL + "/bitcoin_img.png",
+
+          shape: "image",
           x: specialId === to ? 0 : 200, // Position nodes sending money to specialId on the left
           y: yPos,
           color: specialId === to ? "red" : undefined,
@@ -121,8 +127,6 @@ const GraphVisualization = () => {
         to: to,
         label: "m",
       });
-
-      // Rest of the code...
     }
 
     const calcY = yPos / 2;
@@ -142,30 +146,8 @@ const GraphVisualization = () => {
       nodes: nodeArr,
       edges: edgeArr,
     });
-    // Rest of the code...
   }, [data]);
 
-  const graphData2 = {
-    nodes: [
-      { id: 1, label: "Node 1" },
-      { id: 2, label: "Node 2" },
-      { id: 3, label: "Node 3" },
-      { id: 4, label: "Node 4" },
-    ],
-    edges: [
-      { from: 1, to: 2 },
-      { from: 1, to: 3 },
-      { from: 2, to: 3 },
-      { from: 3, to: 4 },
-    ],
-  };
-
-  // Options for graph visualization
-  //   const options = {
-  //     interaction: { hover: true },
-  //   };
-
-  // Define the hoverNode event handler
   const handleNodeHover = (event) => {
     // console.log("event:", event);
     // console.log("Hovered node:");
@@ -187,16 +169,80 @@ const GraphVisualization = () => {
     dispatch(setIsOpen2(true));
   }
 
+  // const options = {
+  //   nodes: {
+  //     shape: "image",
+  //     image: (
+  //       nodeId,
+  //       canvasContext,
+  //       nodePosition,
+  //       nodeSize,
+  //       nodeLabel,
+  //       nodeColor
+  //     ) => {
+  //       const node = graphData.nodes.find((n) => n.id === nodeId);
+  //       const image = new Image();
+  //       console.log("node:", node);
+  //       console.log("image:", image);
+  //       image.src = node.image;
+  //       image.onload = () => {
+  //         canvasContext.drawImage(
+  //           image,
+  //           nodePosition.x - nodeSize.width / 2,
+  //           nodePosition.y - nodeSize.height / 2,
+  //           nodeSize.width,
+  //           nodeSize.height
+  //         );
+  //       };
+  //     },
+  //   },
+  // };
+
   return (
     <div className="t-h-screen t-flex">
       <Graph
         graph={graphData}
+        // options={{
+        //   nodes: {
+        //     size: 42,
+        //   },
+        //   interaction: { hover: true },
+        //   physics: {
+        //     enabled: false,
+        //   },
+        // }}
+
         options={{
-          interaction: { hover: true },
-          physics: {
-            enabled: false,
+          nodes: {
+            borderWidth: 0,
+            size: 42,
+            color: {
+              border: "#222",
+              background: "transparent",
+            },
+            font: {
+              color: "#111",
+              face: "Walter Turncoat",
+              size: 16,
+              strokeWidth: 1,
+              strokeColor: "#222",
+            },
+          },
+          edges: {
+            color: {
+              color: "#CCC",
+              highlight: "#A22",
+            },
+            width: 3,
+            length: 275,
+            hoverWidth: 0.05,
           },
         }}
+        // options={{
+        //   nodes: {
+        //     shape: "image",
+        //   },
+        // }}
         events={{
           hoverNode: handleNodeHover,
           click: (event) => {
