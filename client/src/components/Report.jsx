@@ -28,7 +28,7 @@ const ReportComponent = ({ open, address, close }) => {
   const [riskData, setRisk] = React.useState(null);
   React.useEffect(() => {
     // if (open) {
-    if (isOpen2) {
+    if (isOpen2 && address) {
       setIsOpen(true);
       APIRequests.explore(address).then((res) => {
         // console.log("res", res)
@@ -42,11 +42,11 @@ const ReportComponent = ({ open, address, close }) => {
           setRisk(res.data);
         })
         .catch((err) => {
-          console.log("here")
+          console.log("here");
           console.log("error", err);
         });
     } else {
-      setData(null)
+      setData(null);
       setTimeout(() => {
         setIsOpen(false);
         dispatch(setIsOpen2(false));
@@ -251,21 +251,27 @@ const ReportBody = ({ data, risk }) => {
         )}
       </div>
 
-      {data?.first && data.last && <div className="side-bar-section-main">
-        {data?.first && <div className="side-bar-section-sec">
-          <h2 className="side-bar-section-title">First Tx: </h2>
-          <p className="side-bar-section-text">
-            {data === null || data === undefined ? <Loader /> : firstDate}
-          </p>
-        </div>}
-        {data?.last && <div className="side-bar-section-sec">
-          <h2 className="side-bar-section-title">Last Tx: </h2>
-          <p className="side-bar-section-text">
-            {" "}
-            {data.last ?? <Loader />}
-          </p>
-        </div>}
-      </div>}
+      {data?.first && data.last && (
+        <div className="side-bar-section-main">
+          {data?.first && (
+            <div className="side-bar-section-sec">
+              <h2 className="side-bar-section-title">First Tx: </h2>
+              <p className="side-bar-section-text">
+                {data === null || data === undefined ? <Loader /> : firstDate}
+              </p>
+            </div>
+          )}
+          {data?.last && (
+            <div className="side-bar-section-sec">
+              <h2 className="side-bar-section-title">Last Tx: </h2>
+              <p className="side-bar-section-text">
+                {" "}
+                {data.last ?? <Loader />}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Incoming Volume</h2>
         {data === null || data === undefined ? (
@@ -352,9 +358,10 @@ const ReportBody = ({ data, risk }) => {
           </p>
         </div>
       </div>
-      {data && 
-      // data.txs && undefined && 
-      <TransactionsTable txs={data.txs} />}
+      {data && (
+        // data.txs && undefined &&
+        <TransactionsTable txs={data.txs} />
+      )}
     </div>
   );
 };

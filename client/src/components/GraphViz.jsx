@@ -38,10 +38,14 @@ const GraphVisualization = () => {
   }, []);
 
   useEffect(() => {
-    APIRequests.explore(specialId).then((res) => {
-      setData(res.data.data.data.txs);
-      dispatch(setIsOpen2(true));
-    });
+    APIRequests.explore(specialId)
+      .catch((err) => {
+        console.log("err in explore:", err);
+      })
+      .then((res) => {
+        setData(res.data.data.data.txs);
+        dispatch(setIsOpen2(true));
+      });
   }, []);
 
   useEffect(() => {
@@ -179,10 +183,8 @@ const GraphVisualization = () => {
     console.log("Node clicked:", event.nodes[0]);
 
     dispatch(setIsOpen2(false));
-    setTimeout(() => {
-      setHoveredId(event.nodes[0]);
-      dispatch(setIsOpen2(true));
-    }, 1000);
+    setHoveredId(event.nodes[0]);
+    dispatch(setIsOpen2(true));
   }
 
   return (

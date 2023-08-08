@@ -18,6 +18,7 @@ import {
   AdaImg,
   BitImg,
   EthImg,
+  QImg,
   SolImg,
   TonImg,
   TromImg,
@@ -34,7 +35,7 @@ const typeToImgMap = {
   tron: TromImg,
   sol: SolImg,
   ton: TonImg,
-  unk: TonImg,
+  unk: QImg,
 };
 {
   /* <Image src={typeToImgMap[cryptoType]} alt="crypto logo" /> */
