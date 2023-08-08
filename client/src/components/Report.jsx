@@ -16,9 +16,11 @@ import {
   Text,
   TableCaption,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsOpen2 } from "../reducers/SiteCustom";
 
 const ReportComponent = ({ open, address, close }) => {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState(open);
 
   const isOpen2 = useSelector((state) => state.siteCustom.isOpen2);
@@ -45,6 +47,7 @@ const ReportComponent = ({ open, address, close }) => {
     } else {
       setTimeout(() => {
         setIsOpen(false);
+        dispatch(setIsOpen2(false));
       }, 500);
     }
     console.log("here is report open: ", isOpen2);
