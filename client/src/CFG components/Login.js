@@ -19,6 +19,8 @@ import APIRequests from "../api";
 import { useNavigate } from "react-router-dom";
 import { ActionTypes, auth } from "../reducers/auth";
 import { useAppDispatch } from "../store";
+import { setShouldShowSideBar } from "../reducers/SiteCustom";
+import { useEffect } from "react";
 
 const validationSchema = object({
   email: string().email("Invalid email address").required("Email is required"),
@@ -29,6 +31,9 @@ const validationSchema = object({
 export default function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  useEffect(() => {
+    dispatch(setShouldShowSideBar(false));
+  }, []);
 
   const handleSubmit = async (values) => {
     const res = await APIRequests.signIn(values).catch((err) => {
@@ -61,7 +66,8 @@ export default function Login() {
 
   return (
     <Flex
-      className="t-w-full t-min-h-[calc(100vh-60px)]"
+      // className="t-w-full t-min-h-[calc(100vh-172px)]"
+      className="t-w-full t-min-h-[calc(100vh-207px)]"
       align={"center"}
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}
@@ -103,17 +109,6 @@ export default function Login() {
                   <FormLabel>Password</FormLabel>
                   <Field as={Input} type="password" name="password" />
                 </FormControl>
-                {/* <FormControl id="userRole">
-                  <FormLabel>User Role</FormLabel>
-                  <Field
-                    as={Select}
-                    name="userRole"
-                    placeholder="Select a role"
-                  >
-                    <option value="student">Student</option>
-                    <option value="instructor">Instructor</option>
-                  </Field>
-                </FormControl> */}
                 <Stack spacing={10}>
                   <Stack
                     direction={{ base: "column", sm: "row" }}

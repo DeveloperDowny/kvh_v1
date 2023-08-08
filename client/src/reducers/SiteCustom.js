@@ -4,11 +4,28 @@ const siteCustom = createSlice({
   name: "site_custom",
   initialState: {
     shouldShowBars: true,
+    // shouldShowSideBar: true,
     shouldShowSideBar: true,
     navbarTitle: "",
     userRole: "USER", // Assuming UserRole.USER is a string constant
+    lang: "en",
+    isOpen2: false,
+    address: '',
   },
   reducers: {
+    
+    setAddress: (state, action) => {
+      state.address = action.payload;
+    },
+
+    setIsOpen2: (state, action) => {
+      state.isOpen2 = action.payload;
+    },
+
+    setLang: (state, action) => {
+      state.lang = action.payload;
+    },
+
     setShouldShowSideBar: (state, action) => {
       state.shouldShowSideBar = action.payload;
     },
@@ -32,4 +49,7 @@ export const {
   setShouldShowSideBar,
   setNavbarTitle,
   setUserRole,
+  setLang,
+  setIsOpen2,
+  setAddress,
 } = siteCustom.actions;

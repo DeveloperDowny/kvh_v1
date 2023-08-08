@@ -16,13 +16,19 @@ import {
   Text,
   TableCaption,
 } from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsOpen2 } from "../reducers/SiteCustom";
 
 const ReportComponent = ({ open, address, close }) => {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState(open);
+
+  const isOpen2 = useSelector((state) => state.siteCustom.isOpen2);
   const [data, setData] = React.useState(null);
   const [riskData, setRisk] = React.useState(null);
   React.useEffect(() => {
-    if (open) {
+    // if (open) {
+    if (isOpen2) {
       setIsOpen(true);
       APIRequests.explore(address).then((res) => {
         // console.log("res", res)
@@ -36,19 +42,25 @@ const ReportComponent = ({ open, address, close }) => {
           setRisk(res.data);
         })
         .catch((err) => {
+          console.log("here")
           console.log("error", err);
         });
     } else {
+      setData(null)
       setTimeout(() => {
         setIsOpen(false);
+        dispatch(setIsOpen2(false));
       }, 500);
     }
-  }, [open, address]);
+    console.log("here is report open: ", isOpen2);
+  }, [open, address, isOpen2]);
 
-  if (!isOpen) return null;
+  if (!isOpen2) return null;
 
   return (
-    <div className={`side-bar ${open ? "" : "closed"}`}>
+    // <div className={`side-bar ${open ? "" : "closed"}`}>
+    // <div className={`side-bar ${open ? "" : "closed"}`}>
+    <div className={`side-bar ${isOpen2 ? "" : "closed"}`}>
       <TopBar address={address} close={close} data={data} />
       <ReportBody data={data} risk={riskData} />
     </div>
@@ -202,19 +214,16 @@ const ReportBody = ({ data, risk }) => {
     // call api to get balance in INR
     // data = data == null ? null : data.data;
     if (data != null) {
-
-      APIRequests.getExchangeRate(
-        data.network, "inr"
-      ).then((res) => {
-        // console.log("ex rate", res.data.exRate);
-        setExRate(res.data.exRate);
-      }).catch((err) => {
-        setExRate(null);
-      });
+      APIRequests.getExchangeRate(data.network, "inr")
+        .then((res) => {
+          // console.log("ex rate", res.data.exRate);
+          setExRate(res.data.exRate);
+        })
+        .catch((err) => {
+          setExRate(null);
+        });
     }
   }, [data]);
-
-
 
   // const cRisk = risk == null ? null : risk.riskScores.combinedRisk.toFixed(2) + "%";
 
@@ -226,13 +235,13 @@ const ReportBody = ({ data, risk }) => {
         {data === null || data === undefined ? (
           <Loader />
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <p className="side-bar-section-text">
               {`${parseFloat(data.balance).toFixed(4)} ${data.network}`}
             </p>
             {exRate !== null && (
               <>
-                <div style={{ margin: '0 10px' }}>|</div>
+                <div style={{ margin: "0 10px" }}>|</div>
                 <p className="side-bar-section-text">
                   {`INR ${parseFloat(data.balance * exRate).toFixed(4)}`}
                 </p>
@@ -242,39 +251,38 @@ const ReportBody = ({ data, risk }) => {
         )}
       </div>
 
-
-      <div className="side-bar-section-main">
-        <div className="side-bar-section-sec">
+      {data?.first && data.last && <div className="side-bar-section-main">
+        {data?.first && <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">First Tx: </h2>
           <p className="side-bar-section-text">
             {data === null || data === undefined ? <Loader /> : firstDate}
           </p>
-        </div>
-        <div className="side-bar-section-sec">
+        </div>}
+        {data?.last && <div className="side-bar-section-sec">
           <h2 className="side-bar-section-title">Last Tx: </h2>
           <p className="side-bar-section-text">
             {" "}
-            {data === null || data === undefined ? <Loader /> : lastDate}
+            {data.last ?? <Loader />}
           </p>
-        </div>
-      </div>
+        </div>}
+      </div>}
       <div className="side-bar-section">
         <h2 className="side-bar-section-title">Incoming Volume</h2>
         {data === null || data === undefined ? (
           <Loader />
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <p className="side-bar-section-text">
               {`${parseFloat(data.receive).toFixed(4)} ${data.network}`}
             </p>
-            {exRate !== null && (
+            {/* {exRate !== null && (
               <>
-                <div style={{ margin: '0 10px' }}>|</div>
+                <div style={{ margin: "0 10px" }}>|</div>
                 <p className="side-bar-section-text">
                   {`INR ${parseFloat(data.receive * exRate).toFixed(4)}`}
                 </p>
               </>
-            )}
+            )} */}
           </div>
         )}
       </div>
@@ -284,18 +292,18 @@ const ReportBody = ({ data, risk }) => {
         {data === null || data === undefined ? (
           <Loader />
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <p className="side-bar-section-text">
               {`${parseFloat(data.spend).toFixed(4) * -1} ${data.network}`}
             </p>
-            {exRate !== null && (
+            {/* {exRate !== null && (
               <>
-                <div style={{ margin: '0 10px' }}>|</div>
+                <div style={{ margin: "0 10px" }}>|</div>
                 <p className="side-bar-section-text">
                   {`INR ${parseFloat(data.spend * exRate).toFixed(4) * -1}`}
                 </p>
               </>
-            )}
+            )} */}
           </div>
         )}
       </div>
@@ -344,7 +352,9 @@ const ReportBody = ({ data, risk }) => {
           </p>
         </div>
       </div>
-      {data && <TransactionsTable txs={data.txs} />}
+      {data && 
+      // data.txs && undefined && 
+      <TransactionsTable txs={data.txs} />}
     </div>
   );
 };
@@ -364,7 +374,7 @@ const TransactionsTable = ({ txs }) => {
   //
 
   return (
-    <Box overflowY="auto" maxH="369px" width="100%">
+    <Box overflowY="auto" maxH="350px" width="100%">
       <Table
         variant="striped"
         colorScheme="messenger"
@@ -395,7 +405,7 @@ const TransactionsTable = ({ txs }) => {
             // tx.time (ms to epoch)
 
             // convert to dd/mm/yyyy format string
-            let time = new Date(tx.time);
+            var time = new Date(tx.time * 1000); // JavaScript uses milliseconds
             time = time.toLocaleDateString();
 
             let recv = tx.to;
