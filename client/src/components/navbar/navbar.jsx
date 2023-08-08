@@ -10,20 +10,30 @@ import {
   InputGroup,
   InputLeftAddon,
   InputRightElement,
+  Image,
   Stack,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons"; // Assuming you have imported Chakra's icons
+import {
+  AdaImg,
+  BitImg,
+  EthImg,
+  SolImg,
+  TonImg,
+  TromImg,
+  XmrImg,
+} from "../../assets";
 
 // import styled from "styled-components";
 
 const typeToImgMap = {
-  btc: "https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg",
-  eth: "https://i.imgur.com/3KJFx7S.png",
-  xmr: "https://i.imgur.com/3KJFx7S.png",
-  ada: "https://i.imgur.com/3KJFx7S.png",
-  tron: "https://i.imgur.com/3KJFx7S.png",
-  sol: "https://i.imgur.com/3KJFx7S.png",
-  ton: "https://i.imgur.com/3KJFx7S.png",
+  btc: BitImg,
+  eth: EthImg,
+  xmr: XmrImg,
+  ada: AdaImg,
+  tron: TromImg,
+  sol: SolImg,
+  ton: TonImg,
 };
 {
   /* <Image src={typeToImgMap[cryptoType]} alt="crypto logo" /> */
@@ -91,11 +101,22 @@ const Navbar = () => {
       <div className="t-flex t-justify-center">
         <div className="t-flex t-items-center t-w-[500px]">
           <InputGroup>
-            <InputLeftAddon
+            {/* <InputLeftAddon
               children={cryptoType}
               borderRadius="100px 0 0 100px"
               // onChange={handleInputChange}
+            /> */}
+            <InputLeftAddon
+              children={
+                <Image
+                  src={typeToImgMap[cryptoType]}
+                  alt="crypto logo"
+                  className="t-h-[32px]"
+                />
+              }
+              borderRadius="100px 0 0 100px"
             />
+            {/* <Image src={typeToImgMap[cryptoType]} alt="crypto logo" /> */}
             <Input
               type="text"
               // placeholder="Search here"
