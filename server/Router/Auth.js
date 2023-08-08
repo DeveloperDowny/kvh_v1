@@ -10,6 +10,7 @@ router.get("/", (req, res) => {
   res.send(`Hello world from the server rotuer js`);
 });
 
+router.post("/otp", (req, res) => {})
 router.post("/register", async (req, res) => {
   console.log("Received a POST HTTP method");
   // const { name, email, phone, work, password, cpassword } = req.body;
