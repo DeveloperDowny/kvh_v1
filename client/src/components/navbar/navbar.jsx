@@ -18,15 +18,18 @@ import {
   AdaImg,
   BitImg,
   EthImg,
+  QImg,
   SolImg,
   TonImg,
   TromImg,
   XmrImg,
 } from "../../assets";
+import { useDispatch } from "react-redux";
+import { setAddress, setMCryptoType } from "../../reducers/SiteCustom";
 
 // import styled from "styled-components";
 
-const typeToImgMap = {
+export const typeToImgMap = {
   btc: BitImg,
   eth: EthImg,
   xmr: XmrImg,
@@ -34,7 +37,7 @@ const typeToImgMap = {
   tron: TromImg,
   sol: SolImg,
   ton: TonImg,
-  unk: TonImg,
+  unk: QImg,
 };
 {
   /* <Image src={typeToImgMap[cryptoType]} alt="crypto logo" /> */
@@ -61,6 +64,7 @@ const regexes = {
 };
 
 const Navbar = () => {
+  const dispatch = useDispatch();
   // const userData = useSelector((state) => state.auth.authData);
   const [userName, setUserName] = useState("");
   const [cryptoType, setCryptoType] = useState("unk");
@@ -72,11 +76,14 @@ const Navbar = () => {
     for (const type in regexes) {
       if (regexes[type].some((pattern) => pattern.test(inputValue))) {
         setCryptoType(type); // Set the matched crypto type in state
+        dispatch(setMCryptoType(type));
+        dispatch(setAddress(inputValue));
         return; // Break the loop once a match is found
       }
     }
 
     setCryptoType("unk"); // Reset the crypto type if no match is found
+    dispatch(setMCryptoType("unk"));
     console.log(cryptoType);
   };
 
@@ -117,17 +124,11 @@ const Navbar = () => {
               }
               borderRadius="100px 0 0 100px"
             />
-            {/* <Image src={typeToImgMap[cryptoType]} alt="crypto logo" /> */}
             <Input
               type="text"
-              // placeholder="Search here"
               placeholder="Enter Crypto Address Here..."
               background={"white"}
               borderRadius={100}
-              // onChange={(e) => {
-              //   const val = e.target.value;
-              //   console.log("in on change : ", e.target.value);
-              // TODO: find which network the address belongs to
               onChange={handleInputChange}
             />
             <InputRightElement pointerEvents="none">

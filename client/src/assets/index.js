@@ -8,6 +8,7 @@ import AdaImg from "./ada_img.png";
 import TromImg from "./tron_logo.png";
 import SolImg from "./solana_logo.png";
 import TonImg from "./ton_icon.png";
+import QImg from "./question_mark.png";
 
 export {
   NavbarImg,
@@ -19,4 +20,5 @@ export {
   TromImg,
   SolImg,
   TonImg,
+  QImg,
 };

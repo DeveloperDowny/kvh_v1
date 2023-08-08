@@ -61,12 +61,12 @@ const Layout = ({ children }) => {
       </div>
       {shouldShowSidebar ? (
         // <div className="content t-flex t-flex-row t-pt-[60px] t-pl-[240px]">
-        <div className="content t-flex t-flex-row t-pt-[92px] t-pl-[240px]">
+        <div className="content t-flex t-flex-row t-pt-[120px] t-pl-[240px]">
           <Sidebar />
           <main className="t-w-full">{children}</main>
         </div>
       ) : (
-        <div className="content t-flex t-flex-row t-pt-[92px]">
+        <div className="content t-flex t-flex-row t-pt-[120px]">
           {/* <Sidebar /> */}
           <main className="t-w-full">{children}</main>
         </div>
