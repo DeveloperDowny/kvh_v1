@@ -12,6 +12,7 @@ import generateRandomGraphData from "./sampleData/graphData";
 import GraphComponent from "./components/GraphComponent";
 import GraphVisualization from "./components/GraphViz";
 import Label from "./components/labels/Label";
+import Dashboard from "./components/Dashboard/Dashboard";
 const App = () => {
   const graphData = generateRandomGraphData();
 
@@ -37,6 +38,7 @@ const App = () => {
           <Route path="/auth/signup" element={<SignupCardOg />} />
           <Route path="/boards/:board_id" element={<GraphVisualization />} />
           <Route path="/labels" element={<Label />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
     </Layout>

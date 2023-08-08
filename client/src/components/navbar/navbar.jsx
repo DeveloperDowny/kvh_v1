@@ -26,7 +26,7 @@ import {
 
 // import styled from "styled-components";
 
-const typeToImgMap = {
+export const typeToImgMap = {
   btc: BitImg,
   eth: EthImg,
   xmr: XmrImg,
