@@ -350,7 +350,7 @@ const ReportBody = ({ data, risk }) => {
           </p>
         </div>
       </div>
-      {data && data.txs && <TransactionsTable txs={data.txs} />}
+      {data && data.txs && undefined && <TransactionsTable txs={data.txs} />}
     </div>
   );
 };
