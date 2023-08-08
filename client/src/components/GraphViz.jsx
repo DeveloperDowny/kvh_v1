@@ -1,15 +1,132 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Graph from "react-graph-vis";
 import { useLocation, useParams } from "react-router-dom";
+import { useAppDispatch } from "../store";
+import { setShouldShowSideBar } from "../reducers/SiteCustom";
+import APIRequests from "../api";
 
 const GraphVisualization = () => {
+  const dispatch = useAppDispatch();
   const { board_id } = useParams();
   console.log("board_id:", board_id);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+
+  const [data, setData] = useState(null);
+  const [graphData, setGraphData] = useState({
+    nodes: [],
+    edges: [],
+  });
+
+  const [specialId, setSpecialId] = useState(
+    "TRpn2AWwXLfYSVtRaxKGm5oMCPvrRyvBJv"
+  ); // Replace this with your special ID
   // const showResults = queryParams.get("show_results");
   // Sample graph data in visjs format
-  const graphData = {
+
+  useEffect(() => {
+    dispatch(setShouldShowSideBar(false));
+  }, []);
+
+  useEffect(() => {
+    APIRequests.explore(specialId).then((res) => {
+      setData(res.data.data.data.txs);
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log("dataffsdf:", data);
+  }, [data]);
+
+  useEffect(() => {
+    if (!data) return;
+    const nodeArr = [];
+    const edgeArr = [];
+    const nodeSet = new Set();
+    const edgeSet = new Set();
+    let specialIndex = 0; // Index of the specialId in the data array
+    let yPos = 0; // Initialize y position
+    const incrementCont = 20; // Increment y position by 100 for each node
+    console.log("mtransData:", data);
+    for (let index in data) {
+      // if (specialId === data[index].to || specialId === data[index].from) {
+      //   specialIndex = index;
+      // }
+      const arrayData = data[index];
+      console.log("arrayData:", arrayData);
+      const from = arrayData.from;
+      const to = arrayData.to;
+      // Rest of the code...
+
+      edgeArr.push({
+        from: from,
+        to: to,
+        // label: transactionAddress,
+      });
+      if (!nodeSet.has(to)) {
+        nodeArr.push({
+          id: to,
+          label: "Add",
+          x: specialId === to ? 0 : 200, // Position nodes sending money to specialId on the left
+          y: yPos,
+          color: specialId === to ? "red" : undefined,
+        });
+        if (specialId === to) {
+          specialIndex = index;
+          console.log("specialIndex:", specialIndex);
+        }
+
+        nodeSet.add(to);
+        yPos += incrementCont;
+      }
+
+      if (!nodeSet.has(from)) {
+        nodeArr.push({
+          id: from,
+          label: "Add",
+          x: specialId === from ? 0 : -200, // Position nodes receiving money from specialId on the right
+          y: yPos,
+          color: specialId === from ? "red" : undefined,
+        });
+
+        if (specialId === from) {
+          specialIndex = index;
+          console.log("specialIndex:", specialIndex);
+        }
+
+        nodeSet.add(from);
+        yPos += incrementCont;
+      }
+      edgeSet.add({
+        from: from,
+        to: to,
+        label: "m",
+      });
+
+      // Rest of the code...
+    }
+
+    const calcY = yPos / 2;
+    console.log("yPos:", yPos);
+    console.log("calcY:", calcY);
+    const specialIdData = nodeArr[specialIndex];
+    console.log("specialIdData:", specialIdData);
+    nodeArr[specialIndex] = { ...specialIdData, y: calcY };
+    console.log("nodeArr:", nodeArr[specialIndex]);
+
+    setGraphData({
+      nodes: nodeArr,
+      edges: edgeArr,
+    });
+
+    console.log("graphData:", {
+      nodes: nodeArr,
+      edges: edgeArr,
+    });
+    // Rest of the code...
+  }, [data]);
+
+  const graphData2 = {
     nodes: [
       { id: 1, label: "Node 1" },
       { id: 2, label: "Node 2" },
