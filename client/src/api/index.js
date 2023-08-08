@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
+  // baseURL: "https://kvh.serveo.net",
   baseURL: "http://localhost:5000",
 });
 
@@ -70,10 +71,10 @@ class APIRequests {
   }
 
   static async getExchangeRate(from_currency, to_currency) {
-    return await API.get(`/api/explore/exchange/${from_currency}/${to_currency}`);
+    return await API.get(
+      `/api/explore/exchange/${from_currency}/${to_currency}`
+    );
   }
 }
-
-  
 
 export default APIRequests;
