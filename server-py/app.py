@@ -25,7 +25,7 @@ def get_data():
     try:
         response = requests.get(api_url)
         response_data = response.json()
-        # print(response_data["data"])
+        print(response_data["data"])
         data =  response_data["data"]
         data = {'Sent tnx': [data["normalSpendTxCount"]],
                 'Received Tnx': [data["normalReceiveTxCount"]],

@@ -7,7 +7,8 @@ const transactionSchema = new mongoose.Schema({
   title: { type: String, required: true },
   data: { type: mongoose.Schema.Types.Mixed, required: true },
   flag: { type: Boolean, required: true, default: false },
-  date: { type: Date, required: true, default: Date.now }
+  date: { type: Date, required: true, default: Date.now },
+  boardID: { type: String}
 });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);

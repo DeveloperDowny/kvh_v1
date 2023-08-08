@@ -13,6 +13,10 @@ const userSchema = new mongooose.Schema({
     type: Number,
     required: false,
   },
+  otp: {
+    type: Number,
+    required: false,
+  },
   work: {
     type: String,
     required: false,
