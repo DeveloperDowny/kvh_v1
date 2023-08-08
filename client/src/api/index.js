@@ -75,6 +75,10 @@ class APIRequests {
       `/api/explore/exchange/${from_currency}/${to_currency}`
     );
   }
+
+  static async verifyOTP(data) {
+    return await API.post("/auth/otp", data);
+  }
 }
 
 export default APIRequests;
