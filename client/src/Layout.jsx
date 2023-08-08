@@ -28,12 +28,14 @@ const Layout = ({ children }) => {
           <div>GOVERNMENT OF INDIA</div>
           <div>
             <Select
-              color="black"
+              color="white"
               variant="unstyled"
-              iconSize="0rem" // Adjust the size of the dropdown arrow icon
+              // iconSize="0rem" // Adjust the size of the dropdown arrow icon
               iconColor="white" // Set the color of the dropdown arrow icon
               marginLeft="0.5rem" // Add margin to the left of the dropdown button
+              // top="50%"
               // marginTop="2rem"
+
               onChange={(e) => {
                 const selectedLanguage = e.target.value;
                 changeLanguage(selectedLanguage);
@@ -41,8 +43,12 @@ const Layout = ({ children }) => {
                 // Handle language change logic here
               }}
             >
-              <option value="en">English</option>
-              <option value="hi">Hindi</option>
+              <option value="en" className="t-text-black">
+                English
+              </option>
+              <option value="hi" className="t-text-black">
+                Hindi
+              </option>
             </Select>
           </div>
         </div>
