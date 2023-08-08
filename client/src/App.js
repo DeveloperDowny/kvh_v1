@@ -11,6 +11,7 @@ import SignupCardOg from "./CFG components/SignUp";
 import generateRandomGraphData from "./sampleData/graphData";
 import GraphComponent from "./components/GraphComponent";
 import GraphVisualization from "./components/GraphViz";
+import Label from "./components/labels/Label";
 const App = () => {
   const graphData = generateRandomGraphData();
 
@@ -34,6 +35,7 @@ const App = () => {
           <Route path="/auth/signin" element={<Login />} />
           <Route path="/auth/signup" element={<SignupCardOg />} />
           <Route path="/boards/:board_id" element={<GraphVisualization />} />
+          <Route path="/labels" element={<Label />} />
         </Routes>
       </BrowserRouter>
     </Layout>

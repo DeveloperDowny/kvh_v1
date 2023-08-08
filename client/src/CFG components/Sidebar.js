@@ -1,4 +1,5 @@
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
+import { color } from "framer-motion";
 import { FiHome, FiSettings, FiUsers } from "react-icons/fi";
 
 const Sidebar = () => {
@@ -13,6 +14,7 @@ const Sidebar = () => {
       position="fixed"
       left="0"
       top="0"
+
     >
       <Flex align="center" mb="8">
         <Text fontSize="2xl" fontWeight="bold">
@@ -31,7 +33,7 @@ const Sidebar = () => {
 
 const SidebarLink = ({ icon, label }) => {
   return (
-    <Flex align="center">
+    <Flex align="center" cursor='pointer' _hover={{ color: 'red.100' }} className="test">
       <Box as={icon} fontSize="xl" mr="2" />
       <Text>{label}</Text>
     </Flex>
