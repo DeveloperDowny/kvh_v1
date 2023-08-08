@@ -50,6 +50,11 @@ const Navbar = () => {
               placeholder="Enter Crypto Address Here..."
               background={"white"}
               borderRadius={100}
+              onChange={(e) => {
+                const val = e.target.value;
+                console.log("in on change : ", e.target.value);
+                // TODO: find which network the address belongs to
+              }}
             />
           </InputGroup>
         </div>
