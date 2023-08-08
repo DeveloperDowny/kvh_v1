@@ -7,6 +7,7 @@ app.use(cors());
 
 require("./db/Conn");
 const User = require("./models/UserSchema");
+const AddressTracker = require("./models/AddressTracker");
 const auth = require("./middlewares/auth");
 // const { default: auth } = require("./middlewares/auth");
 
@@ -19,8 +20,10 @@ baseR.use("/explore", require("./Router/Block"));
 app.use("/auth", require("./Router/Auth"));
 baseR.use("/market",require("./Router/Market"));
 
-app.post("/webhook", (req, res) => {
-  console.log(req.body)
+app.post("/webhook", async (req, res) => {
+  console.log("test set", req.body)
+  const newAddr = new AddressTracker({data: req.body})
+  await newAddr.save();
   return res.status(200).json("ok")
 })
 

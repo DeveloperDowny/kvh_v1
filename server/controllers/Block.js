@@ -4,6 +4,8 @@ const axios = require('axios');
 const csv = require('csv-parser');
 const fs = require('fs');
 const Transactions = require('../models/TransactionSchema');
+const { response } = require('express');
+const AddressTracker = require('../models/AddressTracker');
 
 // const sources = {
 //     "TokenView": 0,
@@ -166,38 +168,16 @@ class BlockController {
         }
         catch (err) {
             console.log(err);
-            return res.status(400).json({ message: err });
+            return res.status(500).json({ message: err });
         }
     }
 
-    
-    //test eth e
-    // testETH = async (req, res) => {
-    //     const id = req.params.id;
-    //     const nw =  this.checkBlockchainAddress(id);
-
-    //     let data = await axios.get(`https://services.tokenview.io/vipapi/${nw}/address/${id.toLowerCase()}?apikey=${process.env.vTOKEN}`);
-
-    //             let firstTx = await axios.get(`https://services.tokenview.io/vipapi/firsttx/${nw}/${id.toLowerCase()}?apikey=${process.env.vTOKEN}`);
-    //             firstTx = firstTx.data.data.time;
-
-
-    //             // no last tx api for eth
-    //             data.data.data.first = firstTx;
-    //             transaction = { addr: id, network: nw, source: 0, data: data.data.data, flag: prevFlag || flag, title: prevTitle || title, date: Date.now() };
-    //             console.log(data.data.data);
-    //             dbStatus = await addTransaction(transaction);
-    //             return res.status(200).json({ dbStatus, message: "Successfully Retrieved", network: nw, data: transaction })
-
-    // }
 
 
     //search transaction title 
     searchTitle = async (req, res) => {
         try {
-            const id = req.params.id;
-            const title = req.body.title;
-            const foundTransaction = await Transactions.findOne({ addr: id }).sort({ date: -1 });
+            const foundTransaction = await Transactions.find({}).sort({ date: -1 });
             if (!foundTransaction) {
                 return res.status(400).json({ message: "No transaction found", foundTransaction: foundTransaction });
             }
@@ -212,11 +192,13 @@ class BlockController {
         try {
             const id = req.params.id;
             const title = req.body.title;
+            const boardID = req.body.boardID;
             const previousTransaction = await Transactions.findOne({ addr: id }).sort({ date: -1 });
             if (!previousTransaction) {
                 return res.status(400).json({ message: "No transaction found", previousTransaction: previousTransaction });
             }
             previousTransaction.title = title;
+            previousTransaction.boardID = boardID;
             await previousTransaction.save();
             return res.status(200).json({ message: "Successfully changed title", previousTransaction: previousTransaction });
         } catch (err) {
@@ -340,7 +322,7 @@ class BlockController {
         try {
             // Endpoint URL for setting the webhook URL
             const endpointUrl = `https://services.tokenview.io/vipapi/monitor/setwebhookurl?apikey=${process.env.vaTOKEN}`;
-            const webhookUrl = 'https://f963-103-120-31-178.ngrok-free.app/webhook'
+            const webhookUrl = 'https://b216-103-120-31-178.ngrok-free.app/webhook'
             console.log(webhookUrl)
             // Set up the POST request
             const axiosConfig = {
@@ -355,7 +337,8 @@ class BlockController {
             const response = await axios(axiosConfig);
             const jsonResponse = response.data;
             console.log(jsonResponse);
-            return res.status(200).json({ data: jsonResponse });
+            const addressData = await AddressTracker.find().sort({_id: -1}).limit(1)
+            return res.status(200).json({ data: addressData });
         }catch (error) {
             console.log(error);
             return res.status(500).json({ error: "An error occurred" });
@@ -385,9 +368,22 @@ class BlockController {
             return res.status(500).json({ error: error});
         }
     }
+    removeTrackingAddr = async (req, res) => {
+        try {
+            
+            const id = req.params.id;
+            const nw = this.checkBlockchainAddress(id)
+            let response = await axios.get(`https://services.tokenview.io/vipapi/monitor/address/remove/${nw}/${id}?apikey=${process.env.vaTOKEN}`);
+            const jsonResponse = response.data;
+            return res.status(200).json({data: jsonResponse});
+        }catch (error) {
+            return res.status(500).json({ error: error});
+        }
+    }
+    
     showTrackedAddresses = async (req, res) => {
         try {
-            const nw = this.checkBlockchainAddress(req.params.nw);
+            const nw = req.params.nw;
             let response = await axios.get(`https://services.tokenview.io/vipapi/monitor/address/list/${nw}?page=0&apikey=${process.env.vaTOKEN}`)
             const jsonResponse = response.data;
             return res.status(200).json({data : jsonResponse});
