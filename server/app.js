@@ -16,7 +16,7 @@ app.use("/api", baseR);
 
 baseR.use("/explore", require("./Router/Block"));
 app.use("/auth", require("./Router/Auth"));
-baseR.use("/market",require("./Router/Market"));
+baseR.use("/market", require("./Router/Market"));
 
 // app.use("/auth", require("./Router/Auth"));
 // app.use("/api", auth, require("./Router/Auth"));

@@ -42,9 +42,11 @@ const ReportComponent = ({ open, address, close }) => {
           setRisk(res.data);
         })
         .catch((err) => {
+          console.log("here")
           console.log("error", err);
         });
     } else {
+      setData(null)
       setTimeout(() => {
         setIsOpen(false);
         dispatch(setIsOpen2(false));
@@ -350,7 +352,9 @@ const ReportBody = ({ data, risk }) => {
           </p>
         </div>
       </div>
-      {data && data.txs && undefined && <TransactionsTable txs={data.txs} />}
+      {data && 
+      // data.txs && undefined && 
+      <TransactionsTable txs={data.txs} />}
     </div>
   );
 };
