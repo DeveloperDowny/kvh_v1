@@ -164,11 +164,13 @@ const GraphVisualization = () => {
   const handleNodeHover = (event) => {
     console.log("event:", event);
     console.log("Hovered node:");
+
     dispatch(setIsOpen2(false));
     setTimeout(() => {
       setHoveredId(event.node);
       dispatch(setIsOpen2(true));
     }, 1000);
+
     // console.log("Hovered node ID:", event.nodes[0]);
 
     // Add your custom actions or information display logic here
