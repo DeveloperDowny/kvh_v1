@@ -16,6 +16,19 @@ import { SearchIcon } from "@chakra-ui/icons"; // Assuming you have imported Cha
 
 // import styled from "styled-components";
 
+const typeToImgMap = {
+  btc: "https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg",
+  eth: "https://i.imgur.com/3KJFx7S.png",
+  xmr: "https://i.imgur.com/3KJFx7S.png",
+  ada: "https://i.imgur.com/3KJFx7S.png",
+  tron: "https://i.imgur.com/3KJFx7S.png",
+  sol: "https://i.imgur.com/3KJFx7S.png",
+  ton: "https://i.imgur.com/3KJFx7S.png",
+};
+{
+  /* <Image src={typeToImgMap[cryptoType]} alt="crypto logo" /> */
+}
+
 const regexes = {
   btc: [
     /^1[a-zA-Z0-9]{25,33}$/,
