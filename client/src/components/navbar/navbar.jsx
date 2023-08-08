@@ -34,6 +34,7 @@ const typeToImgMap = {
   tron: TromImg,
   sol: SolImg,
   ton: TonImg,
+  unk: TonImg,
 };
 {
   /* <Image src={typeToImgMap[cryptoType]} alt="crypto logo" /> */
@@ -62,7 +63,7 @@ const regexes = {
 const Navbar = () => {
   // const userData = useSelector((state) => state.auth.authData);
   const [userName, setUserName] = useState("");
-  const [cryptoType, setCryptoType] = useState("");
+  const [cryptoType, setCryptoType] = useState("unk");
 
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
@@ -75,7 +76,7 @@ const Navbar = () => {
       }
     }
 
-    setCryptoType(""); // Reset the crypto type if no match is found
+    setCryptoType("unk"); // Reset the crypto type if no match is found
     console.log(cryptoType);
   };
 

@@ -55,7 +55,8 @@ const GraphVisualization = () => {
     const nodeSet = new Set();
     const edgeSet = new Set();
     let specialIndex = 0; // Index of the specialId in the data array
-    let yPos = 0; // Initialize y position
+    // let yPos = 0; // Initialize y position
+    let yPos = -100; // Initialize y position
     const incrementCont = 20; // Increment y position by 100 for each node
     console.log("mtransData:", data);
     for (let index in data) {
