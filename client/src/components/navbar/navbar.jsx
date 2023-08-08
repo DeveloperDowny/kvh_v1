@@ -25,11 +25,11 @@ import {
   XmrImg,
 } from "../../assets";
 import { useDispatch } from "react-redux";
-import { setMCryptoType } from "../../reducers/SiteCustom";
+import { setAddress, setMCryptoType } from "../../reducers/SiteCustom";
 
 // import styled from "styled-components";
 
-const typeToImgMap = {
+export const typeToImgMap = {
   btc: BitImg,
   eth: EthImg,
   xmr: XmrImg,
@@ -77,6 +77,7 @@ const Navbar = () => {
       if (regexes[type].some((pattern) => pattern.test(inputValue))) {
         setCryptoType(type); // Set the matched crypto type in state
         dispatch(setMCryptoType(type));
+        dispatch(setAddress(inputValue));
         return; // Break the loop once a match is found
       }
     }

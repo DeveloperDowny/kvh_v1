@@ -26,25 +26,30 @@ const ReportComponent = ({ open, address, close }) => {
   const isOpen2 = useSelector((state) => state.siteCustom.isOpen2);
   const [data, setData] = React.useState(null);
   const [riskData, setRisk] = React.useState(null);
-  React.useEffect(() => {
-    // if (open) {
+
+  const mfetchData = async () => {
     if (isOpen2 && address) {
       setIsOpen(true);
-      APIRequests.explore(address).then((res) => {
-        // console.log("res", res)
-        console.log("data", res.data.data);
-        setData(res.data.data);
-        console.log("red data", res.data.data);
+
+      const res = await APIRequests.explore(address).catch((err) => {
+        console.log("error", err);
       });
-      APIRequests.getRisk(address)
-        .then((res) => {
-          console.log("risk", res.data);
-          setRisk(res.data);
-        })
-        .catch((err) => {
-          console.log("here");
-          console.log("error", err);
-        });
+
+      if (!res) return;
+      console.log("res", res);
+
+      console.log("data", res.data.data);
+      setData(res.data.data);
+      console.log("red data", res.data.data);
+
+      const res2 = await APIRequests.getRisk(address).catch((err) => {
+        console.log("error in risk", err);
+      });
+
+      if (!res2) return;
+
+      console.log("risk2", res2.data);
+      setRisk(res2.data);
     } else {
       setData(null);
       setTimeout(() => {
@@ -52,7 +57,12 @@ const ReportComponent = ({ open, address, close }) => {
         dispatch(setIsOpen2(false));
       }, 500);
     }
+
     console.log("here is report open: ", isOpen2);
+  };
+
+  React.useEffect(() => {
+    mfetchData();
   }, [open, address, isOpen2]);
 
   if (!isOpen2) return null;
@@ -194,6 +204,7 @@ const TopBar = ({ address, close, data }) => {
 
 const ReportBody = ({ data, risk }) => {
   data = data == null ? null : data.data;
+
   let firstDate = "-";
   let lastDate = "-";
   if (data != null) {
@@ -319,8 +330,10 @@ const ReportBody = ({ data, risk }) => {
           <h2 className="side-bar-section-title">Combined Risk:</h2>
           <p className="side-bar-section-text">
             {risk === null || data === undefined ? (
-              <Loader />
+              // <Loader />
+              <div>-</div>
             ) : (
+              // set a timeout here maybe?
               risk.riskScores.combinedRisk.toFixed(2) + "%"
             )}
           </p>
@@ -329,7 +342,8 @@ const ReportBody = ({ data, risk }) => {
           <h2 className="side-bar-section-title">Fraud Risk:</h2>
           <p className="side-bar-section-text">
             {risk === null || data === undefined ? (
-              <Loader />
+              // <Loader />
+              <div>-</div>
             ) : (
               risk.riskScores.fraudRisk.toFixed(2) + "%"
             )}
@@ -341,7 +355,8 @@ const ReportBody = ({ data, risk }) => {
           <h2 className="side-bar-section-title">Lending Risk:</h2>
           <p className="side-bar-section-text">
             {risk === null || data === undefined ? (
-              <Loader />
+              // <Loader />
+              <div>-</div>
             ) : (
               risk.riskScores.lendingRisk.toFixed(2) + "%"
             )}
@@ -351,7 +366,8 @@ const ReportBody = ({ data, risk }) => {
           <h2 className="side-bar-section-title">Reputation Risk:</h2>
           <p className="side-bar-section-text">
             {risk === null || data === undefined ? (
-              <Loader />
+              // <Loader />
+              <div>-</div>
             ) : (
               risk.riskScores.reputationRisk.toFixed(2) + "%"
             )}
@@ -452,7 +468,7 @@ const TransactionsTable = ({ txs }) => {
 const Loader = () => {
   return (
     <div className="loader">
-      <CircularProgress isIndeterminate color="white" size={4} />
+      <CircularProgress isIndeterminate color="blue" size={4} />
     </div>
   );
 };

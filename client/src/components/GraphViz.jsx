@@ -6,13 +6,26 @@ import { setIsOpen2, setShouldShowSideBar } from "../reducers/SiteCustom";
 import APIRequests from "../api";
 import ReportComponent from "./Report";
 import { EthImg } from "../assets";
+import { useSelector } from "react-redux";
 
+const forGraphTypeToImgMap = {
+  btc: "/bitcoin_logo.png",
+  eth: "/ethereum_logo.png",
+  xmr: "/xmr_img.png",
+  ada: "/ada_img.png",
+  tro: "/tron_logo.png",
+  sol: "/solana_logo.png",
+  ton: "/ton_icon.png",
+  unk: "/question_mark.png",
+};
 const GraphVisualization = () => {
   const dispatch = useAppDispatch();
   const { board_id } = useParams();
   console.log("board_id:", board_id);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+
+  const cryptoAddress = useSelector((state) => state.siteCustom.address);
 
   const [data, setData] = useState(null);
   const [graphData, setGraphData] = useState({
@@ -28,7 +41,9 @@ const GraphVisualization = () => {
   };
 
   const [specialId, setSpecialId] = useState(
-    "TB4pdxkEGndTwyRi62Kpk9WVUecwU7czFo"
+    // "0xb432A953f21174Af1ADf0620Ce65B4c3bDb21427" //issues with tron only
+    // "0xb432A953f21174Af1ADf0620Ce65B4c3bDb21427"
+    ""
   ); // Replace this with your special ID
   const [hoveredId, setHoveredId] = useState(specialId);
   // const showResults = queryParams.get("show_results");
@@ -44,10 +59,18 @@ const GraphVisualization = () => {
         console.log("err in explore:", err);
       })
       .then((res) => {
+        if (!res) return;
+        console.log("res:", res);
+        if (!res.data) return;
+        console.log("res.data:", res.data);
+        if (!res.data.data) return;
+        console.log("res.data.data:", res.data.data);
+        if (!res.data.data.data) return;
+        console.log("res.data.data.data:", res.data.data.data);
         setData(res.data.data.data.txs);
         dispatch(setIsOpen2(true));
       });
-  }, []);
+  }, [cryptoAddress]);
 
   useEffect(() => {
     console.log("dataffsdf:", data);
@@ -56,6 +79,8 @@ const GraphVisualization = () => {
   useEffect(() => {
     dispatch(setShouldShowSideBar(true));
   }, []);
+
+  const cryptoType = useSelector((state) => state.siteCustom.mCryptoType);
 
   useEffect(() => {
     if (!data) return;
@@ -86,10 +111,13 @@ const GraphVisualization = () => {
       if (!nodeSet.has(to)) {
         nodeArr.push({
           id: to,
-          label: "Add",
+          // label: "Add",
+          label: to,
           // image: EthImg,
           // image: "https://cdn-images-1.medium.com/max/529/1*XmHUL5DeySv_dGmvbPqdDQ.png",
-          image: process.env.PUBLIC_URL + "/bitcoin_img.png",
+          // image: process.env.PUBLIC_URL + "/bitcoin_img.png",
+          image:
+            process.env.PUBLIC_URL + forGraphTypeToImgMap[cryptoType || "unk"],
 
           shape: "image",
           x: specialId === to ? 0 : 200, // Position nodes sending money to specialId on the left
@@ -108,7 +136,16 @@ const GraphVisualization = () => {
       if (!nodeSet.has(from)) {
         nodeArr.push({
           id: from,
-          label: "Add",
+          // label: "Add",
+          shape: "image",
+
+          label: from,
+          // image: EthImg,
+          // image: "https://cdn-images-1.medium.com/max/529/1*XmHUL5DeySv_dGmvbPqdDQ.png",
+          image:
+            // process.env.PUBLIC_URL + "/bitcoin_img.png",
+            process.env.PUBLIC_URL + forGraphTypeToImgMap[cryptoType || "unk"],
+
           x: specialId === from ? 0 : -200, // Position nodes receiving money from specialId on the right
           y: yPos,
           color: specialId === from ? "red" : undefined,
@@ -162,6 +199,7 @@ const GraphVisualization = () => {
 
   function handleNodeClick(event) {
     // Perform actions like showing more information about the node, updating state, etc.
+    if (!event.nodes[0]) return;
     console.log("Node clicked:", event.nodes[0]);
 
     dispatch(setIsOpen2(false));
@@ -197,6 +235,11 @@ const GraphVisualization = () => {
   //     },
   //   },
   // };
+
+  useEffect(() => {
+    setSpecialId(cryptoAddress);
+    setHoveredId(cryptoAddress);
+  }, [cryptoAddress]);
 
   return (
     <div className="t-h-screen t-flex">
@@ -258,3 +301,5 @@ const GraphVisualization = () => {
 };
 
 export default GraphVisualization;
+
+// different have different formats
