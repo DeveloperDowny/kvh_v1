@@ -10,9 +10,10 @@ const siteCustom = createSlice({
     userRole: "USER", // Assuming UserRole.USER is a string constant
     lang: "en",
     isOpen2: false,
-    address: ''
+    address: '',
   },
   reducers: {
+    
     setAddress: (state, action) => {
       state.address = action.payload;
     },
@@ -50,5 +51,5 @@ export const {
   setUserRole,
   setLang,
   setIsOpen2,
-  setAddress
+  setAddress,
 } = siteCustom.actions;
