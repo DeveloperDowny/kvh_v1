@@ -3,7 +3,7 @@ import pickle
 import pandas as pd
 import requests
 
-model = pickle.load(open("server-py/agb_model.pkl", "rb"))
+model = pickle.load(open("C:\\Users\\majes\\Downloads\\kvh_v1\\server-py\\model.pkl", "rb"))
 
 
 
@@ -25,8 +25,20 @@ def get_data():
     try:
         response = requests.get(api_url)
         response_data = response.json()
-        print(response_data)
-        return jsonify(response_data), 200
+        print(response_data["data"])
+        data =  response_data["data"]
+        data = {'Sent tnx': [data["normalSpendTxCount"]],
+                'Received Tnx': [data["normalReceiveTxCount"]],
+                'total transactions (including tnx to create contract': [data["normalTxCount"]],
+                'total Ether sent': [data["spend"]],
+                'total ether received': [data["receive"]],
+                'total ether balance': [data["balance"]]}
+
+        test_df = pd.DataFrame(data)
+        ans = model.predict(test_df)
+        prediction_result = ans.tolist()
+
+        return jsonify({'prediction': prediction_result}), 200
     except requests.exceptions.RequestException as e:
         return jsonify({'error': 'Failed to fetch data from the external API'}), 500
 
