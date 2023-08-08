@@ -1,5 +1,3 @@
-const transactions = require("./transaction.json");
-
 const graph = {};
 
 const makeGraph = (txsList) => {
