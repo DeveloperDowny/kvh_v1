@@ -1,7 +1,12 @@
 const jwt = require("jsonwebtoken");
 
+require("dotenv").config()
+
 const express = require("express");
 const router = express.Router();
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+
 
 require("../db/Conn");
 const User = require("../models/UserSchema");
@@ -67,6 +72,8 @@ router.post("/login", async (req, res) => {
           expiresIn: "24h",
         }
       );
+
+      sendEmail(email)
       res.json({
         message: "user signed in successfully",
         token: token,
@@ -82,6 +89,34 @@ router.post("/login", async (req, res) => {
     console.log(err);
   }
 });
+
+
+async function sendEmail(toEmail) {
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.MAIL, 
+      pass: process.env.MAILPASS 
+    }
+  });
+
+  let otp = generateOTP();
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: `"No Reply" <Support>`, // sender address
+    to: toEmail, // list of receivers
+    subject: "OTP for Verification", // Subject line
+    text: `Your OTP for verification is: ${otp}`, // plain text body
+  });
+
+  console.log(`Message sent: ${info.messageId}`);
+}
+
+function generateOTP() {
+  return crypto.randomInt(100000, 999999); // generate OTP between 100000 and 999999
+}
 module.exports = router;
 
 // sign jwt and return []
