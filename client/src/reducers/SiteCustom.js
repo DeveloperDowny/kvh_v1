@@ -9,8 +9,13 @@ const siteCustom = createSlice({
     navbarTitle: "",
     userRole: "USER", // Assuming UserRole.USER is a string constant
     lang: "en",
+    isOpen2: false,
   },
   reducers: {
+    setIsOpen2: (state, action) => {
+      state.isOpen2 = action.payload;
+    },
+
     setLang: (state, action) => {
       state.lang = action.payload;
     },
@@ -39,4 +44,5 @@ export const {
   setNavbarTitle,
   setUserRole,
   setLang,
+  setIsOpen2,
 } = siteCustom.actions;

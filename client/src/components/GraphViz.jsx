@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import Graph from "react-graph-vis";
 import { useLocation, useParams } from "react-router-dom";
 import { useAppDispatch } from "../store";
-import { setShouldShowSideBar } from "../reducers/SiteCustom";
+import { setIsOpen2, setShouldShowSideBar } from "../reducers/SiteCustom";
 import APIRequests from "../api";
+import ReportComponent from "./Report";
 
 const GraphVisualization = () => {
   const dispatch = useAppDispatch();
@@ -18,9 +19,17 @@ const GraphVisualization = () => {
     edges: [],
   });
 
+  const [open, setOpen] = useState(true);
+
+  const closeSideBar = () => {
+    setOpen(false);
+    dispatch(setIsOpen2(false));
+  };
+
   const [specialId, setSpecialId] = useState(
     "TRpn2AWwXLfYSVtRaxKGm5oMCPvrRyvBJv"
   ); // Replace this with your special ID
+  const [hoveredId, setHoveredId] = useState(specialId);
   // const showResults = queryParams.get("show_results");
   // Sample graph data in visjs format
 
@@ -31,6 +40,7 @@ const GraphVisualization = () => {
   useEffect(() => {
     APIRequests.explore(specialId).then((res) => {
       setData(res.data.data.data.txs);
+      dispatch(setIsOpen2(true));
     });
   }, []);
 
@@ -150,6 +160,11 @@ const GraphVisualization = () => {
   const handleNodeHover = (event) => {
     console.log("event:", event);
     console.log("Hovered node:");
+    dispatch(setIsOpen2(false));
+    setTimeout(() => {
+      setHoveredId(event.node);
+      dispatch(setIsOpen2(true));
+    }, 1000);
     // console.log("Hovered node ID:", event.nodes[0]);
 
     // Add your custom actions or information display logic here
@@ -168,6 +183,8 @@ const GraphVisualization = () => {
         events={{ hoverNode: handleNodeHover }}
         style={{ height: "100%" }}
       />
+
+      <ReportComponent open={open} address={hoveredId} close={closeSideBar} />
     </div>
   );
 };

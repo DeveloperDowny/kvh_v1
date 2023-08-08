@@ -16,13 +16,17 @@ import {
   Text,
   TableCaption,
 } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 
 const ReportComponent = ({ open, address, close }) => {
   const [isOpen, setIsOpen] = React.useState(open);
+
+  const isOpen2 = useSelector((state) => state.siteCustom.isOpen2);
   const [data, setData] = React.useState(null);
   const [riskData, setRisk] = React.useState(null);
   React.useEffect(() => {
-    if (open) {
+    // if (open) {
+    if (isOpen2) {
       setIsOpen(true);
       APIRequests.explore(address).then((res) => {
         // console.log("res", res)
@@ -43,12 +47,15 @@ const ReportComponent = ({ open, address, close }) => {
         setIsOpen(false);
       }, 500);
     }
-  }, [open, address]);
+    console.log("here is report open: ", isOpen2);
+  }, [open, address, isOpen2]);
 
-  if (!isOpen) return null;
+  if (!isOpen2) return null;
 
   return (
-    <div className={`side-bar ${open ? "" : "closed"}`}>
+    // <div className={`side-bar ${open ? "" : "closed"}`}>
+    // <div className={`side-bar ${open ? "" : "closed"}`}>
+    <div className={`side-bar ${isOpen2 ? "" : "closed"}`}>
       <TopBar address={address} close={close} data={data} />
       <ReportBody data={data} risk={riskData} />
     </div>
@@ -202,19 +209,16 @@ const ReportBody = ({ data, risk }) => {
     // call api to get balance in INR
     // data = data == null ? null : data.data;
     if (data != null) {
-
-      APIRequests.getExchangeRate(
-        data.network, "inr"
-      ).then((res) => {
-        // console.log("ex rate", res.data.exRate);
-        setExRate(res.data.exRate);
-      }).catch((err) => {
-        setExRate(null);
-      });
+      APIRequests.getExchangeRate(data.network, "inr")
+        .then((res) => {
+          // console.log("ex rate", res.data.exRate);
+          setExRate(res.data.exRate);
+        })
+        .catch((err) => {
+          setExRate(null);
+        });
     }
   }, [data]);
-
-
 
   // const cRisk = risk == null ? null : risk.riskScores.combinedRisk.toFixed(2) + "%";
 
@@ -226,13 +230,13 @@ const ReportBody = ({ data, risk }) => {
         {data === null || data === undefined ? (
           <Loader />
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <p className="side-bar-section-text">
               {`${parseFloat(data.balance).toFixed(4)} ${data.network}`}
             </p>
             {exRate !== null && (
               <>
-                <div style={{ margin: '0 10px' }}>|</div>
+                <div style={{ margin: "0 10px" }}>|</div>
                 <p className="side-bar-section-text">
                   {`INR ${parseFloat(data.balance * exRate).toFixed(4)}`}
                 </p>
@@ -241,7 +245,6 @@ const ReportBody = ({ data, risk }) => {
           </div>
         )}
       </div>
-
 
       <div className="side-bar-section-main">
         <div className="side-bar-section-sec">
@@ -263,13 +266,13 @@ const ReportBody = ({ data, risk }) => {
         {data === null || data === undefined ? (
           <Loader />
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <p className="side-bar-section-text">
               {`${parseFloat(data.receive).toFixed(4)} ${data.network}`}
             </p>
             {exRate !== null && (
               <>
-                <div style={{ margin: '0 10px' }}>|</div>
+                <div style={{ margin: "0 10px" }}>|</div>
                 <p className="side-bar-section-text">
                   {`INR ${parseFloat(data.receive * exRate).toFixed(4)}`}
                 </p>
@@ -284,13 +287,13 @@ const ReportBody = ({ data, risk }) => {
         {data === null || data === undefined ? (
           <Loader />
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <p className="side-bar-section-text">
               {`${parseFloat(data.spend).toFixed(4) * -1} ${data.network}`}
             </p>
             {exRate !== null && (
               <>
-                <div style={{ margin: '0 10px' }}>|</div>
+                <div style={{ margin: "0 10px" }}>|</div>
                 <p className="side-bar-section-text">
                   {`INR ${parseFloat(data.spend * exRate).toFixed(4) * -1}`}
                 </p>
