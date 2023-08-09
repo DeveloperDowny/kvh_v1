@@ -1,6 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import APIRequests from '../api'
 
 const TestComponent = () => {
+
+  const mfetch = async () => {
+    const res = await APIRequests.mtest().catch(err =>
+      console.log("test", err)
+        )
+        
+
+        if (!res) return
+        console.log("mtest data", res.data)
+
+        console.log("test", res.data.mdata.riskScores.combinedRisk)
+        console.log("test t", res.data.mdata.riskMessage)
+  }
+
+  useEffect(() => {
+    console.log('TestComponent mounted.')
+    mfetch();
+  }, [])
   return (
     <div className="t-bg-blue-500 t-text-white t-p-4">
     <h1 className="t-text-2xl t-font-bold">Hello, Tailwind CSS!</h1>

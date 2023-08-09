@@ -12,8 +12,12 @@ const siteCustom = createSlice({
     isOpen2: false,
     address: "",
     mCryptoType: "unk",
+    trackedAddress: ''
   },
   reducers: {
+    setTrackedAddress: (state, action) => {
+      state.trackedAddress = action.payload;
+    },
     setMCryptoType: (state, action) => {
       state.mCryptoType = action.payload;
     },
@@ -56,4 +60,5 @@ export const {
   setIsOpen2,
   setAddress,
   setMCryptoType,
+  setTrackedAddress
 } = siteCustom.actions;

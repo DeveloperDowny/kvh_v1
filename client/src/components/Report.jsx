@@ -1,7 +1,14 @@
 import React from "react";
 import "./Report.css";
 
-import { EditIcon, CopyIcon, CloseIcon, CheckIcon } from "@chakra-ui/icons";
+import {
+  EditIcon,
+  CopyIcon,
+  CloseIcon,
+  CheckIcon,
+  PlusSquareIcon
+} from "@chakra-ui/icons";
+import { Button, useToast, Tag } from "@chakra-ui/react";
 import APIRequests from "../api";
 import { CircularProgress } from "@chakra-ui/react";
 
@@ -16,6 +23,17 @@ import {
   Text,
   TableCaption,
 } from "@chakra-ui/react";
+
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  ModalFooter,
+  Input,
+} from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsOpen2 } from "../reducers/SiteCustom";
 
@@ -26,6 +44,8 @@ const ReportComponent = ({ open, address, close }) => {
   const isOpen2 = useSelector((state) => state.siteCustom.isOpen2);
   const [data, setData] = React.useState(null);
   const [riskData, setRisk] = React.useState(null);
+  // const { isMaximized } = React.useContext(ReportSizeContext);
+  const [isMaximized, setIsMaximized] = React.useState(false);
 
   const mfetchData = async () => {
     if (isOpen2 && address) {
@@ -68,12 +88,22 @@ const ReportComponent = ({ open, address, close }) => {
   }, [open, address, isOpen2]);
 
   if (!isOpen2) return null;
-
+  console.log("max", isMaximized);
   return (
     // <div className={`side-bar ${open ? "" : "closed"}`}>
     // <div className={`side-bar ${open ? "" : "closed"}`}>
-    <div className={`side-bar ${isOpen2 ? "" : "closed"}`}>
-      <TopBar address={address} close={close} data={data} />
+    // <div className={`side-bar ${isOpen2 ? "" : "closed"}`}>
+    <div
+      className={`side-bar ${isOpen2 ? "" : "closed"} ${isMaximized ? "maximized" : ""
+        }`}
+    >
+      <TopBar
+        address={address}
+        close={close}
+        data={data}
+        isMaximized={isMaximized}
+        setIsMaximized={setIsMaximized}
+      />
       <ReportBody data={data} risk={riskData} />
     </div>
   );
@@ -81,11 +111,58 @@ const ReportComponent = ({ open, address, close }) => {
 
 export default ReportComponent;
 
-const TopBar = ({ address, close, data }) => {
+const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
   const mainAdd = useSelector((state) => state.siteCustom.address);
   const [title, setTitle] = React.useState("Loading...");
   const [isEditing, setIsEditing] = React.useState(false);
   const [tempTitle, setTempTitle] = React.useState(""); // temporary title when editing
+
+  const [remarks, setRemarks] = React.useState("");
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const toast = useToast();
+  const handleSaveClick = async (e) => {
+    e.preventDefault();
+    console.log("here")
+    try {
+      console.log("addr", address)
+
+      // test
+      const response = await APIRequests.addRemark(address, {
+        remark: remarks,
+      });
+
+      console.log(response);
+      if (response.status === 200) {
+        console.log("remarks added");
+
+        toast({
+          title: "Remarks added",
+          duration: 5000,
+          isClosable: true,
+
+        });
+        setIsModalOpen(false);
+
+      }
+    } catch (error) {
+      console.log(error)
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+
+
+    // if (response.success) {
+
+    // } else {
+    //   // Handle any errors if needed
+    // }
+  };
 
   const inputRef = React.useRef(null);
 
@@ -108,7 +185,7 @@ const TopBar = ({ address, close, data }) => {
     setIsEditing(false);
     const res = await APIRequests.changeTitle(address, {
       title: title,
-      board_id: mainAdd,
+      boardID: mainAdd,
     });
 
     console.log("update res", res);
@@ -153,6 +230,28 @@ const TopBar = ({ address, close, data }) => {
 
   return (
     <div className="top-bar">
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add Remarks</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input
+              placeholder="Type your remarks here..."
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button colorScheme="blue" mr={3} onClick={handleSaveClick}>
+              Save
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <div className="top-bar-1">
         {isEditing ? (
           <React.Fragment>
@@ -177,6 +276,18 @@ const TopBar = ({ address, close, data }) => {
           </React.Fragment>
         ) : (
           <React.Fragment>
+            <Button
+              className="top-bar-add-icon"
+              style={{
+                width: "10px",
+              }}
+              onClick={() => setIsModalOpen(true)}
+              width={2}
+              padding={0}
+              height={4}
+            >
+              +
+            </Button>
             <h1 className="top-bar-title">{title}</h1>
             <EditIcon
               className="top-bar-edit-icon"
@@ -185,11 +296,21 @@ const TopBar = ({ address, close, data }) => {
                 color: "#ffffff",
               }}
             />
-            <CloseIcon
-              className="top-bar-close-icon"
-              onClick={close}
-              style={{ color: "#ffffff" }}
-            />
+            <div className="top-bar-right">
+              <PlusSquareIcon
+                className="top-bar-max-icon"
+                // onClick= {}
+                onClick={() => setIsMaximized(!isMaximized)}
+                width={10}
+                height={5}
+                style={{ color: "#ffffff" }}
+              />
+              <CloseIcon
+                className="top-bar-close-icon"
+                onClick={close}
+                style={{ color: "#ffffff" }}
+              />
+            </div>
           </React.Fragment>
         )}
       </div>
@@ -243,6 +364,18 @@ const ReportBody = ({ data, risk }) => {
   }, [data]);
 
   // const cRisk = risk == null ? null : risk.riskScores.combinedRisk.toFixed(2) + "%";
+  const getRiskLabelAndColor = (riskScore) => {
+    if (riskScore >= 0 && riskScore <= 25) {
+      return { label: "Good", color: "green" };
+    } else if (riskScore >= 26 && riskScore <= 39) {
+      return { label: "Neutral", color: "orange" }; // Assuming orange color for Neutral
+    } else if (riskScore >= 40 && riskScore <= 60) {
+      return { label: "High", color: "yellow" }; // Assuming yellow color for High
+    } else if (riskScore >= 61) {
+      return { label: "Very High", color: "red" };
+    }
+    return { label: "-", color: "black" }; // Default
+  };
 
   return (
     <div className="side-bar-body">
@@ -337,23 +470,39 @@ const ReportBody = ({ data, risk }) => {
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Combined Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined ? (
-                  // <Loader />
+                {risk === null ||
+                  data === undefined ||
+                  !risk.mdata.riskScores.combinedRisk ? (
                   <div>-</div>
                 ) : (
-                  // set a timeout here maybe?
-                  risk.riskScores.combinedRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.combinedRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.combinedRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.combinedRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>
+
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Fraud Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined ? (
-                  // <Loader />
+                {risk === null ||
+                  data === undefined ||
+                  !risk.mdata.riskScores.fraudRisk ? (
                   <div>-</div>
                 ) : (
-                  risk.riskScores.fraudRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.fraudRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.fraudRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.fraudRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>
@@ -363,32 +512,48 @@ const ReportBody = ({ data, risk }) => {
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Lending Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined ? (
-                  // <Loader />
+                {risk === null ||
+                  data === undefined ||
+                  !risk.mdata.riskScores.lendingRisk ? (
                   <div>-</div>
                 ) : (
-                  risk.riskScores.lendingRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.lendingRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.lendingRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.lendingRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Reputation Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined ? (
-                  // <Loader />
+                {risk === null ||
+                  data === undefined ||
+                  !risk.mdata.riskScores.reputationRisk ? (
                   <div>-</div>
                 ) : (
-                  risk.riskScores.reputationRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.reputationRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.reputationRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.reputationRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>
           </div>
         </div>
       )}
-      {risk && risk.reasons.length > 0 && (
+      {risk && risk.mdata.reasons.length > 0 && (
         <div className="side-bar-section-2">
           <h2 className="side-bar-section-title">Risk Reasons:</h2>
-          {risk.reasons.map((reason, index) => (
+          {risk.mdata.reasons.map((reason, index) => (
             <div key={index}>{renderRiskReason(reason, index + 1)}</div>
           ))}
         </div>
@@ -417,25 +582,15 @@ const renderRiskReason = (reason, index) => {
 };
 
 const TransactionsTable = ({ txs }) => {
-  if (!txs || txs.length === 0) {
-    return (
-      <Box p={5}>
-        <Text>No transactions found.</Text>
-      </Box>
-    );
-  }
+  const [searchValue, setSearchValue] = React.useState("");
 
-  // console.log("txs", txs);
-
-  // format
-  //
+  const filteredTxs = React.useMemo(
+    () => txs.filter((tx) => tx.to.includes(searchValue)),
+    [txs, searchValue]
+  );
 
   return (
-    <Box
-      overflowY="auto"
-      // maxH="350px"
-      width="100%"
-    >
+    <Box overflowY="auto" marginBottom={180} width="100%">
       <Table
         variant="striped"
         colorScheme="messenger"
@@ -452,52 +607,72 @@ const TransactionsTable = ({ txs }) => {
           placement="top"
           fontSize={14}
         >
-          Transactions
+          {/* <input 
+            type="text" 
+            placeholder="Search by Receiver..."
+            value={searchValue}
+            onChange={e => setSearchValue(e.target.value)}
+          /> */}
+          <Input
+            placeholder="Search Transactions"
+            type="text"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            style={{
+              width: "95%",
+            }}
+          />
         </TableCaption>
-        <Thead>
-          <Tr>
-            <Th>Date</Th>
-            <Th>Receiver</Th>
-            <Th>Amount</Th>
-          </Tr>
-        </Thead>
-        <Tbody padding={0} whiteSpace={0} columnGap={0}>
-          {txs.map((tx, index) => {
-            // tx.time (ms to epoch)
 
-            // convert to dd/mm/yyyy format string
-            var time = new Date(tx.time * 1000); // JavaScript uses milliseconds
-            time = time.toLocaleDateString();
-
-            let recv = tx.to;
-            if (tx.network === "BTC") {
-              recv = tx.outputs[0].address;
-            }
-
-            let val = tx.value;
-            if (tx.network === "BTC") {
-              val = tx.outputs[0].value;
-            }
-
-            return (
-              <Tr key={index}>
-                <Td isNumeric>
-                  <Text isTruncated fontSize={12}>
-                    {time}
-                  </Text>
-                </Td>
-                <Td isNumeric>
-                  <Text isTruncated fontSize={12}>
-                    {recv}
-                  </Text>
-                </Td>
-                <Td isNumeric fontSize={12}>
-                  {val} {tx.network}
-                </Td>
+        {filteredTxs.length === 0 ? (
+          <Box p={5}>
+            <Text>No transactions found.</Text>
+          </Box>
+        ) : (
+          <>
+            <Thead>
+              <Tr>
+                <Th textAlign="center">Date</Th>
+                <Th textAlign="center">Receiver</Th>
+                <Th textAlign="center">Amount</Th>
               </Tr>
-            );
-          })}
-        </Tbody>
+            </Thead>
+            <Tbody padding={0} whiteSpace={0} columnGap={0}>
+              {filteredTxs.map((tx, index) => {
+                var time = new Date(tx.time * 1000);
+                time = time.toLocaleDateString();
+
+                let recv = tx.to;
+                if (tx.network === "BTC") {
+                  recv = tx.outputs[0].address;
+                }
+
+                let val = tx.value;
+                if (tx.network === "BTC") {
+                  val = tx.outputs[0].value;
+                }
+
+                return (
+                  <Tr key={index}>
+                    <Td textAlign="center">
+                      <Text isTruncated fontSize={12}>
+                        {time}
+                      </Text>
+                    </Td>
+                    <Td textAlign="center">
+                      <Text isTruncated fontSize={12}>
+                        {recv}
+                      </Text>
+                    </Td>
+                    <Td textAlign="center" fontSize={12}>
+                      {val} {tx.network}
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </>
+        )}
       </Table>
     </Box>
   );
@@ -509,4 +684,33 @@ const Loader = () => {
       <CircularProgress isIndeterminate color="blue" size={4} />
     </div>
   );
+};
+
+
+const RemarkDialog = ({ isOpen, handClose, remarks, handRemark, handleSaveClick }) => {
+
+  return (
+    <Modal isOpen={isOpen} onClose={() => handClose(false)}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Add Remarks</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Input
+            placeholder="Type your remarks here..."
+            value={remarks}
+            onChange={(e) => handRemark(e.target.value)}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="ghost" onClick={() => handClose(false)}>
+            Cancel
+          </Button>
+          <Button colorScheme="blue" mr={3} onClick={() => handleSaveClick()}>
+            Save
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  )
 };

@@ -43,7 +43,8 @@ const Layout = ({ children }) => {
         {/* <div className="t-h-[42px] t-bg-[#0262AF] t-flex t-flex-row t-justify-between t-items-center t-text-white t-px-[1rem] "> */}
         {/* <div className="t-h-[32px] t-bg-[#0262AF] t-flex t-flex-row t-justify-between t-items-center t-text-white t-px-[1rem] "> */}
         <div className="t-h-[25px] t-bg-[#0262AF] t-flex t-flex-row t-justify-between t-items-center t-text-white t-px-[1rem] t-text-sm">
-          <div>GOVERNMENT OF INDIA</div>
+          {/* <div>GOVERNMENT OF INDIA</div> */}
+          <div></div>
           <div>
             <Select
               color="white"
@@ -76,14 +77,14 @@ const Layout = ({ children }) => {
         {/* <WithSubnavigation /> */}
         <Navbar />
 
-        {pathName.includes("boards") && <Navbar2 />}
+        {pathName && pathName.includes("boards") && <Navbar2 />}
       </div>
       {shouldShowSidebar ? (
         // <div className="content t-flex t-flex-row t-pt-[60px] t-pl-[240px]">
         // pathName.includes("boards") &&
         <div
           className={
-            !pathName.includes("boards")
+            pathName && !pathName.includes("boards")
               ? "content t-flex t-flex-row t-pt-[90px] t-pl-[240px]"
               : "content t-flex t-flex-row t-pt-[120px] t-pl-[240px]"
           }

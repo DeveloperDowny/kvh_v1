@@ -90,7 +90,7 @@ export default function SignupCardOg() {
     actions.resetForm();
     actions.setSubmitting(false);
 
-    navigate("/boards/71a0d6d8");
+    navigate("/auth/signin");
   };
 
   return (

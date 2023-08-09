@@ -1,12 +1,11 @@
 const jwt = require("jsonwebtoken");
 
-require("dotenv").config()
+require("dotenv").config();
 
 const express = require("express");
 const router = express.Router();
-const nodemailer = require('nodemailer');
-const crypto = require('crypto'); 
-
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 
 require("../db/Conn");
 const User = require("../models/UserSchema");
@@ -73,15 +72,15 @@ router.post("/login", async (req, res) => {
       //   }
       // );
 
-      sendEmail(email)
-      res.status(200).json({ "message": "success" })
+      sendEmail(email);
+      res.status(200).json({ message: "success" });
     }
   } catch (err) {
     console.log(err);
   }
 });
 
-router.post('/otp', async (req, res) => {
+router.post("/otp", async (req, res) => {
   try {
     const { email, otp } = req.body;
     console.log(email, otp);
@@ -91,7 +90,7 @@ router.post('/otp', async (req, res) => {
     console.log("otp", userLogin.otp);
 
     if (userLogin.otp == otp) {
-      const secretKey = "your_secret_key"; 
+      const secretKey = "your_secret_key";
       const token = jwt.sign(
         { uid: userLogin._id, privilege: 2, user_role: userLogin.user_role },
         secretKey,
@@ -110,27 +109,24 @@ router.post('/otp', async (req, res) => {
         privilege: 2,
       });
     } else {
-      return res.status(403).json({ "error": "Invalid credentials" });
+      return res.status(403).json({ error: "Invalid credentials" });
     }
   } catch (err) {
-    console.log(err)
-    return res.status(500).json({ "error": "Interal Server Error" });
+    console.log(err);
+    return res.status(500).json({ error: "Interal Server Error" });
   }
-})
+});
 
-async function verifyToken(email, otp){
-    
-}
-
+async function verifyToken(email, otp) {}
 
 async function sendEmail(toEmail) {
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
       user: process.env.MAIL,
-      pass: process.env.MAILPASS
-    }
+      pass: process.env.MAILPASS,
+    },
   });
 
   let otp = generateOTP();

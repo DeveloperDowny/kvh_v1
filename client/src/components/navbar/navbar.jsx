@@ -48,7 +48,7 @@ export const typeToImgMap = {
   /* <Image src={typeToImgMap[cryptoType]} alt="crypto logo" /> */
 }
 
-const regexes = {
+export const regexes = {
   btc: [
     /^1[a-zA-Z0-9]{25,33}$/,
     /^3[a-zA-Z0-9]{25,33}$/,

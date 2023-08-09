@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const SECRET_KEY = "your_secret_key";
 
 const auth = (req, res, next) => {
+  console.log("auth middleware");
   try {
     let token = req.headers.authorization;
     if (token) {

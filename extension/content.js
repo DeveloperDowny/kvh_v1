@@ -1,5 +1,6 @@
 (() => {
-    let buttonPanel, walletAddressNode, statusNode, nazarLogoBtn;
+    let buttonPanel, walletAddressNode, statusNode, nazarLogoBtn, walletAddress, score;
+    let riskMessage = "";
     let current_address = '';
 
 
@@ -33,21 +34,29 @@
         }
     }
 
-    const onNazarBtnClick = () => {
+    const onNazarBtnClick = async () => {
+        statusNode = document.createElement('span');
         walletAddress = walletAddressNode.innerText
-        let rand = Math.random()
-        statusNode = document.createElement('span')
-
-        // will be replaced by api call
-        if (rand < 0.5) {
+        console.log(walletAddress)
+        await fetch(`http://localhost:5000/api/explore/risk/${walletAddress}`)
+        .then(response => response.json())
+        .then(data => { 
+            // console.log(data.mdata)
+            riskMessage = data.mdata.riskMessage;
+            score = data.mdata.riskScores.combinedRisk;
+            // console.log("extension", data.mdata)
+        }).catch(err => {
+            console.log(err)
+        });
+        if (score > 30) {
             walletAddressNode.style.color = 'red'
             nazarLogoBtn.replaceWith(statusNode); 
-            statusNode.innerText = '⚠️ UNSAFE'
+            statusNode.innerText = '⚠️ ' + riskMessage;
             statusNode.style.color = 'red'
         } else {
             walletAddressNode.style.color = 'green'
             nazarLogoBtn.replaceWith(statusNode);
-            statusNode.innerText = '✅ SAFE'
+            statusNode.innerText = '✅ ' + riskMessage;
             statusNode.style.color = 'green'
         }
         
