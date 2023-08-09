@@ -44,6 +44,7 @@ const ReportComponent = ({ open, address, close }) => {
 
       const res2 = await APIRequests.getRisk(address).catch((err) => {
         console.log("error in risk", err);
+        setRisk(null);
       });
 
       if (!res2) return;
@@ -52,6 +53,7 @@ const ReportComponent = ({ open, address, close }) => {
       setRisk(res2.data);
     } else {
       setData(null);
+      setRisk(null);
       setTimeout(() => {
         setIsOpen(false);
         dispatch(setIsOpen2(false));
@@ -325,59 +327,90 @@ const ReportBody = ({ data, risk }) => {
         )}
       </div>
 
-      <div className="side-bar-section-main">
-        <div className="side-bar-section-sec">
-          <h2 className="side-bar-section-title">Combined Risk:</h2>
-          <p className="side-bar-section-text">
-            {risk === null || data === undefined ? (
-              // <Loader />
-              <div>-</div>
-            ) : (
-              // set a timeout here maybe?
-              risk.riskScores.combinedRisk.toFixed(2) + "%"
-            )}
-          </p>
-        </div>
-        <div className="side-bar-section-sec">
-          <h2 className="side-bar-section-title">Fraud Risk:</h2>
-          <p className="side-bar-section-text">
-            {risk === null || data === undefined ? (
-              // <Loader />
-              <div>-</div>
-            ) : (
-              risk.riskScores.fraudRisk.toFixed(2) + "%"
-            )}
-          </p>
-        </div>
-      </div>
-      <div className="side-bar-section-main">
-        <div className="side-bar-section-sec">
-          <h2 className="side-bar-section-title">Lending Risk:</h2>
-          <p className="side-bar-section-text">
-            {risk === null || data === undefined ? (
-              // <Loader />
-              <div>-</div>
-            ) : (
-              risk.riskScores.lendingRisk.toFixed(2) + "%"
-            )}
-          </p>
-        </div>
-        <div className="side-bar-section-sec">
-          <h2 className="side-bar-section-title">Reputation Risk:</h2>
-          <p className="side-bar-section-text">
-            {risk === null || data === undefined ? (
-              // <Loader />
-              <div>-</div>
-            ) : (
-              risk.riskScores.reputationRisk.toFixed(2) + "%"
-            )}
-          </p>
-        </div>
-      </div>
+      {
+
+        risk != null && (
+          <div>
+            <div className="side-bar-section-main">
+              <div className="side-bar-section-sec">
+                <h2 className="side-bar-section-title">Combined Risk:</h2>
+                <p className="side-bar-section-text">
+                  {risk === null || data === undefined ? (
+                    // <Loader />
+                    <div>-</div>
+                  ) : (
+                    // set a timeout here maybe?
+                    risk.riskScores.combinedRisk.toFixed(2) + "%"
+                  )}
+                </p>
+              </div>
+              <div className="side-bar-section-sec">
+                <h2 className="side-bar-section-title">Fraud Risk:</h2>
+                <p className="side-bar-section-text">
+                  {risk === null || data === undefined ? (
+                    // <Loader />
+                    <div>-</div>
+                  ) : (
+                    risk.riskScores.fraudRisk.toFixed(2) + "%"
+                  )}
+                </p>
+              </div>
+            </div>
+
+
+            <div className="side-bar-section-main">
+              <div className="side-bar-section-sec">
+                <h2 className="side-bar-section-title">Lending Risk:</h2>
+                <p className="side-bar-section-text">
+                  {risk === null || data === undefined ? (
+                    // <Loader />
+                    <div>-</div>
+                  ) : (
+                    risk.riskScores.lendingRisk.toFixed(2) + "%"
+                  )}
+                </p>
+              </div>
+              <div className="side-bar-section-sec">
+                <h2 className="side-bar-section-title">Reputation Risk:</h2>
+                <p className="side-bar-section-text">
+                  {risk === null || data === undefined ? (
+                    // <Loader />
+                    <div>-</div>
+                  ) : (
+                    risk.riskScores.reputationRisk.toFixed(2) + "%"
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        )
+      }
+      {
+        risk && risk.reasons.length > 0 && (
+          <div className="side-bar-section-2">
+            <h2 className="side-bar-section-title">Risk Reasons:</h2>
+            {risk.reasons.map((reason, index) => (
+              <div key={index}>
+                {renderRiskReason(reason, index+1)}
+              </div>
+            ))}
+          </div>
+        )
+      }
       {data && (
         // data.txs && undefined &&
         <TransactionsTable txs={data.txs} />
       )}
+    </div>
+  );
+};
+
+const renderRiskReason = (reason, index) => {
+  return (
+    <div className="risk-reason">
+      <h4 className="risk-reason-title" style={{
+        fontSize: "14px",
+      }}>{index}. {reason.explanation}</h4>
     </div>
   );
 };
@@ -397,7 +430,9 @@ const TransactionsTable = ({ txs }) => {
   //
 
   return (
-    <Box overflowY="auto" maxH="350px" width="100%">
+    <Box overflowY="auto"
+      // maxH="350px"
+      width="100%">
       <Table
         variant="striped"
         colorScheme="messenger"

@@ -4,13 +4,19 @@
     right: 0;
     /* background-color: hsl(207, 81%, 71%); */
     height: max-content;
-    overflow: scroll;
     background-color: #f5f5f5;
     width: 55vh;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
     border-radius: 10px 0 0 10px;
     animation: slide-in 0.5s forwards;
 }
+
+.side-bar-body {
+    max-height: 100vh; /* This will make it take the full viewport height */
+    overflow-y: auto;  /* This will add a scrollbar if content exceeds the height */
+    overflow: scroll;
+}
+
 
 .side-bar.closed {
     animation: slide-out 0.5s forwards;
@@ -123,6 +129,21 @@
     font-weight: thin;
     margin: 0;
 }
+
+.side-bar-section-2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px dashed #353844;
+}
+
+.risk-reason {
+    display: block; /* This is usually the default for divs */
+    margin-bottom: 10px; /* Some space between each reason, adjust as needed */
+    /* flex-direction: column; */
+  }
 
 @keyframes slide-in {
     from {
