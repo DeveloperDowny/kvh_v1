@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import LabelTable from '../Dashboard/LabelTable'
-import { Box, Heading, Input, InputGroup, InputLeftAddon, InputRightElement, Image, InputAddon } from '@chakra-ui/react'
+import { Box, Heading, Input, InputGroup, InputLeftAddon, InputRightElement, Image, InputAddon, Flex, Spinner } from '@chakra-ui/react'
 import { AiFillDashboard } from 'react-icons/ai'
 import { FiFile } from 'react-icons/fi'
 import { searchBar } from '../searchbar/searchbar'
@@ -10,7 +10,7 @@ import APIRequests from '../../api'
 
 const Label = () => {
   const [data, setData] = useState([])
-
+  const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
         APIRequests.getLabels().then((res) => {
             let arr = []
@@ -20,18 +20,23 @@ const Label = () => {
             for (let i = 0; i < label.length; i++) {
                 arr.push({
                     label: label[i].title,
-                    boardLink: label[i].boardId ?? '',
+                    boardId: label[i].boardID ?? '',
                     cryptoType: label[i].network
                 })
             }
 
-            setData(arr)
+          setData(arr)
+          setIsLoading(false)
         })
             .catch((err) => {
-                console.log(err)
+              console.log(err)
+              setIsLoading(false)
             })
 
     }, [])
+  
+  console.log(data)
+  
   return (
     <Box py={16} px={6}>
       <Heading color='primary'>
@@ -53,7 +58,7 @@ const Label = () => {
 
       </InputGroup>
       <Box mt={6}>
-        <LabelTable data={data} />
+      {isLoading?  <Flex w={'100%'} h={'50vh'} justify={'center'} align={'center'}><Spinner /></Flex>: <LabelTable data={data} />}
       </Box>
     </Box>
   )
