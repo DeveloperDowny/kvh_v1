@@ -383,13 +383,14 @@ class BlockController {
 
       const response = await axios(axiosConfig);
       const jsonResponse = response.data;
-      console.log(jsonResponse);
       let riskMessage = getRiskMessage(
         parseInt(jsonResponse.riskScores.combinedRisk)
       );
-      console.log(riskMessage);
       jsonResponse.riskMessage = riskMessage;
-      res.status(200).json({ data: jsonResponse});
+      console.log("jsonResponse", jsonResponse);
+      res.status(200).json({
+        mdata : jsonResponse
+      });
     } catch (error) {
       if (error.response && error.response.status === 400) {
         res.status(400).json({ error: "RequestedNullReport" });

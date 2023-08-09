@@ -1,6 +1,5 @@
 (() => {
-    let buttonPanel, walletAddressNode, statusNode, nazarLogoBtn, walletAddress;       
-    let score = 30
+    let buttonPanel, walletAddressNode, statusNode, nazarLogoBtn, walletAddress, score;
     let riskMessage = "";
     let current_address = '';
 
@@ -36,6 +35,7 @@
     }
 
     const onNazarBtnClick = () => {
+        statusNode = document.createElement('span');
         walletAddress = walletAddressNode.innerText
         console.log(walletAddress)
         fetch(`http://localhost:5000/api/explore/risk/${walletAddress}`)
@@ -43,10 +43,10 @@
         .then(data => { 
             riskMessage = data.data.riskMessage;
             score = data.data.riskScores.combinedRisk;
-            console.log(data.data.riskMessage)
         }).catch(err => {
             console.log(err)
         });
+        console.log(riskMessage)
         if (score > 30) {
             walletAddressNode.style.color = 'red'
             nazarLogoBtn.replaceWith(statusNode); 

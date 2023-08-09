@@ -24,7 +24,7 @@ API.interceptors.request.use((req) => {
 
 class APIRequests {
   static async mtest() {
-    return await API.get("/fixed_label/get/list");
+    return await API.get("/api/explore/risk/0xeEE27662c2B8EBa3CD936A23F039F3189633e4C8");
   }
   static async signIn(data) {
     return await API.post("/auth/login", data);
