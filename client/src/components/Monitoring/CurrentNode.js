@@ -1,19 +1,22 @@
 import { Box, Text, TableContainer, Table, Th, Thead, Tbody, Badge, Flex, Divider, Stack, HStack, Tag, Heading } from '@chakra-ui/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { typeToImgMap } from '../navbar/navbar'
 import { FiArrowRight, FiSearch } from 'react-icons/fi'
 import APIRequests from '../../api'
 
 
 const CurrenNode = () => {
-
+    const [data, setData] = useState([])
     const mFetch =  async () => {
         const data = await APIRequests.setMonitorAddress()
-        console.log(data)
+        // console.log(data)
+        setData(data.data.data[0].data)    
     }
     useEffect(() => {
         mFetch()
     }, [])
+
+    console.log(data)
     return (
         <Box w={'full'} p={5} boxShadow={'lg'} rounded={'lg'} borderColor={'green.400'} justifyContent={'center'} alignItems={'center'} >
             
@@ -23,21 +26,21 @@ const CurrenNode = () => {
                 </Text>
                 <HStack>
                     <img width={20} height={20} src={typeToImgMap['btc']} alt="" />
-                    <Text ml={3} fontWeight={'semibold'} fontSize={'xl'}>0xab5c66752a9e8167967685f1450532fb96d5d24f</Text>
+                    <Text ml={3} fontWeight={'semibold'} fontSize={'xl'}>{data.address}</Text>
                 </HStack>
                 <Divider />
                 <Flex gap={4} mt={3} flexWrap={'wrap'}  justify={'space-evenly'} >
                     <Box display={'inline'}>
                         Balance:
-                        <Tag ml={2} variant={'outline'} colorScheme="blue">0.9 ETH</Tag>
+                        <Tag ml={2} variant={'outline'} colorScheme="blue">{data?.value} ETH</Tag>
                     </Box>
                     <Box display={'inline'}>
                         Conformations:
-                        <Tag ml={2} variant={'outline'} colorScheme="blue">2</Tag>
+                        <Tag ml={2} variant={'outline'} colorScheme="blue">{data.confirmations}</Tag>
                     </Box>
                     <Box display={'inline'}>
                         Time:
-                        <Tag ml={2} variant={'outline'} colorScheme="blue">15/08/2023</Tag>
+                        <Tag ml={2} variant={'outline'} colorScheme="blue">{data.time}</Tag>
                     </Box>
                     <Box display={'inline'}>
                         Token address:

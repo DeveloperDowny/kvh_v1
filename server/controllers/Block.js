@@ -449,7 +449,10 @@ class BlockController {
   addTrackingAddr = async (req, res) => {
     try {
       const id = req.params.id;
-      const nw = this.checkBlockchainAddress(id);
+        const nw = this.checkBlockchainAddress(id);
+        if (nw === "tron") {
+            nw = "trx"
+        }
       let response = await axios.get(
         `https://services.tokenview.io/vipapi/monitor/address/add/${nw}/${id}?apikey=${process.env.vaTOKEN}`
       );
@@ -462,7 +465,10 @@ class BlockController {
   removeTrackingAddr = async (req, res) => {
     try {
       const id = req.params.id;
-      const nw = this.checkBlockchainAddress(id);
+        const nw = this.checkBlockchainAddress(id);
+        if (nw === "tron") {
+            nw = "trx"
+        }
       let response = await axios.get(
         `https://services.tokenview.io/vipapi/monitor/address/remove/${nw}/${id}?apikey=${process.env.vaTOKEN}`
       );
@@ -475,11 +481,15 @@ class BlockController {
 
   showTrackedAddresses = async (req, res) => {
     try {
-      const nw = req.params.nw;
+        const nw = req.params.nw;
+        if (nw === "tron") {
+            nw = "trx"
+        }
       let response = await axios.get(
         `https://services.tokenview.io/vipapi/monitor/address/list/${nw}?page=0&apikey=${process.env.vaTOKEN}`
       );
-      const jsonResponse = response.data;
+        let jsonResponse = response.data;
+        jsonResponse.network = nw;
       return res.status(200).json({ data: jsonResponse });
     } catch (e) {
       return res.status(500).json({ error: e });
