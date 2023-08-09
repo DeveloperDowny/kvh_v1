@@ -5,7 +5,7 @@ require("dotenv").config()
 const express = require("express");
 const router = express.Router();
 const nodemailer = require('nodemailer');
-const crypto = require('crypto');
+const crypto = require('crypto'); 
 
 
 require("../db/Conn");

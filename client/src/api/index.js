@@ -3,7 +3,8 @@ import axios from "axios";
 const API = axios.create({
   // baseURL: "https://kvh.serveo.net",
   // baseURL: "https://ee7a-103-120-31-178.ngrok-free.app",
-  baseURL: "https://ee7a-103-120-31-178.ngrok-free.app"
+  // baseURL: "https://ee7a-103-120-31-178.ngrok-free.app"
+  baseURL: 'http://localhost:5000'
 });
 
 API.interceptors.request.use((req) => {

@@ -1,22 +1,8 @@
 import React from 'react'
-import APIRequests from '../../api'
-import { Table, Th, Thead, Tbody, TableContainer, Td, Tr } from '@chakra-ui/react'
-const LabelTable = () => {
-    const mfetch = async () => {
-        console.log("fetching");
-        const res = await APIRequests.getLabels().catch(
-            (err) => console.log("error in mfetch")
 
-        )
-        if (!res) return
-        console.log(res)
-    }
-
-    React.useEffect(() => {
-        mfetch()
-        // APIRequests.getLabels()
-    }, [])
-
+import { Table, Text, Th, Thead, Tbody, TableContainer, Td, Tr } from '@chakra-ui/react'
+const LabelTable = ({ data }) => {
+    console.log(data)
     return (
         <>
             <TableContainer>
@@ -24,18 +10,13 @@ const LabelTable = () => {
                     <Thead bgColor='primary' >
                         <Th color='white'>Label</Th>
                         <Th color='white'>BoardLink</Th>
+                        <Th color='white'>Crypto</Th>
                     </Thead>
                     <Tbody>
-                        <TableRow linkData='asd' id='1' targetDomain='a' />
-                        <TableRow linkData='asd' id='1' targetDomain='a' />
-                        <TableRow linkData='asd' id='1' targetDomain='a' />
-                        <TableRow linkData='asd' id='1' targetDomain='a' />
-                        <TableRow linkData='asd' id='1' targetDomain='a' />
-                        <TableRow linkData='asd' id='1' targetDomain='a' />
-                        <TableRow linkData='asd' id='1' targetDomain='a' />
-                        <TableRow linkData='asd' id='1' targetDomain='a' />
-                        <TableRow linkData='asd' id='1' targetDomain='a' />
-                        <TableRow linkData='asd' id='1' targetDomain='a' />
+                        {data && data.length > 0 ? data.map((data, id) => (
+                            <TableRow key={id} label={data.label} boardId={data.boardId} cryptoType={data.cryptoType} />
+                        )) : <Text p={5}>No Labels Found</Text>}
+
                     </Tbody>
                 </Table>
                 {/* <EmptyState show={false} /> */}
@@ -44,13 +25,18 @@ const LabelTable = () => {
     )
 }
 
-const TableRow = ({ linkData, id, targetDomain }) => {
+const TableRow = ({ label, boardId, cryptoType }) => {
 
     return (
         <Tr>
-            <Td>asd</Td>
+            <Td>{label}</Td>
             <Td maxW={'400px'} pr={10} overflow={'hidden'}>
-                asd
+                <a href={`/${boardId}`}>
+                    {boardId}
+                </a>
+            </Td>
+            <Td maxW={'400px'} pr={10} overflow={'hidden'}>
+                {cryptoType}
             </Td>
         </Tr>
     );
