@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, HStack, Heading, } from '@chakra-ui/react'
+import { Box, Grid, GridItem, HStack, Heading, Spinner} from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { AiFillDashboard } from 'react-icons/ai'
 import LabelTable from './LabelTable'
@@ -7,6 +7,7 @@ import APIRequests from '../../api'
 
 const Dashboard = () => {
     const [data, setData] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         APIRequests.getLabels().then((res) => {
@@ -23,9 +24,11 @@ const Dashboard = () => {
             }
 
             setData(arr)
+            setLoading(false)
         })
             .catch((err) => {
                 console.log(err)
+                setLoading(false)
             })
 
     }, [])
@@ -43,9 +46,10 @@ const Dashboard = () => {
                 gap={4}
             >
                 <GridItem boxShadow={'lg'} rounded={'lg'} rowSpan={2} colSpan={1}>
-                    <LabelTable data={data} />
+                {loading ? <Box textAlign={'center'}><Spinner /></Box> : <LabelTable data={data} />}
                 </GridItem>
                 <GridItem boxShadow={'lg'} rounded={'lg'} colSpan={2}>
+                    {/* {loading ? <Box textAlign={'center'}><Spinner /></Box> :<WebHook />} */}
                     <WebHook />
                 </GridItem>
                 <GridItem colSpan={2} bg='papayawhip' />
