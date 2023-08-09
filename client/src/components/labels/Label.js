@@ -23,6 +23,10 @@ import APIRequests from "../../api";
 const Label = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+
   useEffect(() => {
     APIRequests.getLabels()
       .then((res) => {
@@ -65,6 +69,9 @@ const Label = () => {
           background={"white"}
           color={"primary"}
           w={"50%"}
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+
         />
       </InputGroup>
       <Box mt={6}>
@@ -73,9 +80,10 @@ const Label = () => {
             <Spinner />
           </Flex>
         ) : (
-          <LabelTable data={data} />
+          <LabelTable data={data.filter(item => item.label.toLowerCase().includes(searchTerm.toLowerCase()))} />
         )}
       </Box>
+
     </Box>
   );
 };
