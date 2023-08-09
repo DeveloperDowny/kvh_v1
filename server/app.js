@@ -10,6 +10,7 @@ require("./db/Conn");
 const User = require("./models/UserSchema");
 const AddressTracker = require("./models/AddressTracker");
 const auth = require("./middlewares/auth");
+const baseR = express.Router();
 // const { default: auth } = require("./middlewares/auth");
 
 app.use(express.json());
