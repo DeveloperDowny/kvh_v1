@@ -1,10 +1,22 @@
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { color } from "framer-motion";
 import { AiFillDashboard } from "react-icons/ai";
-import { FiCalendar,  FiHome, FiList, FiSearch, FiSettings, FiUsers } from "react-icons/fi";
+import {
+  FiArrowDownCircle,
+  FiCalendar,
+  FiCodesandbox,
+  FiCpu,
+  FiFile,
+  FiHome,
+  FiList,
+  FiMonitor,
+  FiSearch,
+  FiSettings,
+  FiUsers,
+} from "react-icons/fi";
+import { useLocation } from "react-router-dom";
 
 const Sidebar = () => {
-  
   return (
     <Box
       bg="gray.900"
@@ -16,17 +28,20 @@ const Sidebar = () => {
       position="fixed"
       left="0"
       top="0"
-
     >
-
       <VStack spacing="4" align="flex-start">
-        <SidebarLink icon={FiHome} link='home' label="Home" />
-        <SidebarLink icon={AiFillDashboard} link='dashboard' label="Dashboard" />
-        <SidebarLink icon={FiCalendar} link='boards' label="Boards" />
-        <SidebarLink icon={FiUsers} link='users' label="Users" />
-        <SidebarLink icon={FiList} link='labels' label="Labels" />
-        <SidebarLink icon={FiSearch} link='monitoring' label="Monitoring" />
-        <SidebarLink icon={FiSettings} link='settings' label="Settings" />
+        <SidebarLink icon={FiHome} link="home" label="Home" />
+        <SidebarLink
+          icon={AiFillDashboard}
+          link="dashboard"
+          label="Dashboard"
+        />
+        <SidebarLink icon={FiCalendar} link="boards" label="Boards" />
+        <SidebarLink icon={FiUsers} link="users" label="Users" />
+        <SidebarLink icon={FiList} link="labels" label="Labels" />
+        <SidebarLink icon={FiSearch} link="monitoring" label="Monitoring" />
+        <SidebarLink icon={FiCalendar} link="boards" label="Boards" />
+        <SidebarLink icon={FiSettings} link="settings" label="Settings" />
       </VStack>
     </Box>
   );
@@ -34,10 +49,16 @@ const Sidebar = () => {
 
 const SidebarLink = ({ icon, label, link }) => {
   const pathName = window.location.pathname;
-  console.log("pathName", pathName)
+  console.log("pathName", pathName);
   return (
     <a href={`/${link}`}>
-      <Flex align="center" color={pathName == `/${link}` ? 'blue.300' : ''}  cursor='pointer' _hover={{ color: 'blue.200' }} className="test">
+      <Flex
+        align="center"
+        color={pathName.includes(`/${link}`) ? "blue.300" : ""}
+        cursor="pointer"
+        _hover={{ color: "blue.200" }}
+        className="test"
+      >
         <Box as={icon} fontSize="xl" mr="2" />
         <Text>{label}</Text>
       </Flex>

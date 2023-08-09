@@ -1,59 +1,83 @@
-import {useState, useEffect} from 'react'
-import LabelTable from '../Dashboard/LabelTable'
-import { Box, Heading, Input, InputGroup, InputLeftAddon, InputRightElement, Image, InputAddon } from '@chakra-ui/react'
-import { FiFile, FiList } from 'react-icons/fi'
-import { Search2Icon, SearchIcon } from '@chakra-ui/icons'
-import APIRequests from '../../api'
+import { useState, useEffect } from "react";
+import LabelTable from "../Dashboard/LabelTable";
+import {
+  Box,
+  Heading,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  InputRightElement,
+  Image,
+  InputAddon,
+  Flex,
+  Spinner,
+} from "@chakra-ui/react";
+import { AiFillDashboard } from "react-icons/ai";
+// import { FiFile } from "react-icons/fi";
+import { searchBar } from "../searchbar/searchbar";
+// import { Box, Heading, Input, InputGroup, InputLeftAddon, InputRightElement, Image, InputAddon } from '@chakra-ui/react'
+import { FiFile, FiList } from "react-icons/fi";
+import { Search2Icon, SearchIcon } from "@chakra-ui/icons";
+import APIRequests from "../../api";
 
 const Label = () => {
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    APIRequests.getLabels()
+      .then((res) => {
+        let arr = [];
 
-    useEffect(() => {
-        APIRequests.getLabels().then((res) => {
-            let arr = []
+        let label = res.data.foundTransaction;
 
-            let label = res.data.foundTransaction
+        for (let i = 0; i < label.length; i++) {
+          arr.push({
+            label: label[i].title,
+            boardId: label[i].boardID ?? "",
+            cryptoType: label[i].network,
+          });
+        }
 
-            for (let i = 0; i < label.length; i++) {
-                arr.push({
-                    label: label[i].title,
-                    boardLink: label[i].boardId ?? '',
-                    cryptoType: label[i].network
-                })
-            }
+        setData(arr);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
+  }, []);
 
-            setData(arr)
-        })
-            .catch((err) => {
-                console.log(err)
-            })
+  console.log(data);
 
-    }, [])
   return (
     <Box py={16} px={6}>
-      <Heading color='primary'>
-        <FiList style={{ display: 'inline' }} /> Labels
+      <Heading color="primary">
+        <FiList style={{ display: "inline" }} /> Labels
       </Heading>
-      <InputGroup mt={6} rounded={'md'}>
+      <InputGroup mt={6} rounded={"md"}>
         <InputAddon pointerEvents="none">
           <Search2Icon color="gray.300" />
         </InputAddon>
         <Input
           type="text"
-          variant={'outline'}
+          variant={"outline"}
           placeholder="Search labels here"
           background={"white"}
-          color={'primary'}
-
-          w={'50%'}
+          color={"primary"}
+          w={"50%"}
         />
-
       </InputGroup>
       <Box mt={6}>
-        <LabelTable data={data} />
+        {isLoading ? (
+          <Flex w={"100%"} h={"50vh"} justify={"center"} align={"center"}>
+            <Spinner />
+          </Flex>
+        ) : (
+          <LabelTable data={data} />
+        )}
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default Label
+export default Label;

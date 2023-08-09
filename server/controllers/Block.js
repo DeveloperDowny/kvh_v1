@@ -284,19 +284,15 @@ class BlockController {
     try {
       const foundTransaction = await Transactions.find({}).sort({ date: -1 });
       if (!foundTransaction) {
-        return res
-          .status(400)
-          .json({
-            message: "No transaction found",
-            foundTransaction: foundTransaction,
-          });
-      }
-      return res
-        .status(200)
-        .json({
-          message: "Successfully changed title",
+        return res.status(400).json({
+          message: "No transaction found",
           foundTransaction: foundTransaction,
         });
+      }
+      return res.status(200).json({
+        message: "Successfully changed title",
+        foundTransaction: foundTransaction,
+      });
     } catch (err) {
       return res.status(500).send({ message: err.message });
     }
@@ -333,6 +329,7 @@ class BlockController {
 
   //addRemark
   addRemark = async (req, res) => {
+    console.log("here")
     try {
       const id = req.params.id;
       const remark = req.body.remark;
@@ -389,7 +386,7 @@ class BlockController {
       jsonResponse.riskMessage = riskMessage;
       console.log("jsonResponse", jsonResponse);
       res.status(200).json({
-        mdata : jsonResponse
+        mdata: jsonResponse,
       });
     } catch (error) {
       if (error.response && error.response.status === 400) {

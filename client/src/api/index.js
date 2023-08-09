@@ -89,6 +89,19 @@ class APIRequests {
   static async verifyOTP(data) {
     return await API.post("/auth/otp", data);
   }
+
+  static async addMonitorAddress(address) { 
+    return await API.get(`/api/explore/add/address/${address}`, );
+  }
+
+  static async getMonitorAddress() { 
+    return await API.get(`/api/explore/get/address`);
+  }
+
+  static async addRemark(address, data) {
+    console.log(`/api/explore/remark/${address}`)
+    return await API.post(`/api/explore/remark/${address}`,data);
+  }
 }
 
 export default APIRequests;
