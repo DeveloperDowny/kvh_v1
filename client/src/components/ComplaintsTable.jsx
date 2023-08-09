@@ -36,7 +36,7 @@ const ComplainsTable = () => {
             <Th>Suspect Wallet Address</Th>
             <Th>Transaction ID</Th>
             <Th>Other Details</Th>
-            <Th>Status</Th>
+            {/* <Th>Case Status</Th> */}
           </Tr>
         </Thead>
         <Tbody>
@@ -49,7 +49,7 @@ const ComplainsTable = () => {
               <Td>{entry.suspectWalletAddress}</Td>
               <Td>{entry.transactionId}</Td>
               <Td>{entry.otherDetails}</Td>
-              <Td>{entry.status}</Td>
+              {/* <Td>{entry.status}</Td> */}
             </Tr>
           ))}
         </Tbody>

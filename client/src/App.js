@@ -16,6 +16,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import Monitoring from "./components/Monitoring/Monitoring";
 import ComplaintForm from "./components/Complaint";
 import Blogs from "./Blogs";
+import ComplainsTable from "./components/ComplaintsTable";
 const App = () => {
   const graphData = generateRandomGraphData();
 
@@ -45,6 +46,8 @@ const App = () => {
           <Route path="/test" element={<TestComponent />} />
 
           <Route path="/complaint" element={<ComplaintForm />} />
+          <Route path="/complaints" element={<ComplainsTable />} />
+
           <Route path="/blogs" element={<Blogs />} />
         </Routes>
       </Layout>
