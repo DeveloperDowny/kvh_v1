@@ -51,7 +51,7 @@ const Sidebar = () => {
           <SidebarLink icon={FiList} link="labels" label="Labels" />
           <SidebarLink icon={FiSearch} link="monitoring" label="Monitoring" />
           {/* <SidebarLink icon={FiBook} link="blogs" label="Blogs" /> */}
-          <SidebarLink icon={FiSettings} link="settings" label="Settings" />
+          <SidebarLink icon={FiSettings} link="auth/signin" label="Log Out" />
         </VStack>
       )}
       {userRole === "citizen" && (
@@ -73,7 +73,7 @@ const Sidebar = () => {
             label="File Complaint"
           />
 
-          <SidebarLink icon={FiSettings} link="settings" label="Settings" />
+          <SidebarLink icon={FiSettings} link="auth/signin" label="Log Out" />
         </VStack>
       )}
     </Box>
