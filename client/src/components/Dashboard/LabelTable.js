@@ -64,7 +64,7 @@ const TableRow = ({ label, boardId, cryptoType }) => {
             alt={cryptoType}
           />
           <Text fontWeight={"semibold"} fontSize={"xl"}>
-            {cryptoType}
+            {cryptoType.toUpperCase()}
           </Text>
         </HStack>
       </Td>

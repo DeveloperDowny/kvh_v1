@@ -75,7 +75,7 @@ const Sidebar = () => {
 };
 
 const SidebarLink = ({ icon, label, link }) => {
-  const pathName = window.location.pathname;
+  const pathName = window.location.pathname || "/none";
   console.log("pathName for dash", pathName);
   return (
     <a href={`/${link}`}>

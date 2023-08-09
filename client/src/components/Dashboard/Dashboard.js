@@ -12,6 +12,7 @@ import { AiFillDashboard } from "react-icons/ai";
 import LabelTable from "./LabelTable";
 import WebHook from "./WebHook";
 import APIRequests from "../../api";
+import ComplainsTable from "../ComplaintsTable";
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
@@ -59,12 +60,24 @@ const Dashboard = () => {
             <LabelTable data={data} />
           )}
         </GridItem>
+
         <GridItem boxShadow={"lg"} rounded={"lg"} colSpan={2}>
           {/* {loading ? <Box textAlign={'center'}><Spinner /></Box> :<WebHook />} */}
+
           <WebHook />
         </GridItem>
-        <GridItem colSpan={2} bg="papayawhip" />
-        <GridItem colSpan={4} bg="tomato" />
+
+        <GridItem colSpan={2} bg="papayawhip">
+          {/* <div>Test</div> */}
+          {/* add complaints table here */}
+        </GridItem>
+
+        <GridItem colSpan={4}>
+          <Heading color="primary" className="t-mb-[1rem] t-mt-[1rem]">
+            Complaints
+          </Heading>
+          <ComplainsTable />
+        </GridItem>
       </Grid>
     </Box>
   );
