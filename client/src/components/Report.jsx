@@ -6,9 +6,9 @@ import {
   CopyIcon,
   CloseIcon,
   CheckIcon,
-  PlusSquareIcon,
+  PlusSquareIcon
 } from "@chakra-ui/icons";
-import { Button, useToast } from "@chakra-ui/react";
+import { Button, useToast, Tag } from "@chakra-ui/react";
 import APIRequests from "../api";
 import { CircularProgress } from "@chakra-ui/react";
 
@@ -129,7 +129,7 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
 
       // test
       const response = await APIRequests.addRemark(address, {
-        remarks: "remarks",
+        remark: remarks,
       });
 
       console.log(response);
@@ -147,13 +147,13 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
       }
     } catch (error) {
       console.log(error)
-        toast({
-          title: "Error",
-          description: "Something went wrong",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
 
 
@@ -364,6 +364,18 @@ const ReportBody = ({ data, risk }) => {
   }, [data]);
 
   // const cRisk = risk == null ? null : risk.riskScores.combinedRisk.toFixed(2) + "%";
+  const getRiskLabelAndColor = (riskScore) => {
+    if (riskScore >= 0 && riskScore <= 25) {
+      return { label: "Good", color: "green" };
+    } else if (riskScore >= 26 && riskScore <= 39) {
+      return { label: "Neutral", color: "orange" }; // Assuming orange color for Neutral
+    } else if (riskScore >= 40 && riskScore <= 60) {
+      return { label: "High", color: "yellow" }; // Assuming yellow color for High
+    } else if (riskScore >= 61) {
+      return { label: "Very High", color: "red" };
+    }
+    return { label: "-", color: "black" }; // Default
+  };
 
   return (
     <div className="side-bar-body">
@@ -460,23 +472,37 @@ const ReportBody = ({ data, risk }) => {
               <p className="side-bar-section-text">
                 {risk === null ||
                   data === undefined ||
-                  risk.mdata.riskScores.combinedRisk ? (
-                  // <Loader />
+                  !risk.mdata.riskScores.combinedRisk ? (
                   <div>-</div>
                 ) : (
-                  // set a timeout here maybe?
-                  risk.mdata.riskScores.combinedRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.combinedRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.combinedRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.combinedRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>
+
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Fraud Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined ? (
-                  // <Loader />
+                {risk === null ||
+                  data === undefined ||
+                  !risk.mdata.riskScores.fraudRisk ? (
                   <div>-</div>
                 ) : (
-                  risk.mdata.riskScores.fraudRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.fraudRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.fraudRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.fraudRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>
@@ -486,22 +512,38 @@ const ReportBody = ({ data, risk }) => {
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Lending Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined ? (
-                  // <Loader />
+                {risk === null ||
+                  data === undefined ||
+                  !risk.mdata.riskScores.lendingRisk ? (
                   <div>-</div>
                 ) : (
-                  risk.mdata.riskScores.lendingRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.lendingRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.lendingRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.lendingRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Reputation Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined ? (
-                  // <Loader />
+                {risk === null ||
+                  data === undefined ||
+                  !risk.mdata.riskScores.reputationRisk ? (
                   <div>-</div>
                 ) : (
-                  risk.mdata.riskScores.reputationRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.reputationRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.reputationRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.reputationRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>

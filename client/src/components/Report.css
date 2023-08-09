@@ -160,6 +160,9 @@
 }
 
 .side-bar-section-text {
+    align-items: center;
+    text-align: center;
+    width: min-content;
     font-size: 15px;
     font-weight: thin;
     margin: 0;
