@@ -18,6 +18,7 @@ blockR.get("/get/webhookUrl", blockC.getWebhookUrl);
 blockR.get("/add/address/:id", blockC.addTrackingAddr);
 blockR.get("/remove/address/:id", blockC.addTrackingAddr);
 blockR.get("/show/address/:nw", blockC.showTrackedAddresses);
+blockR.get("/scam/:address", blockC.CheckScamData);
 
 
 
