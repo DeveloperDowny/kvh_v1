@@ -3,14 +3,15 @@ import axios from "axios";
 const API = axios.create({
   // baseURL: "https://kvh.serveo.net",
   // baseURL: "https://ee7a-103-120-31-178.ngrok-free.app",
-  // baseURL: "https://ee7a-103-120-31-178.ngrok-free.app"
-  baseURL: 'http://localhost:5000'
+  // baseURL: "https://ee7a-103-120-31-178.ngrok-free.app",
+  baseURL: "http://localhost:5000",
 });
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {
-    req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem("profile")).token
-      }`;
+    req.headers.Authorization = `Bearer ${
+      JSON.parse(localStorage.getItem("profile")).token
+    }`;
   }
 
   return req;
@@ -80,7 +81,7 @@ class APIRequests {
   static async getLabels() {
     return await API.get(
       // `/api/explore/get/list`
-      '/api/explore/get/list'
+      "/api/explore/get/list"
     );
   }
 

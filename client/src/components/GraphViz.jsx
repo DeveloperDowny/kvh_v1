@@ -69,11 +69,13 @@ const GraphVisualization = () => {
         if (!res.data.data.data) return;
         console.log("res.data.data.data:", res.data.data.data);
         setData(res.data.data.data.txs);
+        console.log("data is set");
         dispatch(setIsOpen2(true));
       });
   }, [cryptoAddress]);
 
   useEffect(() => {
+    console.log("on data change");
     console.log("dataffsdf:", data);
   }, [data]);
 
@@ -155,6 +157,7 @@ const GraphVisualization = () => {
           // }
         }
       } else {
+        console.log("in else");
         // if (specialId === data[index].to || specialId === data[index].from) {
         //   specialIndex = index;
         // }
@@ -307,6 +310,7 @@ const GraphVisualization = () => {
 
   return (
     <div className="t-h-screen t-flex">
+      {graphData.nodes.length === 0 && <div>Loading...</div>}
       <Graph
         graph={graphData}
         // options={{

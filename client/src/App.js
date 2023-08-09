@@ -25,11 +25,10 @@ const App = () => {
   //     </div>
   //   </div>
   // );
-  
 
   return (
-    <Layout>
-      <BrowserRouter>
+    <BrowserRouter>
+      <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/test2" element={<Test2 />} />
@@ -40,8 +39,8 @@ const App = () => {
           <Route path="/labels" element={<Label />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
-      </BrowserRouter>
-    </Layout>
+      </Layout>
+    </BrowserRouter>
   );
 };
 
