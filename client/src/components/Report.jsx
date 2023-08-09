@@ -91,7 +91,7 @@ const ReportComponent = ({ open, address, close }) => {
 
 export default ReportComponent;
 
-const TopBar = ({ address, close, data }) => {
+const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
   const mainAdd = useSelector((state) => state.siteCustom.address);
   const [title, setTitle] = React.useState("Loading...");
   const [isEditing, setIsEditing] = React.useState(false);
