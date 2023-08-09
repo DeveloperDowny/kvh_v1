@@ -13,7 +13,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { AiFillDashboard } from "react-icons/ai";
-import { FiFile } from "react-icons/fi";
+// import { FiFile } from "react-icons/fi";
 import { searchBar } from "../searchbar/searchbar";
 // import { Box, Heading, Input, InputGroup, InputLeftAddon, InputRightElement, Image, InputAddon } from '@chakra-ui/react'
 import { FiFile, FiList } from "react-icons/fi";

@@ -8,6 +8,7 @@ import {
   FiCpu,
   FiFile,
   FiHome,
+  FiList,
   FiMonitor,
   FiSearch,
   FiSettings,

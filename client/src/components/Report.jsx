@@ -432,10 +432,10 @@ const ReportBody = ({ data, risk }) => {
           </div>
         </div>
       )}
-      {risk && risk.mdata.reasons > 0 && (
+      {risk && risk.mdata.reasons.length > 0 && (
         <div className="side-bar-section-2">
           <h2 className="side-bar-section-title">Risk Reasons:</h2>
-          {risk.reasons.map((reason, index) => (
+          {risk.mdata.reasons.map((reason, index) => (
             <div key={index}>{renderRiskReason(reason, index + 1)}</div>
           ))}
         </div>
