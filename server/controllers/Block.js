@@ -4,7 +4,6 @@ const axios = require("axios");
 const csv = require("csv-parser");
 const fs = require("fs");
 const Transactions = require("../models/TransactionSchema");
-const Boards = require("../models/BoardsSchema");
 
 // for file uploading
 const multer = require("multer");
@@ -13,7 +12,7 @@ const path = require("path");
 
 const { response } = require("express");
 const AddressTracker = require("../models/AddressTracker");
-const Complaints = require("../models/ComplaintSchema");
+
 // const sources = {
 //     "TokenView": 0,
 //     "Etherscan": 1,
@@ -48,26 +47,6 @@ const checkCurrencyInCSV = async (currency, filename) => {
       });
   });
 };
-
-const riskRangeMapping = {
-  "0-25": "Good",
-  "26-39": "Neutral",
-  "40-60": "High Risk",
-  "60-100": "Very High Risk",
-};
-
-// Function to get risk message based on range
-function getRiskMessage(score) {
-  console.log(score);
-  for (const range in riskRangeMapping) {
-    const [min, max] = range.split("-").map(Number);
-    if (score >= min && score <= max) {
-      return riskRangeMapping[range];
-    }
-  }
-  return "Unknown risk score";
-}
-
 class BlockController {
   constructor() {}
 
@@ -250,49 +229,24 @@ class BlockController {
     }
   };
 
-  //save board
-  saveBoard = async (req, res) => {
-    try {
-      const { boardId, graphData } = req.body;
-      console.log(boardId, graphData);
-      const board = new Boards({ boardId, graphData });
-      await board.save();
-      return res.status(200).json({ message: "saved successfully", board });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ message: err });
-    }
-  };
-
-  //get board data
-  getBoard = async (req, res) => {
-    try {
-      const { boardId } = req.body;
-      const board = await Boards.findOne({ boardId: boardId });
-      if (!board) {
-        return res.status(404).json({ message: "board not found" });
-      }
-      return res.status(200).json({ message: "found board", board });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ message: err });
-    }
-  };
-
   //search transaction title
   showTitleList = async (req, res) => {
     try {
       const foundTransaction = await Transactions.find({}).sort({ date: -1 });
       if (!foundTransaction) {
-        return res.status(400).json({
-          message: "No transaction found",
+        return res
+          .status(400)
+          .json({
+            message: "No transaction found",
+            foundTransaction: foundTransaction,
+          });
+      }
+      return res
+        .status(200)
+        .json({
+          message: "Successfully changed title",
           foundTransaction: foundTransaction,
         });
-      }
-      return res.status(200).json({
-        message: "Successfully changed title",
-        foundTransaction: foundTransaction,
-      });
     } catch (err) {
       return res.status(500).send({ message: err.message });
     }
@@ -300,11 +254,11 @@ class BlockController {
 
   //change transaction title
   changeTitle = async (req, res) => {
+    console.log(req.body);
     try {
       const id = req.params.id;
       const title = req.body.title;
       const boardID = req.body.boardID;
-      console.log(title, boardID);
       const previousTransaction = await Transactions.findOne({ addr: id }).sort(
         { date: -1 }
       );
@@ -317,7 +271,6 @@ class BlockController {
       previousTransaction.title = title;
       previousTransaction.boardID = boardID;
       await previousTransaction.save();
-      console.log(previousTransaction);
       return res.status(200).json({
         message: "Successfully changed title",
         previousTransaction: previousTransaction,
@@ -329,7 +282,6 @@ class BlockController {
 
   //addRemark
   addRemark = async (req, res) => {
-    console.log("here")
     try {
       const id = req.params.id;
       const remark = req.body.remark;
@@ -348,6 +300,7 @@ class BlockController {
   getRisk = async (req, res) => {
     try {
       const address = req.params.id;
+
       if (!address) {
         return res.status(404).json({ error: "Address not valid" });
       }
@@ -380,14 +333,8 @@ class BlockController {
 
       const response = await axios(axiosConfig);
       const jsonResponse = response.data;
-      let riskMessage = getRiskMessage(
-        parseInt(jsonResponse.riskScores.combinedRisk)
-      );
-      jsonResponse.riskMessage = riskMessage;
-      console.log("jsonResponse", jsonResponse);
-      res.status(200).json({
-        mdata: jsonResponse,
-      });
+
+      res.status(200).json(jsonResponse);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         res.status(400).json({ error: "RequestedNullReport" });
@@ -464,12 +411,10 @@ class BlockController {
 
   //tracking address
   setWebhookUrl = async (req, res) => {
-    // console.log("tracking address");
     try {
-
       // Endpoint URL for setting the webhook URL
       const endpointUrl = `https://services.tokenview.io/vipapi/monitor/setwebhookurl?apikey=${process.env.vaTOKEN}`;
-      const webhookUrl = "https://cf6f-103-120-31-178.ngrok-free.app/webhook";
+      const webhookUrl = "https://648b-103-120-31-178.ngrok-free.app/webhook";
       console.log(webhookUrl);
       // Set up the POST request
       const axiosConfig = {
@@ -513,7 +458,6 @@ class BlockController {
         `https://services.tokenview.io/vipapi/monitor/address/add/${nw}/${id}?apikey=${process.env.vaTOKEN}`
       );
       const jsonResponse = response.data;
-      
       return res.status(200).json({ data: jsonResponse });
     } catch (error) {
       return res.status(500).json({ error: error });
@@ -540,7 +484,6 @@ class BlockController {
         `https://services.tokenview.io/vipapi/monitor/address/list/${nw}?page=0&apikey=${process.env.vaTOKEN}`
       );
       const jsonResponse = response.data;
-      jsonResponse.network = nw;
       return res.status(200).json({ data: jsonResponse });
     } catch (e) {
       return res.status(500).json({ error: e });
@@ -617,38 +560,6 @@ class BlockController {
       res.status(500).send("An error occurred while trying to fetch the data");
     }
   };
-
-  //Complaint routes
-    // Create a new report
-    createComplaint = async (req, res) => {
-        try {
-        const newReport = new Complaints(req.body);
-        const savedReport = await newReport.save();
-        res.status(201).json(savedReport);
-        } catch (error) {
-        res.status(400).json({ error: 'Failed to create report' });
-        }
-    };
-  
-    // Update an existing report by ID
-    updateComplaint = async (req, res) => {
-        try {
-        const { transactionId } = req.params;
-        // console.log(transactionId)
-        const updatedReport = await Complaints.findOneAndUpdate(
-            { transactionId },
-            req.body,
-            { new: true }
-        );
-        if (!updatedReport) {
-            return res.status(404).json({ error: 'Report not found' });
-        }
-        res.json(updatedReport);
-        } catch (error) {
-        res.status(400).json({ error: 'Failed to update report' });
-        }
-    }
-
 }
 
 module.exports = BlockController;

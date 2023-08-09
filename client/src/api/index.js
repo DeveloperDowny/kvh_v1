@@ -5,8 +5,7 @@ const API = axios.create({
   // baseURL: "https://cf6f-103-120-31-178.ngrok-free.app"
   // baseURL: "https://ee7a-103-120-31-178.ngrok-free.app",
   // baseURL: "https://ee7a-103-120-31-178.ngrok-free.app"
-  baseURL: 'http://localhost:5000'
-
+  baseURL: "http://localhost:5000",
 });
 
 API.interceptors.request.use((req) => {
@@ -24,7 +23,9 @@ API.interceptors.request.use((req) => {
 
 class APIRequests {
   static async mtest() {
-    return await API.get("/api/explore/risk/0xeEE27662c2B8EBa3CD936A23F039F3189633e4C8");
+    return await API.get(
+      "/api/explore/risk/0xeEE27662c2B8EBa3CD936A23F039F3189633e4C8"
+    );
   }
   static async signIn(data) {
     return await API.post("/auth/login", data);
@@ -90,17 +91,25 @@ class APIRequests {
     return await API.post("/auth/otp", data);
   }
 
-  static async addMonitorAddress(address) { 
-    return await API.get(`/api/explore/add/address/${address}`, );
+  static async addMonitorAddress(address) {
+    return await API.get(`/api/explore/add/address/${address}`);
   }
 
-  static async getMonitorAddress() { 
-    return await API.get(`/api/explore/get/address`);
+  static async setMonitorAddress() {
+    return await API.get(`/api/explore/set/webhookUrl`);
+  }
+
+  static async removeMonitorAddress(address) {
+    return await API.get(`/api/explore/remove/address${address}`);
+  }
+
+  static async showMonitorAddress(nw) {
+    return await API.get(`/api/explore/show/address/${nw}`);
   }
 
   static async addRemark(address, data) {
-    console.log(`/api/explore/remark/${address}`)
-    return await API.post(`/api/explore/remark/${address}`,data);
+    console.log(`/api/explore/remark/${address}`);
+    return await API.post(`/api/explore/remark/${address}`, data);
   }
 }
 
