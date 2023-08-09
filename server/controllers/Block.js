@@ -278,7 +278,7 @@ class BlockController {
             if(!board){
                 return res.status(404).json({ "message": "board not found"})
             }
-            return res.status(200).json({"message": "found board", board})
+            return res.status(200).json({"message": "found board", board, status: 1})
         }catch (err) {
             console.log(err);
             return res.status(500).json({ "message": err });
@@ -348,6 +348,7 @@ class BlockController {
     }
 
     getRisk = async (req, res) => {
+        console.log(req)
         try {
             const address = req.params.id;
             if (!address) {

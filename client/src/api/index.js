@@ -33,10 +33,6 @@ class APIRequests {
     return await API.post("/auth/register", data);
   }
 
-  static async signUp(data) {
-    return await API.post("/auth/register", data);
-  }
-
   static async testGet() {
     return await API.get("/users");
   }
@@ -61,9 +57,9 @@ class APIRequests {
     });
   }
 
-  static async testGet() {
-    return await API.get("/users");
-  }
+  // static async testGet() {
+  //   return await API.get("/users");
+  // }
 
   static async explore(address) {
     return await API.get(`/api/explore/${address}`);
