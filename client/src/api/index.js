@@ -21,6 +21,9 @@ API.interceptors.request.use((req) => {
 // export const testGet = () => API.get("/");
 
 class APIRequests {
+  static async mtest() {
+    return await API.get("/fixed_label/get/list");
+  }
   static async signIn(data) {
     return await API.post("/auth/login", data);
   }

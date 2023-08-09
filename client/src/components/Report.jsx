@@ -91,7 +91,8 @@ const ReportComponent = ({ open, address, close }) => {
 
 export default ReportComponent;
 
-const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
+const TopBar = ({ address, close, data }) => {
+  const mainAdd = useSelector((state) => state.siteCustom.address);
   const [title, setTitle] = React.useState("Loading...");
   const [isEditing, setIsEditing] = React.useState(false);
   const [tempTitle, setTempTitle] = React.useState(""); // temporary title when editing
@@ -118,7 +119,10 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
 
   const handleSave = async () => {
     setIsEditing(false);
-    const res = await APIRequests.changeTitle(address, { title: title });
+    const res = await APIRequests.changeTitle(address, {
+      title: title,
+      board_id: mainAdd,
+    });
 
     console.log("update res", res);
     if (res.status === 200) {
@@ -356,76 +360,68 @@ const ReportBody = ({ data, risk }) => {
         )}
       </div>
 
-      {
-
-        risk != null && (
-          <div>
-            <div className="side-bar-section-main">
-              <div className="side-bar-section-sec">
-                <h2 className="side-bar-section-title">Combined Risk:</h2>
-                <p className="side-bar-section-text">
-                  {risk === null || data === undefined ? (
-                    // <Loader />
-                    <div>-</div>
-                  ) : (
-                    // set a timeout here maybe?
-                    risk.riskScores.combinedRisk.toFixed(2) + "%"
-                  )}
-                </p>
-              </div>
-              <div className="side-bar-section-sec">
-                <h2 className="side-bar-section-title">Fraud Risk:</h2>
-                <p className="side-bar-section-text">
-                  {risk === null || data === undefined ? (
-                    // <Loader />
-                    <div>-</div>
-                  ) : (
-                    risk.riskScores.fraudRisk.toFixed(2) + "%"
-                  )}
-                </p>
-              </div>
+      {risk != null && (
+        <div>
+          <div className="side-bar-section-main">
+            <div className="side-bar-section-sec">
+              <h2 className="side-bar-section-title">Combined Risk:</h2>
+              <p className="side-bar-section-text">
+                {risk === null || data === undefined ? (
+                  // <Loader />
+                  <div>-</div>
+                ) : (
+                  // set a timeout here maybe?
+                  risk.riskScores.combinedRisk.toFixed(2) + "%"
+                )}
+              </p>
             </div>
-
-
-            <div className="side-bar-section-main">
-              <div className="side-bar-section-sec">
-                <h2 className="side-bar-section-title">Lending Risk:</h2>
-                <p className="side-bar-section-text">
-                  {risk === null || data === undefined ? (
-                    // <Loader />
-                    <div>-</div>
-                  ) : (
-                    risk.riskScores.lendingRisk.toFixed(2) + "%"
-                  )}
-                </p>
-              </div>
-              <div className="side-bar-section-sec">
-                <h2 className="side-bar-section-title">Reputation Risk:</h2>
-                <p className="side-bar-section-text">
-                  {risk === null || data === undefined ? (
-                    // <Loader />
-                    <div>-</div>
-                  ) : (
-                    risk.riskScores.reputationRisk.toFixed(2) + "%"
-                  )}
-                </p>
-              </div>
+            <div className="side-bar-section-sec">
+              <h2 className="side-bar-section-title">Fraud Risk:</h2>
+              <p className="side-bar-section-text">
+                {risk === null || data === undefined ? (
+                  // <Loader />
+                  <div>-</div>
+                ) : (
+                  risk.riskScores.fraudRisk.toFixed(2) + "%"
+                )}
+              </p>
             </div>
           </div>
-        )
-      }
-      {
-        risk && risk.reasons.length > 0 && (
-          <div className="side-bar-section-2">
-            <h2 className="side-bar-section-title">Risk Reasons:</h2>
-            {risk.reasons.map((reason, index) => (
-              <div key={index}>
-                {renderRiskReason(reason, index + 1)}
-              </div>
-            ))}
+
+          <div className="side-bar-section-main">
+            <div className="side-bar-section-sec">
+              <h2 className="side-bar-section-title">Lending Risk:</h2>
+              <p className="side-bar-section-text">
+                {risk === null || data === undefined ? (
+                  // <Loader />
+                  <div>-</div>
+                ) : (
+                  risk.riskScores.lendingRisk.toFixed(2) + "%"
+                )}
+              </p>
+            </div>
+            <div className="side-bar-section-sec">
+              <h2 className="side-bar-section-title">Reputation Risk:</h2>
+              <p className="side-bar-section-text">
+                {risk === null || data === undefined ? (
+                  // <Loader />
+                  <div>-</div>
+                ) : (
+                  risk.riskScores.reputationRisk.toFixed(2) + "%"
+                )}
+              </p>
+            </div>
           </div>
-        )
-      }
+        </div>
+      )}
+      {risk && risk.reasons.length > 0 && (
+        <div className="side-bar-section-2">
+          <h2 className="side-bar-section-title">Risk Reasons:</h2>
+          {risk.reasons.map((reason, index) => (
+            <div key={index}>{renderRiskReason(reason, index + 1)}</div>
+          ))}
+        </div>
+      )}
       {data && (
         // data.txs && undefined &&
         <TransactionsTable txs={data.txs} />
@@ -437,9 +433,14 @@ const ReportBody = ({ data, risk }) => {
 const renderRiskReason = (reason, index) => {
   return (
     <div className="risk-reason">
-      <h4 className="risk-reason-title" style={{
-        fontSize: "14px",
-      }}>{index}. {reason.explanation}</h4>
+      <h4
+        className="risk-reason-title"
+        style={{
+          fontSize: "14px",
+        }}
+      >
+        {index}. {reason.explanation}
+      </h4>
     </div>
   );
 };

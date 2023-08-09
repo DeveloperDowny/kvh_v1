@@ -46,7 +46,7 @@ const WebHook = () => {
 
                             <a href="/monitoring">
                                 <HStack mt={2} textDecor={'underline'} >
-                                    <Text>See more address</Text>
+                                    <Text>Monitor more address</Text>
                                     <FiArrowRight />
                                 </HStack>
                             </a>
