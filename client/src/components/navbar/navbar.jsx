@@ -110,9 +110,10 @@ const Navbar = () => {
       <div className="logo t-flex t-items-center">
         {/* <h2 className="nazar t-text-white">NAZAR</h2> */}
         {/* <h2 className="t-italic t-font-bold t-text-[2rem] t-text-white"> */}
-        <h2 className="t-italic t-font-bold t-text-[2rem] t-text-[#0262AF]">
+        {/* <h2 className="t-italic t-font-bold t-text-[2rem] t-text-[#0262AF]">
           NAZAR
-        </h2>
+        </h2> */}
+      <img src="/nazar-logo.png" alt="Nazar" />
       </div>
       {/* <div className="search-bar"> */}
       <div className="t-flex t-justify-center">
