@@ -9,6 +9,7 @@ import i18n from "i18next";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 import enTranslations from "./locales/en.json";
 import hiTranslations from "./locales/hi.json";
+import { theme } from "./theme";
 
 // ReactDOM.render(
 //   <ChakraProvider>
@@ -34,7 +35,7 @@ i18n.use(initReactI18next).init({
 
 const rootElement = document.getElementById("root");
 ReactDOM.createRoot(rootElement).render(
-  <ChakraProvider>
+  <ChakraProvider theme={theme}>
     <I18nextProvider i18n={i18n}>
       <Provider store={store}>
         <App />

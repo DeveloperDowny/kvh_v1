@@ -13,7 +13,7 @@ const forGraphTypeToImgMap = {
   eth: "/ethereum_logo.png",
   xmr: "/xmr_img.png",
   ada: "/ada_img.png",
-  tro: "/tron_logo.png",
+  tron: "/tron_logo.png",
   sol: "/solana_logo.png",
   ton: "/ton_icon.png",
   unk: "/question_mark.png",
@@ -54,7 +54,8 @@ const GraphVisualization = () => {
   }, []);
 
   useEffect(() => {
-    APIRequests.explore(specialId)
+    // APIRequests.explore(specialId)
+    APIRequests.explore(cryptoAddress)
       .catch((err) => {
         console.log("err in explore:", err);
       })
@@ -83,6 +84,10 @@ const GraphVisualization = () => {
   const cryptoType = useSelector((state) => state.siteCustom.mCryptoType);
 
   useEffect(() => {
+    console.log("cryptoType:", cryptoType);
+  }, [cryptoType]);
+
+  useEffect(() => {
     if (!data) return;
     const nodeArr = [];
     const edgeArr = [];
@@ -94,76 +99,135 @@ const GraphVisualization = () => {
     const incrementCont = 20; // Increment y position by 100 for each node
     console.log("mtransData:", data);
     for (let index in data) {
-      // if (specialId === data[index].to || specialId === data[index].from) {
-      //   specialIndex = index;
-      // }
-      const arrayData = data[index];
-      console.log("arrayData:", arrayData);
-      const from = arrayData.from;
-      const to = arrayData.to;
-      // Rest of the code...
+      if (cryptoType === "btc") {
+        for (let index in data) {
+          const txData = data[index];
 
-      edgeArr.push({
-        from: from,
-        to: to,
-        // label: transactionAddress,
-      });
-      if (!nodeSet.has(to)) {
-        nodeArr.push({
-          id: to,
-          // label: "Add",
-          label: to,
-          // image: EthImg,
-          // image: "https://cdn-images-1.medium.com/max/529/1*XmHUL5DeySv_dGmvbPqdDQ.png",
-          // image: process.env.PUBLIC_URL + "/bitcoin_img.png",
-          image:
-            process.env.PUBLIC_URL + forGraphTypeToImgMap[cryptoType || "unk"],
+          // maybe let's see later
+          // const from = txData.inputs[0].address;
 
-          shape: "image",
-          x: specialId === to ? 0 : 200, // Position nodes sending money to specialId on the left
-          y: yPos,
-          color: specialId === to ? "red" : undefined,
+          // let add = txData.outputs[0].address;
+          const to = txData.outputs[0].address;
+          // const from = txData.[0].address;
+          // const to = txData.outputs[0].address;
+
+          edgeArr.push({
+            // from: from,
+            from: specialId,
+            to: to,
+            label: txData.outputs[0].value,
+          });
+
+          if (!nodeArr.find((node) => node.id === to)) {
+            nodeArr.push({
+              id: to,
+              label: to,
+              image:
+                process.env.PUBLIC_URL +
+                forGraphTypeToImgMap[cryptoType || "unk"],
+              shape: "image",
+              x: specialId === to ? 0 : 200,
+              y: yPos,
+              color: specialId === to ? "red" : undefined,
+            });
+            if (specialId === to) {
+              specialIndex = index;
+            }
+            yPos += incrementCont;
+          }
+
+          // if (!nodeArr.find((node) => node.id === from)) {
+          //   nodeArr.push({
+          //     id: from,
+          //     label: from,
+          //     image:
+          //       process.env.PUBLIC_URL +
+          //       forGraphTypeToImgMap[cryptoType || "unk"],
+          //     shape: "image",
+          //     x: specialId === from ? 0 : -200,
+          //     y: yPos,
+          //     color: specialId === from ? "red" : undefined,
+          //   });
+          //   if (specialId === from) {
+          //     specialIndex = index;
+          //   }
+          //   yPos += incrementCont;
+          // }
+        }
+      } else {
+        // if (specialId === data[index].to || specialId === data[index].from) {
+        //   specialIndex = index;
+        // }
+        const arrayData = data[index];
+        console.log("arrayData:", arrayData);
+        const from = arrayData.from;
+        const to = arrayData.to;
+        // Rest of the code...
+
+        edgeArr.push({
+          from: from,
+          to: to,
+          // label: transactionAddress,
         });
-        if (specialId === to) {
-          specialIndex = index;
-          console.log("specialIndex:", specialIndex);
+        if (!nodeSet.has(to)) {
+          nodeArr.push({
+            id: to,
+            // label: "Add",
+            label: to,
+            // image: EthImg,
+            // image: "https://cdn-images-1.medium.com/max/529/1*XmHUL5DeySv_dGmvbPqdDQ.png",
+            // image: process.env.PUBLIC_URL + "/bitcoin_img.png",
+            image:
+              process.env.PUBLIC_URL +
+              forGraphTypeToImgMap[cryptoType || "unk"],
+
+            shape: "image",
+            x: specialId === to ? 0 : 200, // Position nodes sending money to specialId on the left
+            y: yPos,
+            color: specialId === to ? "red" : undefined,
+          });
+          if (specialId === to) {
+            specialIndex = index;
+            console.log("specialIndex:", specialIndex);
+          }
+
+          nodeSet.add(to);
+          yPos += incrementCont;
         }
 
-        nodeSet.add(to);
-        yPos += incrementCont;
-      }
+        if (!nodeSet.has(from)) {
+          nodeArr.push({
+            id: from,
+            // label: "Add",
+            shape: "image",
 
-      if (!nodeSet.has(from)) {
-        nodeArr.push({
-          id: from,
-          // label: "Add",
-          shape: "image",
+            label: from,
+            // image: EthImg,
+            // image: "https://cdn-images-1.medium.com/max/529/1*XmHUL5DeySv_dGmvbPqdDQ.png",
+            image:
+              // process.env.PUBLIC_URL + "/bitcoin_img.png",
+              process.env.PUBLIC_URL +
+              forGraphTypeToImgMap[cryptoType || "unk"],
 
-          label: from,
-          // image: EthImg,
-          // image: "https://cdn-images-1.medium.com/max/529/1*XmHUL5DeySv_dGmvbPqdDQ.png",
-          image:
-            // process.env.PUBLIC_URL + "/bitcoin_img.png",
-            process.env.PUBLIC_URL + forGraphTypeToImgMap[cryptoType || "unk"],
+            x: specialId === from ? 0 : -200, // Position nodes receiving money from specialId on the right
+            y: yPos,
+            color: specialId === from ? "red" : undefined,
+          });
 
-          x: specialId === from ? 0 : -200, // Position nodes receiving money from specialId on the right
-          y: yPos,
-          color: specialId === from ? "red" : undefined,
-        });
+          if (specialId === from) {
+            specialIndex = index;
+            console.log("specialIndex:", specialIndex);
+          }
 
-        if (specialId === from) {
-          specialIndex = index;
-          console.log("specialIndex:", specialIndex);
+          nodeSet.add(from);
+          yPos += incrementCont;
         }
-
-        nodeSet.add(from);
-        yPos += incrementCont;
+        edgeSet.add({
+          from: from,
+          to: to,
+          label: "m",
+        });
       }
-      edgeSet.add({
-        from: from,
-        to: to,
-        label: "m",
-      });
     }
 
     const calcY = yPos / 2;
