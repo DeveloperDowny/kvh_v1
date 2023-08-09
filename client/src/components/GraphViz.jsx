@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import Graph from "react-graph-vis";
 import { useLocation, useParams } from "react-router-dom";
 import { useAppDispatch } from "../store";
-import { setIsOpen2, setShouldShowSideBar } from "../reducers/SiteCustom";
+import {
+  setAddress,
+  setIsOpen2,
+  setMCryptoType,
+  setShouldShowSideBar,
+} from "../reducers/SiteCustom";
 import APIRequests from "../api";
 import ReportComponent from "./Report";
 import { EthImg } from "../assets";
 import { useSelector } from "react-redux";
+import { regexes } from "./navbar/navbar";
 
 const forGraphTypeToImgMap = {
   btc: "/bitcoin_logo.png",
@@ -50,10 +56,26 @@ const GraphVisualization = () => {
   // Sample graph data in visjs format
 
   useEffect(() => {
-    dispatch(setShouldShowSideBar(false));
+    dispatch(setShouldShowSideBar(true));
   }, []);
+  useEffect(() => {
+    if (board_id) {
+      for (const type in regexes) {
+        if (regexes[type].some((pattern) => pattern.test(board_id))) {
+          dispatch(setMCryptoType(type));
+          // dispatch(setAddress(inputValue));
+          break; // Break the loop once a match is found
+        }
+      }
+
+      dispatch(setAddress(board_id));
+      console.log("board id set as address", board_id);
+      // auto find and do that too
+    }
+  }, [board_id]);
 
   useEffect(() => {
+    console.log("this got triggered", cryptoAddress);
     // APIRequests.explore(specialId)
     APIRequests.explore(cryptoAddress)
       .catch((err) => {
@@ -74,21 +96,13 @@ const GraphVisualization = () => {
       });
   }, [cryptoAddress]);
 
-  useEffect(() => {
-    console.log("on data change");
-    console.log("dataffsdf:", data);
-  }, [data]);
-
-  useEffect(() => {
-    dispatch(setShouldShowSideBar(true));
-  }, []);
-
   const cryptoType = useSelector((state) => state.siteCustom.mCryptoType);
 
   useEffect(() => {
     console.log("cryptoType:", cryptoType);
   }, [cryptoType]);
 
+  // data pe hi ho raha hai
   useEffect(() => {
     if (!data) return;
     const nodeArr = [];

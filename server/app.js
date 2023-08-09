@@ -14,22 +14,31 @@ const auth = require("./middlewares/auth");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 const baseR = express.Router();
-app.use("/api", (req, res, next) => {
-  // Allow requests from any origin
-  console.log("test set in req", req.body);
+app.use(
+  "/api",
+  (req, res, next) => {
+    // Allow requests from any origin
+    console.log("test set in req", req.body);
 
-  res.header('Access-Control-Allow-Origin', '*');
-  // Allow the following HTTP methods
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  // Allow these headers to be sent
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-}, baseR);
+    res.header("Access-Control-Allow-Origin", "*");
+    // Allow the following HTTP methods
+    res.header(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    // Allow these headers to be sent
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  },
+  baseR
+);
 
-
-baseR.use("/explore", auth, require("./Router/Block"));
+// baseR.use("/explore", auth, require("./Router/Block"));
+baseR.use("/explore", require("./Router/Block"));
 app.use("/auth", require("./Router/Auth"));
 baseR.use("/market", require("./Router/Market"));
 
@@ -43,7 +52,6 @@ baseR.use("/market", require("./Router/Market"));
 //   next();
 // }, require("./Router/Test"));
 
-
 // app.use((req, res, next) => {
 //   // Allow requests from any origin
 
@@ -54,7 +62,6 @@ baseR.use("/market", require("./Router/Market"));
 //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 //   next();
 // });
-
 
 const PORT = 5000;
 app.listen(PORT, () => {
