@@ -382,12 +382,14 @@ const ReportBody = ({ data, risk }) => {
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Combined Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined || risk.riskScores ? (
+                {risk === null ||
+                data === undefined ||
+                risk.mdata.riskScores.combinedRisk ? (
                   // <Loader />
                   <div>-</div>
                 ) : (
                   // set a timeout here maybe?
-                  risk.riskScores.combinedRisk.toFixed(2) + "%"
+                  risk.mdata.riskScores.combinedRisk.toFixed(2) + "%"
                 )}
               </p>
             </div>
@@ -398,7 +400,7 @@ const ReportBody = ({ data, risk }) => {
                   // <Loader />
                   <div>-</div>
                 ) : (
-                  risk.riskScores.fraudRisk.toFixed(2) + "%"
+                  risk.mdata.riskScores.fraudRisk.toFixed(2) + "%"
                 )}
               </p>
             </div>
@@ -412,7 +414,7 @@ const ReportBody = ({ data, risk }) => {
                   // <Loader />
                   <div>-</div>
                 ) : (
-                  risk.riskScores.lendingRisk.toFixed(2) + "%"
+                  risk.mdata.riskScores.lendingRisk.toFixed(2) + "%"
                 )}
               </p>
             </div>
@@ -423,14 +425,14 @@ const ReportBody = ({ data, risk }) => {
                   // <Loader />
                   <div>-</div>
                 ) : (
-                  risk.riskScores.reputationRisk.toFixed(2) + "%"
+                  risk.mdata.riskScores.reputationRisk.toFixed(2) + "%"
                 )}
               </p>
             </div>
           </div>
         </div>
       )}
-      {risk && risk.reasons.length > 0 && (
+      {risk && risk.mdata.reasons > 0 && (
         <div className="side-bar-section-2">
           <h2 className="side-bar-section-title">Risk Reasons:</h2>
           {risk.reasons.map((reason, index) => (
