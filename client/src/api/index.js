@@ -2,9 +2,9 @@ import axios from "axios";
 
 const API = axios.create({
   // baseURL: "https://kvh.serveo.net",
-  baseURL: "https://3472-103-120-31-178.ngrok-free.app",
+  // baseURL: "https://3472-103-120-31-178.ngrok-free.app",
   // baseURL: "https://ee7a-103-120-31-178.ngrok-free.app"
-  // baseURL: 'http://localhost:5000'
+  baseURL: 'http://localhost:5000'
   // headers: {
   //   ""
   // }
@@ -23,6 +23,10 @@ API.interceptors.request.use((req) => {
 // export const testGet = () => API.get("/");
 
 class APIRequests {
+  static async mtest() {
+
+    return await API.get("/fixed_label/get/list");
+  }
   static async signIn(data) {
     return await API.post("/auth/login", data);
   }

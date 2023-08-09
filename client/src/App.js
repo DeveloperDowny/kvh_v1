@@ -39,6 +39,7 @@ const App = () => {
           <Route path="/boards/:board_id" element={<GraphVisualization />} />
           <Route path="/labels" element={<Label />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/test" element={<TestComponent />} />
         </Routes>
       </BrowserRouter>
     </Layout>
