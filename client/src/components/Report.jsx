@@ -19,10 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsOpen2 } from "../reducers/SiteCustom";
-
-
-
-
+import { Input } from '@chakra-ui/react'
 
 const ReportComponent = ({ open, address, close }) => {
   const dispatch = useDispatch();
@@ -446,13 +443,12 @@ const renderRiskReason = (reason, index) => {
 };
 
 const TransactionsTable = ({ txs }) => {
-  if (!txs || txs.length === 0) {
-    return (
-      <Box p={5}>
-        <Text>No transactions found.</Text>
-      </Box>
-    );
-  }
+  const [searchValue, setSearchValue] = React.useState("");
+
+  const filteredTxs = React.useMemo(
+    () => txs.filter(tx => tx.to.includes(searchValue)),
+    [txs, searchValue]
+  );
 
   return (
     <Box overflowY="auto" marginBottom={180} width="100%">
@@ -473,8 +469,25 @@ const TransactionsTable = ({ txs }) => {
           placement="top"
           fontSize={14}
         >
-          Transactions
+          {/* <input 
+            type="text" 
+            placeholder="Search by Receiver..."
+            value={searchValue}
+            onChange={e => setSearchValue(e.target.value)}
+          /> */}
+          <Input placeholder='Search Transactions' type="text" value={searchValue} onChange={e => setSearchValue(e.target.value)} style={
+            {
+              width: "95%",
+            }
+          } />
         </TableCaption>
+
+        {filteredTxs.length === 0 ? (
+          <Box p={5}>
+            <Text>No transactions found.</Text>
+          </Box>
+        ) : (
+          <>
         <Thead>
           <Tr>
             <Th textAlign="center">Date</Th>
@@ -482,12 +495,9 @@ const TransactionsTable = ({ txs }) => {
             <Th textAlign="center">Amount</Th>
           </Tr>
         </Thead>
-        <Tbody padding={0} whiteSpace={0} columnGap={0}>  
-          {txs.map((tx, index) => {
-            // tx.time (ms to epoch)
-
-            // convert to dd/mm/yyyy format string
-            var time = new Date(tx.time * 1000); // JavaScript uses milliseconds
+        <Tbody padding={0} whiteSpace={0} columnGap={0}>
+          {filteredTxs.map((tx, index) => {
+            var time = new Date(tx.time * 1000);
             time = time.toLocaleDateString();
 
             let recv = tx.to;
@@ -502,23 +512,24 @@ const TransactionsTable = ({ txs }) => {
 
             return (
               <Tr key={index}>
-                <Td isNumeric>
+                <Td textAlign="center">
                   <Text isTruncated fontSize={12}>
                     {time}
                   </Text>
                 </Td>
-                <Td isNumeric>
+                <Td textAlign="center">
                   <Text isTruncated fontSize={12}>
                     {recv}
                   </Text>
                 </Td>
-                <Td isNumeric fontSize={12}>
+                <Td textAlign="center" fontSize={12}>
                   {val} {tx.network}
                 </Td>
               </Tr>
             );
           })}
         </Tbody>
+        </>)}
       </Table>
     </Box>
   );

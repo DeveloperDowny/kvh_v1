@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import Graph from "react-graph-vis";
 import { useLocation, useParams } from "react-router-dom";
 import { useAppDispatch } from "../store";
-import { setIsOpen2, setShouldShowSideBar } from "../reducers/SiteCustom";
+import {
+  setAddress,
+  setIsOpen2,
+  setMCryptoType,
+  setShouldShowSideBar,
+} from "../reducers/SiteCustom";
 import APIRequests from "../api";
 import ReportComponent from "./Report";
 import { EthImg } from "../assets";
 import { useSelector } from "react-redux";
+import { useToast } from "@chakra-ui/react";
 
 const forGraphTypeToImgMap = {
   btc: "/bitcoin_logo.png",
@@ -19,6 +25,7 @@ const forGraphTypeToImgMap = {
   unk: "/question_mark.png",
 };
 const GraphVisualization = () => {
+  const toast = useToast();
   const dispatch = useAppDispatch();
   const { board_id } = useParams();
   console.log("board_id:", board_id);
@@ -50,10 +57,26 @@ const GraphVisualization = () => {
   // Sample graph data in visjs format
 
   useEffect(() => {
-    dispatch(setShouldShowSideBar(false));
+    dispatch(setShouldShowSideBar(true));
   }, []);
+  useEffect(() => {
+    if (board_id) {
+      for (const type in regexes) {
+        if (regexes[type].some((pattern) => pattern.test(board_id))) {
+          dispatch(setMCryptoType(type));
+          // dispatch(setAddress(inputValue));
+          break; // Break the loop once a match is found
+        }
+      }
+
+      dispatch(setAddress(board_id));
+      console.log("board id set as address", board_id);
+      // auto find and do that too
+    }
+  }, [board_id]);
 
   useEffect(() => {
+    console.log("this got triggered", cryptoAddress);
     // APIRequests.explore(specialId)
     APIRequests.explore(cryptoAddress)
       .catch((err) => {
@@ -74,21 +97,13 @@ const GraphVisualization = () => {
       });
   }, [cryptoAddress]);
 
-  useEffect(() => {
-    console.log("on data change");
-    console.log("dataffsdf:", data);
-  }, [data]);
-
-  useEffect(() => {
-    dispatch(setShouldShowSideBar(true));
-  }, []);
-
   const cryptoType = useSelector((state) => state.siteCustom.mCryptoType);
 
   useEffect(() => {
     console.log("cryptoType:", cryptoType);
   }, [cryptoType]);
 
+  // data pe hi ho raha hai
   useEffect(() => {
     if (!data) return;
     const nodeArr = [];
@@ -172,6 +187,7 @@ const GraphVisualization = () => {
           to: to,
           // label: transactionAddress,
         });
+
         if (!nodeSet.has(to)) {
           nodeArr.push({
             id: to,
@@ -264,6 +280,41 @@ const GraphVisualization = () => {
     // Add your custom actions or information display logic here
   };
 
+  const exploreClickedNode = (nodeId) => {
+    APIRequests.explore(nodeId)
+      .catch((err) => {
+        console.log("err in explore:", err);
+      })
+      .then((res) => {
+        if (!res) return;
+        console.log("res:", res);
+        if (!res.data) return;
+        console.log("res.data:", res.data);
+        if (!res.data.data) return;
+        console.log("res.data.data:", res.data.data);
+        if (!res.data.data.data) return;
+        console.log("res.data.data.data:", res.data.data.data);
+
+        // don't overwrite the data, concatenate it
+        // setData(res.data.data.data.txs);
+
+        // setData(res.data.data.data.txs);
+        setData((prevData) => {
+          return [...prevData, ...res.data.data.data.txs];
+        });
+
+        toast({
+          title: "Account created.",
+          description: "We've created your account for you.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+
+        console.log("data is set");
+      });
+  };
+
   function handleNodeClick(event) {
     // Perform actions like showing more information about the node, updating state, etc.
     if (!event.nodes[0]) return;
@@ -272,6 +323,8 @@ const GraphVisualization = () => {
     dispatch(setIsOpen2(false));
     setHoveredId(event.nodes[0]);
     dispatch(setIsOpen2(true));
+
+    exploreClickedNode(event.nodes[0]);
   }
 
   // const options = {
@@ -329,6 +382,9 @@ const GraphVisualization = () => {
           // }}
 
           options={{
+            physics: {
+              enabled: false,
+            },
             nodes: {
               borderWidth: 0,
               size: 42,
