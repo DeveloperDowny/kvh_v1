@@ -32,7 +32,7 @@ app.use("/api", (req, res, next) => {
 baseR.use("/explore",
 //  auth,
   require("./Router/Block"));
-// app.use("/auth", require("./Router/Auth"));
+app.use("/auth", require("./Router/Auth"));
 baseR.use("/market", require("./Router/Market"));
 
 // app.use("/fixed_label", (req, res, next) => {

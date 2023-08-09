@@ -97,6 +97,11 @@ class APIRequests {
   static async getMonitorAddress() { 
     return await API.get(`/api/explore/get/address`);
   }
+
+  static async addRemark(address, data) {
+    console.log(`/api/explore/remark/${address}`)
+    return await API.post(`/api/explore/remark/${address}`,data);
+  }
 }
 
 export default APIRequests;

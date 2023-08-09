@@ -329,6 +329,7 @@ class BlockController {
 
   //addRemark
   addRemark = async (req, res) => {
+    console.log("here")
     try {
       const id = req.params.id;
       const remark = req.body.remark;
