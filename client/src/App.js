@@ -40,6 +40,7 @@ const App = () => {
           <Route path="/labels" element={<Label />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/monitoring" element={<Monitoring />} />
+          <Route path="/test" element={<TestComponent />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -1,11 +1,8 @@
 import {useState, useEffect} from 'react'
 import LabelTable from '../Dashboard/LabelTable'
 import { Box, Heading, Input, InputGroup, InputLeftAddon, InputRightElement, Image, InputAddon } from '@chakra-ui/react'
-import { AiFillDashboard } from 'react-icons/ai'
-import { FiFile } from 'react-icons/fi'
-import { searchBar } from '../searchbar/searchbar'
+import { FiFile, FiList } from 'react-icons/fi'
 import { Search2Icon, SearchIcon } from '@chakra-ui/icons'
-import { typeToImgMap } from '../navbar/navbar'
 import APIRequests from '../../api'
 
 const Label = () => {
@@ -35,7 +32,7 @@ const Label = () => {
   return (
     <Box py={16} px={6}>
       <Heading color='primary'>
-        <FiFile style={{ display: 'inline' }} /> Labels
+        <FiList style={{ display: 'inline' }} /> Labels
       </Heading>
       <InputGroup mt={6} rounded={'md'}>
         <InputAddon pointerEvents="none">

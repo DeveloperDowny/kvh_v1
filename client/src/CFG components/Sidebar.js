@@ -1,8 +1,7 @@
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { color } from "framer-motion";
 import { AiFillDashboard } from "react-icons/ai";
-import { FiArrowDownCircle, FiCodesandbox, FiCpu, FiFile, FiHome, FiSearch, FiSettings, FiUsers } from "react-icons/fi";
-import {useLocation} from 'react-router-dom'
+import { FiCalendar,  FiHome, FiList, FiSearch, FiSettings, FiUsers } from "react-icons/fi";
 
 const Sidebar = () => {
   
@@ -23,8 +22,9 @@ const Sidebar = () => {
       <VStack spacing="4" align="flex-start">
         <SidebarLink icon={FiHome} link='home' label="Home" />
         <SidebarLink icon={AiFillDashboard} link='dashboard' label="Dashboard" />
+        <SidebarLink icon={FiCalendar} link='boards' label="Boards" />
         <SidebarLink icon={FiUsers} link='users' label="Users" />
-        <SidebarLink icon={FiFile} link='labels' label="Labels" />
+        <SidebarLink icon={FiList} link='labels' label="Labels" />
         <SidebarLink icon={FiSearch} link='monitoring' label="Monitoring" />
         <SidebarLink icon={FiSettings} link='settings' label="Settings" />
       </VStack>
