@@ -61,7 +61,11 @@ export default function VerifyEmailForm({ open, handleClose, email }) {
           })
         );
 
-        navigate("/home");
+        if (res.data.user_role && res.data.user_role === "investigator") {
+          navigate("/dashboard");
+        } else {
+          navigate("/blogs");
+        }
       }
       handleClose();
     } catch (error) {

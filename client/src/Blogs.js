@@ -1,8 +1,8 @@
 import React from "react";
 import Blog from "./components/blog/blog.js";
-import blog3 from "./assets/blog3.png";
-import blog2 from "./assets/blog2.jpg";
-import blog1 from "./assets/blog1.jpg";
+// import blog3 from "./assets/blog3.png";
+import blog2 from "./assets/blog3.jpeg";
+import blog3 from "./assets/blog1.jpeg";
 import Trust from "./components/canITrust/canITrust.js";
 // import AddBlog from "../components/AddBlog";
 const Blogs = () => {
