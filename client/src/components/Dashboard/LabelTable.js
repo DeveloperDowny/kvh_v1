@@ -1,8 +1,10 @@
 import React from 'react'
+import { Table, Text, Th, Thead, Tbody, TableContainer, Td, Tr, HStack, Badge, Tag } from '@chakra-ui/react'
+import { typeToImgMap } from '../navbar/navbar'
 
-import { Table, Text, Th, Thead, Tbody, TableContainer, Td, Tr } from '@chakra-ui/react'
+
 const LabelTable = ({ data }) => {
-    console.log(data)
+
     return (
         <>
             <TableContainer>
@@ -26,17 +28,24 @@ const LabelTable = ({ data }) => {
 }
 
 const TableRow = ({ label, boardId, cryptoType }) => {
-
+    // console.log(boardId)
     return (
         <Tr>
             <Td>{label}</Td>
-            <Td maxW={'400px'} pr={10} overflow={'hidden'}>
-                <a href={`/${boardId}`}>
-                    {boardId}
-                </a>
+            <Td maxW={'200px'} pr={10} overflow={'hidden'}>
+                <Tag colorScheme='blue' overflow={'hidden'}>
+                    <a href={`/${boardId}`}>
+                        /{boardId}
+                    </a>
+                </Tag>
             </Td>
             <Td maxW={'400px'} pr={10} overflow={'hidden'}>
-                {cryptoType}
+
+                <HStack align={'center'}>
+                    <img width={20} height={20} src={typeToImgMap[cryptoType]} alt={cryptoType} />
+                    <Text fontWeight={'semibold'} fontSize={'xl'}>{cryptoType}</Text>
+                </HStack>
+
             </Td>
         </Tr>
     );

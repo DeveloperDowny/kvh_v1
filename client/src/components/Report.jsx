@@ -131,7 +131,7 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
     setIsEditing(false);
     const res = await APIRequests.changeTitle(address, {
       title: title,
-      board_id: mainAdd,
+      boardID: mainAdd,
     });
 
     console.log("update res", res);
