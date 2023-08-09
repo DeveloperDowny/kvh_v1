@@ -34,26 +34,26 @@
         }
     }
 
-    const onNazarBtnClick = () => {
+    const onNazarBtnClick = async () => {
         statusNode = document.createElement('span');
         walletAddress = walletAddressNode.innerText
         console.log(walletAddress)
-        fetch(`http://localhost:5000/api/explore/risk/${walletAddress}`)
+        await fetch(`http://localhost:5000/api/explore/risk/${walletAddress}`)
         .then(response => response.json())
         .then(data => { 
-            riskMessage = data.data.riskMessage;
-            score = data.data.riskScores.combinedRisk;
+            // console.log(data.mdata)
+            riskMessage = data.mdata.riskMessage;
+            score = data.mdata.riskScores.combinedRisk;
+            // console.log("extension", data.mdata)
         }).catch(err => {
             console.log(err)
         });
-        console.log(riskMessage)
         if (score > 30) {
             walletAddressNode.style.color = 'red'
             nazarLogoBtn.replaceWith(statusNode); 
             statusNode.innerText = '⚠️ ' + riskMessage;
             statusNode.style.color = 'red'
         } else {
-            console.log(score)
             walletAddressNode.style.color = 'green'
             nazarLogoBtn.replaceWith(statusNode);
             statusNode.innerText = '✅ ' + riskMessage;

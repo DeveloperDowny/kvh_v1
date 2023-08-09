@@ -22,13 +22,16 @@ blockR.get("/remove/address/:id", blockC.addTrackingAddr);
 blockR.get("/show/address/:nw", blockC.showTrackedAddresses);
 blockR.get("/scam/:address", blockC.CheckScamData);
 
-blockR.post("/", async (req, res) => {
-    console.log("test set", req.body)
-    console.log("here in block");
-    const newAddr = new AddressTracker({ data: req.body })
-    await newAddr.save();
-    return res.status(200).json("ok")
-});
+blockR.post("/complaint/create", blockC.createComplaint);
+blockR.post("/complaint/update/:transactionId", blockC.updateComplaint); 
+
+// blockR.post("/", async (req, res) => {
+//     console.log("test set", req.body)
+//     console.log("here in block");
+//     const newAddr = new AddressTracker({ data: req.body })
+//     await newAddr.save();
+//     return res.status(200).json("ok")
+// });
 
 
 

@@ -29,10 +29,8 @@ app.use("/api", (req, res, next) => {
 }, baseR);
 
 
-baseR.use("/explore",
-//  auth,
-  require("./Router/Block"));
-// app.use("/auth", require("./Router/Auth"));
+baseR.use("/explore", require("./Router/Block"));
+app.use("/auth", require("./Router/Auth"));
 baseR.use("/market", require("./Router/Market"));
 
 // app.use("/fixed_label", (req, res, next) => {
@@ -57,6 +55,15 @@ baseR.use("/market", require("./Router/Market"));
 //   next();
 // });
 
+app.post('/webhook', async (req, res) => {
+  try {
+    const newAddr = new AddressTracker(req.body);
+    await newAddr.save()
+    return res.status(200).json("ok")
+  }catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: e });
+}});
 
 const PORT = 5000;
 app.listen(PORT, () => {

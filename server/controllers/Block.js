@@ -13,7 +13,7 @@ const path = require("path");
 
 const { response } = require("express");
 const AddressTracker = require("../models/AddressTracker");
-
+const Complaints = require("../models/ComplaintSchema");
 // const sources = {
 //     "TokenView": 0,
 //     "Etherscan": 1,
@@ -51,9 +51,9 @@ const checkCurrencyInCSV = async (currency, filename) => {
 
 const riskRangeMapping = {
   "0-25": "Good",
-  "26-30": "Neutral",
-  "40-60": "A troublingly high score",
-  "60-100": "A failing score",
+  "26-39": "Neutral",
+  "40-60": "High Risk",
+  "60-100": "Very High Risk",
 };
 
 // Function to get risk message based on range
@@ -467,7 +467,9 @@ class BlockController {
 
   //tracking address
   setWebhookUrl = async (req, res) => {
+    // console.log("tracking address");
     try {
+
       // Endpoint URL for setting the webhook URL
       const endpointUrl = `https://services.tokenview.io/vipapi/monitor/setwebhookurl?apikey=${process.env.vaTOKEN}`;
       const webhookUrl = "https://cf6f-103-120-31-178.ngrok-free.app/webhook";
@@ -514,6 +516,7 @@ class BlockController {
         `https://services.tokenview.io/vipapi/monitor/address/add/${nw}/${id}?apikey=${process.env.vaTOKEN}`
       );
       const jsonResponse = response.data;
+      
       return res.status(200).json({ data: jsonResponse });
     } catch (error) {
       return res.status(500).json({ error: error });
@@ -540,6 +543,7 @@ class BlockController {
         `https://services.tokenview.io/vipapi/monitor/address/list/${nw}?page=0&apikey=${process.env.vaTOKEN}`
       );
       const jsonResponse = response.data;
+      jsonResponse.network = nw;
       return res.status(200).json({ data: jsonResponse });
     } catch (e) {
       return res.status(500).json({ error: e });
@@ -616,6 +620,38 @@ class BlockController {
       res.status(500).send("An error occurred while trying to fetch the data");
     }
   };
+
+  //Complaint routes
+    // Create a new report
+    createComplaint = async (req, res) => {
+        try {
+        const newReport = new Complaints(req.body);
+        const savedReport = await newReport.save();
+        res.status(201).json(savedReport);
+        } catch (error) {
+        res.status(400).json({ error: 'Failed to create report' });
+        }
+    };
+  
+    // Update an existing report by ID
+    updateComplaint = async (req, res) => {
+        try {
+        const { transactionId } = req.params;
+        // console.log(transactionId)
+        const updatedReport = await Complaints.findOneAndUpdate(
+            { transactionId },
+            req.body,
+            { new: true }
+        );
+        if (!updatedReport) {
+            return res.status(404).json({ error: 'Report not found' });
+        }
+        res.json(updatedReport);
+        } catch (error) {
+        res.status(400).json({ error: 'Failed to update report' });
+        }
+    }
+
 }
 
 module.exports = BlockController;
