@@ -29,28 +29,31 @@ app.use("/api", (req, res, next) => {
 }, baseR);
 
 
-baseR.use("/explore", require("./Router/Block"));
+baseR.use("/explore", auth, require("./Router/Block"));
 app.use("/auth", require("./Router/Auth"));
 baseR.use("/market", require("./Router/Market"));
 
-app.post("/webhook", async (req, res) => {
-  console.log("test set", req.body)
-  const newAddr = new AddressTracker({ data: req.body })
-  await newAddr.save();
-  return res.status(200).json("ok")
-})
-
-
-app.use((req, res, next) => {
+app.use("/fixed_label", (req, res, next) => {
   // Allow requests from any origin
-
-  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
   // Allow the following HTTP methods
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   // Allow these headers to be sent
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
-});
+}, require("./Router/Test"));
+
+
+// app.use((req, res, next) => {
+//   // Allow requests from any origin
+
+//   res.header('Access-Control-Allow-Origin', '*');
+//   // Allow the following HTTP methods
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//   // Allow these headers to be sent
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   next();
+// });
 
 
 const PORT = 5000;
