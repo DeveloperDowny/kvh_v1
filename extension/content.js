@@ -34,26 +34,28 @@
     }
 
     const onNazarBtnClick = () => {
-        // walletAddress = walletAddressNode.innerText
-        // fetch(`http://localhost:5000/api/explore/risk/${walletAddress}`)
-        // .then(() => {
-        //     let data
-        // })        
-        // // let rand = Math.random()
-        // statusNode = document.createElement('span')
-
-        // will be replaced by api call
-        if (rand < 0.5) {
-            walletAddressNode.style.color = 'red'
-            nazarLogoBtn.replaceWith(statusNode); 
-            statusNode.innerText = '⚠️ UNSAFE'
-            statusNode.style.color = 'red'
-        } else {
-            walletAddressNode.style.color = 'green'
-            nazarLogoBtn.replaceWith(statusNode);
-            statusNode.innerText = '✅ SAFE'
-            statusNode.style.color = 'green'
-        }
+        walletAddress = walletAddressNode.innerText
+        console.log(walletAddress)
+        fetch(`http://localhost:5000/api/explore/risk/${walletAddress}`)
+        .then(response => response.json())
+        .then(data => { 
+            console.log(data)
+        }).catch(err => {
+            console.log(err)
+        });
+        // rand = 6
+        // // will be replaced by api call
+        // if (rand < 0.5) {
+        //     walletAddressNode.style.color = 'red'
+        //     nazarLogoBtn.replaceWith(statusNode); 
+        //     statusNode.innerText = '⚠️ UNSAFE'
+        //     statusNode.style.color = 'red'
+        // } else {
+        //     walletAddressNode.style.color = 'green'
+        //     nazarLogoBtn.replaceWith(statusNode);
+        //     statusNode.innerText = '✅ SAFE'
+        //     statusNode.style.color = 'green'
+        // }
         
         walletAddressNode.style.fontWeight = 'bold'
 
