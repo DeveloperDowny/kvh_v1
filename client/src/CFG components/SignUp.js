@@ -97,7 +97,7 @@ export default function SignupCardOg() {
     <Flex
       // minH={"100vh"}
       // className="t-min-h-[calc(100vh-172px)]"
-      className="t-min-h-[calc(100vh-207px)]"
+      className="t-min-h-[calc(100vh-172px)]"
       align={"center"}
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}

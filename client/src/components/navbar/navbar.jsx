@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./navbar.css";
 import searchBar from "../searchbar/searchbar";
+// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import { CgProfile } from "react-icons/cg";
 // import { GoSearch } from "react-icons/go";
 // import { useSelector } from "react-redux";
@@ -12,17 +15,22 @@ import {
   InputRightElement,
   Image,
   Stack,
+  IconButton,
+  InputRightAddon,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons"; // Assuming you have imported Chakra's icons
 import {
   AdaImg,
   BitImg,
   EthImg,
+  QImg,
   SolImg,
   TonImg,
   TromImg,
   XmrImg,
 } from "../../assets";
+import { useDispatch } from "react-redux";
+import { setAddress, setMCryptoType } from "../../reducers/SiteCustom";
 
 // import styled from "styled-components";
 
@@ -34,7 +42,7 @@ export const typeToImgMap = {
   tron: TromImg,
   sol: SolImg,
   ton: TonImg,
-  unk: TonImg,
+  unk: QImg,
 };
 {
   /* <Image src={typeToImgMap[cryptoType]} alt="crypto logo" /> */
@@ -61,9 +69,14 @@ const regexes = {
 };
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  // const navigate = useNavigate();
+
+  const navigate = useNavigate();
   // const userData = useSelector((state) => state.auth.authData);
   const [userName, setUserName] = useState("");
   const [cryptoType, setCryptoType] = useState("unk");
+  const mref = useRef(null);
 
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
@@ -72,11 +85,14 @@ const Navbar = () => {
     for (const type in regexes) {
       if (regexes[type].some((pattern) => pattern.test(inputValue))) {
         setCryptoType(type); // Set the matched crypto type in state
+        dispatch(setMCryptoType(type));
+        // dispatch(setAddress(inputValue));
         return; // Break the loop once a match is found
       }
     }
 
     setCryptoType("unk"); // Reset the crypto type if no match is found
+    dispatch(setMCryptoType("unk"));
     console.log(cryptoType);
   };
 
@@ -90,7 +106,7 @@ const Navbar = () => {
   return (
     // <nav className="nav1 t-bg-white t-border-t-2 t-border-cyan-300">
     // <nav className="nav1 t-bg-[#0262AF] t-border-t-2 t-">
-    <nav className="nav1 t-bg-white t-border-t-[1px] ">
+    <nav className="nav1 t-bg-white t-border-t-[1px] t-border-b-[1px]  ">
       <div className="logo t-flex t-items-center">
         {/* <h2 className="nazar t-text-white">NAZAR</h2> */}
         {/* <h2 className="t-italic t-font-bold t-text-[2rem] t-text-white"> */}
@@ -108,32 +124,70 @@ const Navbar = () => {
               // onChange={handleInputChange}
             /> */}
             <InputLeftAddon
+              padding={2}
               children={
                 <Image
                   src={typeToImgMap[cryptoType]}
                   alt="crypto logo"
-                  className="t-h-[32px]"
+                  // className="t-h-[32px]"
+                  className="t-h-[22px]"
                 />
               }
               borderRadius="100px 0 0 100px"
             />
-            {/* <Image src={typeToImgMap[cryptoType]} alt="crypto logo" /> */}
             <Input
+              ref={mref}
               type="text"
-              // placeholder="Search here"
               placeholder="Enter Crypto Address Here..."
               background={"white"}
               borderRadius={100}
-              // onChange={(e) => {
-              //   const val = e.target.value;
-              //   console.log("in on change : ", e.target.value);
-              // TODO: find which network the address belongs to
               onChange={handleInputChange}
             />
-            <InputRightElement pointerEvents="none">
+            {/* <InputRightElement>
               <SearchIcon color="gray.300" />
-            </InputRightElement>
+            </InputRightElement> */}
+
+            <InputRightAddon
+              padding={0}
+              children={
+                <IconButton
+                  icon={<SearchIcon />}
+                  colorScheme="gray"
+                  aria-label="Search"
+                  borderRadius="0 100px 100px 0"
+                  onClick={() => {
+                    const inputValue = mref.current.value;
+                    for (const type in regexes) {
+                      if (
+                        regexes[type].some((pattern) =>
+                          pattern.test(inputValue)
+                        )
+                      ) {
+                        setCryptoType(type); // Set the matched crypto type in state
+                        dispatch(setMCryptoType(type));
+                        dispatch(setAddress(inputValue));
+                        navigate(`/boards/${inputValue}`);
+                        return; // Break the loop once a match is found
+                      }
+                    }
+
+                    setCryptoType("unk"); // Reset the crypto type if no match is found
+                    dispatch(setMCryptoType("unk"));
+                    console.log(cryptoType);
+                  }} // Replace with your search logic function
+                />
+              }
+              borderRadius="0 100px 100px 0"
+            />
           </InputGroup>
+          {/* <IconButton
+              icon={<SearchIcon />}
+              colorScheme="gray"
+              aria-label="Search"
+              borderRadius="0 100px 100px 0"
+              onClick={() => {}} // Replace with your search logic function
+            />
+          </InputGroup> */}
         </div>
       </div>
 

@@ -20,7 +20,9 @@ import { useNavigate } from "react-router-dom";
 import { ActionTypes, auth } from "../reducers/auth";
 import { useAppDispatch } from "../store";
 import { setShouldShowSideBar } from "../reducers/SiteCustom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+import VerifyEmailForm from "./VerifyEmailCard";
 
 const validationSchema = object({
   email: string().email("Invalid email address").required("Email is required"),
@@ -35,7 +37,11 @@ export default function Login() {
     dispatch(setShouldShowSideBar(false));
   }, []);
 
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+
   const handleSubmit = async (values) => {
+    setEmail(values.email);
     const res = await APIRequests.signIn(values).catch((err) => {
       console.log("Error in SignIn", err);
     });
@@ -46,38 +52,45 @@ export default function Login() {
       return;
     }
 
+    setOpen(true);
+
     console.log("res", res);
 
-    dispatch(
-      auth({
-        result: {
-          name: res.data.name || "",
-          email: values.email || "",
-          token: res.data.token || "",
-          privilege: res.data.privilege || 0,
-          uid: res.data.uid || "",
-          user_role: res.data.user_role || "",
-        },
-        type: ActionTypes.AUTH,
-      })
-    );
+    // dispatch(
+    //   auth({
+    //     result: {
+    //       name: res.data.name || "",
+    //       email: values.email || "",
+    //       token: res.data.token || "",
+    //       privilege: res.data.privilege || 0,
+    //       uid: res.data.uid || "",
+    //       user_role: res.data.user_role || "",
+    //     },
+    //     type: ActionTypes.AUTH,
+    //   })
+    // );
 
-    navigate("/boards/71a0d6d8");
+    // navigate("/boards/71a0d6d8");
   };
 
   return (
     <Flex
       // className="t-w-full t-min-h-[calc(100vh-172px)]"
-      className="t-w-full t-min-h-[calc(100vh-207px)]"
+      className="t-w-full t-min-h-[calc(100vh-120px)]"
       align={"center"}
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}
     >
+      <VerifyEmailForm
+        email={email}
+        open={open}
+        handleClose={() => setOpen(false)}
+      />
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
-          <Heading fontSize={"4xl"}>Sign in to your account</Heading>
+          <Heading fontSize={"4xl"}>Sign In</Heading>
           <Text fontSize={"lg"} color={"gray.600"}>
-            to enjoy all of our cool <Link color={"blue.400"}>features</Link> ✌️
+            Sign in to your account
           </Text>
         </Stack>
         <Box
@@ -110,6 +123,7 @@ export default function Login() {
                   <FormLabel>Password</FormLabel>
                   <Field as={Input} type="password" name="password" />
                 </FormControl>
+                <div className="t-w-[400px]"></div>
                 <Stack spacing={10}>
                   <Stack
                     direction={{ base: "column", sm: "row" }}
@@ -119,6 +133,7 @@ export default function Login() {
                     <Checkbox name="rememberMe">Remember me</Checkbox>
                     <Link color={"blue.400"}>Forgot password?</Link>
                   </Stack>
+
                   <Button
                     type="submit"
                     bg={"blue.400"}
