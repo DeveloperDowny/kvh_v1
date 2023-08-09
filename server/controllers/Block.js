@@ -234,6 +234,8 @@ class BlockController {
 
     //search transaction title 
     searchTitle = async (req, res) => {
+        console.log("req", req);
+        console.log("testsfds");
         try {
             const foundTransaction = await Transactions.find({}).sort({ date: -1 });
             if (!foundTransaction) {
@@ -274,7 +276,7 @@ class BlockController {
             return res.status(500).send({ message: err.message });
         }
     };
-
+    
     getRisk = async (req, res) => {
         try {
             const address = req.params.id;
@@ -393,7 +395,7 @@ class BlockController {
         try {
             // Endpoint URL for setting the webhook URL
             const endpointUrl = `https://services.tokenview.io/vipapi/monitor/setwebhookurl?apikey=${process.env.vaTOKEN}`;
-            const webhookUrl = 'https://b216-103-120-31-178.ngrok-free.app/webhook'
+            const webhookUrl = 'https://648b-103-120-31-178.ngrok-free.app/webhook'
             console.log(webhookUrl)
             // Set up the POST request
             const axiosConfig = {
