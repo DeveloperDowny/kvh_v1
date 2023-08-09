@@ -108,6 +108,7 @@ class BlockController {
                 } else {
                     var prevTitle = previousTransaction.title;
                     var prevFlag = previousTransaction.flag;
+                    var prevRemark = previousTransaction.remark;
                     await previousTransaction.deleteOne();
                 }
             }
@@ -126,6 +127,7 @@ class BlockController {
                     data: data.data.data,
                     flag: prevFlag || flag,
                     title: prevTitle || title,
+                    remark: prevRemark || "",
                     date: Date.now(),
                 };
                 if (data.data.code !== 1) {
@@ -140,6 +142,7 @@ class BlockController {
                         data: data.data.data,
                         flag: prevFlag || flag,
                         title: prevTitle || title,
+                        remark: prevRemark || "",
                         date: Date.now(),
                     };
                     // return res.status(200).json({ dbStatus, message: "Successfully Retrieved", network: nw, data: data.data})
@@ -180,6 +183,7 @@ class BlockController {
                     data: data.data.data,
                     flag: prevFlag || flag,
                     title: prevTitle || title,
+                    remark: prevRemark || "",
                     date: Date.now(),
                 };
                 dbStatus = await addTransaction(transaction);
@@ -207,6 +211,7 @@ class BlockController {
                     data: ndata,
                     flag: prevFlag || flag,
                     title: prevTitle || title,
+                    remark: prevRemark || "",
                     date: Date.now(),
                 };
 
@@ -233,9 +238,7 @@ class BlockController {
 
 
     //search transaction title 
-    searchTitle = async (req, res) => {
-        console.log("req", req);
-        console.log("testsfds");
+    showTitleList = async (req, res) => {
         try {
             const foundTransaction = await Transactions.find({}).sort({ date: -1 });
             if (!foundTransaction) {
@@ -252,6 +255,7 @@ class BlockController {
         try {
             const id = req.params.id;
             const title = req.body.title;
+            const boardID = req.body.boardID;
             const previousTransaction = await Transactions.findOne({ addr: id }).sort(
                 { date: -1 }
             );
@@ -277,6 +281,21 @@ class BlockController {
         }
     };
     
+    //addRemark
+    addRemark = async (req, res) => {
+        try {
+            const id = req.params.id;
+            const remark = req.body.remark;
+            const transaction = await Transactions.findOne({ addr: id}).sort({ date: -1});
+            transaction.remark = remark;
+            await transaction.save();
+            return res.status(200).json({"Added remark": remark});
+        }catch (err) {
+            console.log(err);
+            return res.status(500).send({ error: err });
+        }
+    }
+
     getRisk = async (req, res) => {
         try {
             const address = req.params.id;
