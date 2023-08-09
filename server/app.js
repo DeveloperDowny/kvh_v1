@@ -37,11 +37,7 @@ app.use(
   baseR
 );
 
-baseR.use(
-  "/explore",
-  //  auth,
-  require("./Router/Block")
-);
+baseR.use("/explore", require("./Router/Block"));
 app.use("/auth", require("./Router/Auth"));
 baseR.use("/market", require("./Router/Market"));
 

@@ -6,9 +6,9 @@ import {
   CopyIcon,
   CloseIcon,
   CheckIcon,
-  PlusSquareIcon,
+  PlusSquareIcon
 } from "@chakra-ui/icons";
-import { Button } from "@chakra-ui/react";
+import { Button, useToast, Tag } from "@chakra-ui/react";
 import APIRequests from "../api";
 import { CircularProgress } from "@chakra-ui/react";
 
@@ -23,9 +23,19 @@ import {
   Text,
   TableCaption,
 } from "@chakra-ui/react";
+
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  ModalFooter,
+  Input,
+} from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsOpen2 } from "../reducers/SiteCustom";
-import { Input } from "@chakra-ui/react";
 
 const ReportComponent = ({ open, address, close }) => {
   const dispatch = useDispatch();
@@ -84,9 +94,8 @@ const ReportComponent = ({ open, address, close }) => {
     // <div className={`side-bar ${open ? "" : "closed"}`}>
     // <div className={`side-bar ${isOpen2 ? "" : "closed"}`}>
     <div
-      className={`side-bar ${isOpen2 ? "" : "closed"} ${
-        isMaximized ? "maximized" : ""
-      }`}
+      className={`side-bar ${isOpen2 ? "" : "closed"} ${isMaximized ? "maximized" : ""
+        }`}
     >
       <TopBar
         address={address}
@@ -108,7 +117,52 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
   const [isEditing, setIsEditing] = React.useState(false);
   const [tempTitle, setTempTitle] = React.useState(""); // temporary title when editing
 
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [remarks, setRemarks] = React.useState("");
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const toast = useToast();
+  const handleSaveClick = async (e) => {
+    e.preventDefault();
+    console.log("here")
+    try {
+      console.log("addr", address)
+
+      // test
+      const response = await APIRequests.addRemark(address, {
+        remark: remarks,
+      });
+
+      console.log(response);
+      if (response.status === 200) {
+        console.log("remarks added");
+
+        toast({
+          title: "Remarks added",
+          duration: 5000,
+          isClosable: true,
+
+        });
+        setIsModalOpen(false);
+
+      }
+    } catch (error) {
+      console.log(error)
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+
+
+    // if (response.success) {
+
+    // } else {
+    //   // Handle any errors if needed
+    // }
+  };
 
   const inputRef = React.useRef(null);
 
@@ -176,6 +230,28 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
 
   return (
     <div className="top-bar">
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add Remarks</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input
+              placeholder="Type your remarks here..."
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button colorScheme="blue" mr={3} onClick={handleSaveClick}>
+              Save
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <div className="top-bar-1">
         {isEditing ? (
           <React.Fragment>
@@ -205,7 +281,7 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
               style={{
                 width: "10px",
               }}
-              onClick={() => setIsOpen(true)}
+              onClick={() => setIsModalOpen(true)}
               width={2}
               padding={0}
               height={4}
@@ -288,6 +364,18 @@ const ReportBody = ({ data, risk }) => {
   }, [data]);
 
   // const cRisk = risk == null ? null : risk.riskScores.combinedRisk.toFixed(2) + "%";
+  const getRiskLabelAndColor = (riskScore) => {
+    if (riskScore >= 0 && riskScore <= 25) {
+      return { label: "Good", color: "green" };
+    } else if (riskScore >= 26 && riskScore <= 39) {
+      return { label: "Neutral", color: "orange" }; // Assuming orange color for Neutral
+    } else if (riskScore >= 40 && riskScore <= 60) {
+      return { label: "High", color: "yellow" }; // Assuming yellow color for High
+    } else if (riskScore >= 61) {
+      return { label: "Very High", color: "red" };
+    }
+    return { label: "-", color: "black" }; // Default
+  };
 
   return (
     <div className="side-bar-body">
@@ -383,24 +471,38 @@ const ReportBody = ({ data, risk }) => {
               <h2 className="side-bar-section-title">Combined Risk:</h2>
               <p className="side-bar-section-text">
                 {risk === null ||
-                data === undefined ||
-                risk.mdata.riskScores.combinedRisk ? (
-                  // <Loader />
+                  data === undefined ||
+                  !risk.mdata.riskScores.combinedRisk ? (
                   <div>-</div>
                 ) : (
-                  // set a timeout here maybe?
-                  risk.mdata.riskScores.combinedRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.combinedRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.combinedRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.combinedRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>
+
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Fraud Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined ? (
-                  // <Loader />
+                {risk === null ||
+                  data === undefined ||
+                  !risk.mdata.riskScores.fraudRisk ? (
                   <div>-</div>
                 ) : (
-                  risk.mdata.riskScores.fraudRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.fraudRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.fraudRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.fraudRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>
@@ -410,22 +512,38 @@ const ReportBody = ({ data, risk }) => {
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Lending Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined ? (
-                  // <Loader />
+                {risk === null ||
+                  data === undefined ||
+                  !risk.mdata.riskScores.lendingRisk ? (
                   <div>-</div>
                 ) : (
-                  risk.mdata.riskScores.lendingRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.lendingRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.lendingRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.lendingRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Reputation Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined ? (
-                  // <Loader />
+                {risk === null ||
+                  data === undefined ||
+                  !risk.mdata.riskScores.reputationRisk ? (
                   <div>-</div>
                 ) : (
-                  risk.mdata.riskScores.reputationRisk.toFixed(2) + "%"
+                  <>
+                    {risk.mdata.riskScores.reputationRisk.toFixed(2) + "%"}
+                    <Tag
+                      style={{ backgroundColor: getRiskLabelAndColor(risk.mdata.riskScores.reputationRisk).color, fontSize: "12px" }}
+                    >
+                      {getRiskLabelAndColor(risk.mdata.riskScores.reputationRisk).label}
+                    </Tag>
+                  </>
                 )}
               </p>
             </div>
@@ -566,4 +684,33 @@ const Loader = () => {
       <CircularProgress isIndeterminate color="blue" size={4} />
     </div>
   );
+};
+
+
+const RemarkDialog = ({ isOpen, handClose, remarks, handRemark, handleSaveClick }) => {
+
+  return (
+    <Modal isOpen={isOpen} onClose={() => handClose(false)}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Add Remarks</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Input
+            placeholder="Type your remarks here..."
+            value={remarks}
+            onChange={(e) => handRemark(e.target.value)}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="ghost" onClick={() => handClose(false)}>
+            Cancel
+          </Button>
+          <Button colorScheme="blue" mr={3} onClick={() => handleSaveClick()}>
+            Save
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  )
 };
