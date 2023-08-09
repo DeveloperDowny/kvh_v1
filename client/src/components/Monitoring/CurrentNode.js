@@ -1,12 +1,19 @@
 import { Box, Text, TableContainer, Table, Th, Thead, Tbody, Badge, Flex, Divider, Stack, HStack, Tag, Heading } from '@chakra-ui/react'
-import React from 'react'
+import { useEffect } from 'react'
 import { typeToImgMap } from '../navbar/navbar'
 import { FiArrowRight, FiSearch } from 'react-icons/fi'
-
-
+import APIRequests from '../../api'
 
 
 const CurrenNode = () => {
+
+    const mFetch =  async () => {
+        const data = await APIRequests.setMonitorAddress()
+        console.log(data)
+    }
+    useEffect(() => {
+        mFetch()
+    }, [])
     return (
         <Box w={'full'} p={5} boxShadow={'lg'} rounded={'lg'} borderColor={'green.400'} justifyContent={'center'} alignItems={'center'} >
             

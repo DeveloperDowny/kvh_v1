@@ -93,9 +93,21 @@ class APIRequests {
     return await API.get(`/api/explore/add/address/${address}`, );
   }
 
-  static async getMonitorAddress() { 
-    return await API.get(`/api/explore/get/address`);
+  static async setMonitorAddress() { 
+    return await API.get(`/api/explore/set/webhookUrl`);
   }
+
+  static async removeMonitorAddress(address) {
+    return await API.get(`/api/explore/remove/address${address}`);
+  }
+
+  static async showMonitorAddress(nw) {
+    return await API.get(`/api/explore/show/address/${nw}`);
+  }
+
+  
+
+  
 }
 
 export default APIRequests;
