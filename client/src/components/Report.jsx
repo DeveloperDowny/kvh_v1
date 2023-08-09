@@ -1,7 +1,13 @@
 import React from "react";
 import "./Report.css";
 
-import { EditIcon, CopyIcon, CloseIcon, CheckIcon, PlusSquareIcon } from "@chakra-ui/icons";
+import {
+  EditIcon,
+  CopyIcon,
+  CloseIcon,
+  CheckIcon,
+  PlusSquareIcon,
+} from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 import APIRequests from "../api";
 import { CircularProgress } from "@chakra-ui/react";
@@ -19,7 +25,7 @@ import {
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsOpen2 } from "../reducers/SiteCustom";
-import { Input } from '@chakra-ui/react'
+import { Input } from "@chakra-ui/react";
 
 const ReportComponent = ({ open, address, close }) => {
   const dispatch = useDispatch();
@@ -72,15 +78,23 @@ const ReportComponent = ({ open, address, close }) => {
   }, [open, address, isOpen2]);
 
   if (!isOpen2) return null;
-  console.log("max", isMaximized)
+  console.log("max", isMaximized);
   return (
     // <div className={`side-bar ${open ? "" : "closed"}`}>
     // <div className={`side-bar ${open ? "" : "closed"}`}>
     // <div className={`side-bar ${isOpen2 ? "" : "closed"}`}>
-    <div className={`side-bar ${isOpen2 ? "" : "closed"} ${isMaximized ? "maximized" : ""}`}>
-
-      <TopBar address={address} close={close} data={data} isMaximized={isMaximized}
-        setIsMaximized={setIsMaximized} />
+    <div
+      className={`side-bar ${isOpen2 ? "" : "closed"} ${
+        isMaximized ? "maximized" : ""
+      }`}
+    >
+      <TopBar
+        address={address}
+        close={close}
+        data={data}
+        isMaximized={isMaximized}
+        setIsMaximized={setIsMaximized}
+      />
       <ReportBody data={data} risk={riskData} />
     </div>
   );
@@ -95,7 +109,6 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
   const [tempTitle, setTempTitle] = React.useState(""); // temporary title when editing
 
   const [isOpen, setIsOpen] = React.useState(false);
-
 
   const inputRef = React.useRef(null);
 
@@ -163,7 +176,6 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
 
   return (
     <div className="top-bar">
-
       <div className="top-bar-1">
         {isEditing ? (
           <React.Fragment>
@@ -188,9 +200,16 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <Button className="top-bar-add-icon" style={{
-              width: "10px",
-            }} onClick={() => setIsOpen(true)} width={2} padding={0} height={4}>
+            <Button
+              className="top-bar-add-icon"
+              style={{
+                width: "10px",
+              }}
+              onClick={() => setIsOpen(true)}
+              width={2}
+              padding={0}
+              height={4}
+            >
               +
             </Button>
             <h1 className="top-bar-title">{title}</h1>
@@ -201,7 +220,7 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
                 color: "#ffffff",
               }}
             />
-            <div className='top-bar-right'>
+            <div className="top-bar-right">
               <PlusSquareIcon
                 className="top-bar-max-icon"
                 // onClick= {}
@@ -363,7 +382,7 @@ const ReportBody = ({ data, risk }) => {
             <div className="side-bar-section-sec">
               <h2 className="side-bar-section-title">Combined Risk:</h2>
               <p className="side-bar-section-text">
-                {risk === null || data === undefined ? (
+                {risk === null || data === undefined || risk.riskScores ? (
                   // <Loader />
                   <div>-</div>
                 ) : (
@@ -446,13 +465,12 @@ const TransactionsTable = ({ txs }) => {
   const [searchValue, setSearchValue] = React.useState("");
 
   const filteredTxs = React.useMemo(
-    () => txs.filter(tx => tx.to.includes(searchValue)),
+    () => txs.filter((tx) => tx.to.includes(searchValue)),
     [txs, searchValue]
   );
 
   return (
     <Box overflowY="auto" marginBottom={180} width="100%">
-
       <Table
         variant="striped"
         colorScheme="messenger"
@@ -475,11 +493,15 @@ const TransactionsTable = ({ txs }) => {
             value={searchValue}
             onChange={e => setSearchValue(e.target.value)}
           /> */}
-          <Input placeholder='Search Transactions' type="text" value={searchValue} onChange={e => setSearchValue(e.target.value)} style={
-            {
+          <Input
+            placeholder="Search Transactions"
+            type="text"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            style={{
               width: "95%",
-            }
-          } />
+            }}
+          />
         </TableCaption>
 
         {filteredTxs.length === 0 ? (
@@ -488,48 +510,49 @@ const TransactionsTable = ({ txs }) => {
           </Box>
         ) : (
           <>
-        <Thead>
-          <Tr>
-            <Th textAlign="center">Date</Th>
-            <Th textAlign="center">Receiver</Th>
-            <Th textAlign="center">Amount</Th>
-          </Tr>
-        </Thead>
-        <Tbody padding={0} whiteSpace={0} columnGap={0}>
-          {filteredTxs.map((tx, index) => {
-            var time = new Date(tx.time * 1000);
-            time = time.toLocaleDateString();
-
-            let recv = tx.to;
-            if (tx.network === "BTC") {
-              recv = tx.outputs[0].address;
-            }
-
-            let val = tx.value;
-            if (tx.network === "BTC") {
-              val = tx.outputs[0].value;
-            }
-
-            return (
-              <Tr key={index}>
-                <Td textAlign="center">
-                  <Text isTruncated fontSize={12}>
-                    {time}
-                  </Text>
-                </Td>
-                <Td textAlign="center">
-                  <Text isTruncated fontSize={12}>
-                    {recv}
-                  </Text>
-                </Td>
-                <Td textAlign="center" fontSize={12}>
-                  {val} {tx.network}
-                </Td>
+            <Thead>
+              <Tr>
+                <Th textAlign="center">Date</Th>
+                <Th textAlign="center">Receiver</Th>
+                <Th textAlign="center">Amount</Th>
               </Tr>
-            );
-          })}
-        </Tbody>
-        </>)}
+            </Thead>
+            <Tbody padding={0} whiteSpace={0} columnGap={0}>
+              {filteredTxs.map((tx, index) => {
+                var time = new Date(tx.time * 1000);
+                time = time.toLocaleDateString();
+
+                let recv = tx.to;
+                if (tx.network === "BTC") {
+                  recv = tx.outputs[0].address;
+                }
+
+                let val = tx.value;
+                if (tx.network === "BTC") {
+                  val = tx.outputs[0].value;
+                }
+
+                return (
+                  <Tr key={index}>
+                    <Td textAlign="center">
+                      <Text isTruncated fontSize={12}>
+                        {time}
+                      </Text>
+                    </Td>
+                    <Td textAlign="center">
+                      <Text isTruncated fontSize={12}>
+                        {recv}
+                      </Text>
+                    </Td>
+                    <Td textAlign="center" fontSize={12}>
+                      {val} {tx.network}
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </>
+        )}
       </Table>
     </Box>
   );
