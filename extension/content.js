@@ -37,9 +37,10 @@
         walletAddress = walletAddressNode.innerText
         console.log(walletAddress)
         fetch(`http://localhost:5000/api/explore/risk/${walletAddress}`)
-        .then(response => response.json())
+        .then(response =>{ response.json()
+        console.log(response)})
         .then(data => { 
-            console.log(data)
+            console.log(data.riskMessage)
         }).catch(err => {
             console.log(err)
         });
