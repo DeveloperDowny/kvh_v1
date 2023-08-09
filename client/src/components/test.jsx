@@ -4,7 +4,16 @@ import APIRequests from '../api'
 const TestComponent = () => {
 
   const mfetch = async () => {
-    const res = await APIRequests.mtest();
+    const res = await APIRequests.mtest().catch(err =>
+      console.log("test", err)
+        )
+        
+
+        if (!res) return
+        console.log("mtest data", res.data)
+
+        console.log("test", res.data.mdata.riskScores.combinedRisk)
+        console.log("test t", res.data.mdata.riskMessage)
   }
 
   useEffect(() => {
