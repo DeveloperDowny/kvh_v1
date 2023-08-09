@@ -14,6 +14,7 @@ import GraphVisualization from "./components/GraphViz";
 import Label from "./components/labels/Label";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Monitoring from "./components/Monitoring/Monitoring";
+import Blogs from "./Blogs";
 const App = () => {
   const graphData = generateRandomGraphData();
 
@@ -41,6 +42,7 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/monitoring" element={<Monitoring />} />
           <Route path="/test" element={<TestComponent />} />
+          <Route path="/blogs" element={<Blogs />} />
         </Routes>
       </Layout>
     </BrowserRouter>
