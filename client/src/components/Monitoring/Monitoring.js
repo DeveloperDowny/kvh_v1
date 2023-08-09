@@ -67,6 +67,7 @@ const Monitoring = () => {
         <Stack w={'full'} align={'center'} mt={10}>
           {loading && <Box textAlign={'center'}   ><Spinner /></Box>}
           {untrackedAddress && untrackedAddress.map((address, index) => {
+            console.log(address.cryptoType)
             if (trackedAddress === address.address  )return
             return <Tile key={index} address={address.address} cryptoType={address.cryptoType} />
           })

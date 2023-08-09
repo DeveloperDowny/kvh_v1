@@ -13,7 +13,6 @@ const Tile = ({ address, cryptoType }) => {
         cryptoType = 'tron'
     }
     const dispatch = useDispatch()
-
     return (
         <Box w={'full'} p={5} boxShadow={'lg'}>
              <Flex justify={'space-between'} >
