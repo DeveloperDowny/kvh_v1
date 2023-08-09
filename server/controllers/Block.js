@@ -388,7 +388,8 @@ class BlockController {
         parseInt(jsonResponse.riskScores.combinedRisk)
       );
       console.log(riskMessage);
-      res.status(200).json({ data: jsonResponse, riskMessage });
+      jsonResponse.riskMessage = riskMessage;
+      res.status(200).json({ data: jsonResponse});
     } catch (error) {
       if (error.response && error.response.status === 400) {
         res.status(400).json({ error: "RequestedNullReport" });
