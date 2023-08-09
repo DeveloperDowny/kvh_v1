@@ -23,7 +23,7 @@ const ComplaintForm = () => {
     suspectWalletAddress: "",
     transactionId: "",
     otherDetails: "",
-    status: "unassigned",
+    status: "Unassigned",
   };
 
   const validationSchema = Yup.object().shape({
