@@ -13,6 +13,7 @@ import ReportComponent from "./Report";
 import { EthImg } from "../assets";
 import { useSelector } from "react-redux";
 import { useToast } from "@chakra-ui/react";
+import { regexes } from "./navbar/navbar";
 
 const forGraphTypeToImgMap = {
   btc: "/bitcoin_logo.png",
