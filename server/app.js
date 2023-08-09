@@ -33,15 +33,15 @@ baseR.use("/explore", auth, require("./Router/Block"));
 app.use("/auth", require("./Router/Auth"));
 baseR.use("/market", require("./Router/Market"));
 
-app.use("/fixed_label", (req, res, next) => {
-  // Allow requests from any origin
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-  // Allow the following HTTP methods
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  // Allow these headers to be sent
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-}, require("./Router/Test"));
+// app.use("/fixed_label", (req, res, next) => {
+//   // Allow requests from any origin
+//   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+//   // Allow the following HTTP methods
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//   // Allow these headers to be sent
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   next();
+// }, require("./Router/Test"));
 
 
 // app.use((req, res, next) => {
