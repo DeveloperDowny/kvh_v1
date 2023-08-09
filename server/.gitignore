@@ -24,4 +24,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # removing contents of uploads folder
-uploads/*
+# uploads/*

@@ -12,6 +12,7 @@ const path = require("path");
 
 const { response } = require("express");
 const AddressTracker = require("../models/AddressTracker");
+const nodemailer = require("nodemailer");
 
 // const sources = {
 //     "TokenView": 0,
@@ -530,6 +531,41 @@ class BlockController {
     });
   };
 
+    async sendEmail2(toEmail) {
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MAIL,
+        pass: process.env.MAILPASS,
+      },
+    });
+  
+    // // await user.save();
+    // // Schedule a task to set otp to null after 3 minutes
+    // setTimeout(async () => {
+    //   // console.log("setting otp to null")
+    //   user.otp = null;
+    //   await user.save();
+    //   // console.log("done")
+    // }, 3 * 60 * 1000); // 3 minutes in milliseconds
+  
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+      from: `"No Reply" <Support>`, // sender address
+      to: toEmail, // list of receivers
+      subject: "Investigation Screen Shot", // Subject line
+      attachments: [
+          {   // file on disk as an attachment
+              filename: 'ss.png', // name of the file as it should appear in the email
+              path: '../server/uploads/eimage.png' // path to the file on disk
+          }
+      ]
+  });
+  
+    console.log(`Message sent: ${info.messageId}`);
+  }
+
   storeSnap = async (req, res) => {
     try {
       // use uploaded file
@@ -539,9 +575,14 @@ class BlockController {
           message: "CSV file not found in the request",
         });
       }
+      const {email} = req.body
 
       const filePath = req.file.path;
       const fileMimeType = req.file.mimetype;
+
+      // send email
+      await this.sendEmail2(email)
+
       return res.status(200).json({
         status: 1,
         message: "File uploaded successfully",
