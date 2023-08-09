@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import WithSubnavigation from "./CFG components/Navbar";
 import Sidebar from "./CFG components/Sidebar";
 import { useSelector } from "react-redux";
@@ -9,6 +9,24 @@ import Navbar from "./components/navbar/navbar";
 import Navbar2 from "./components/navbar2/navbar2";
 
 const Layout = ({ children }) => {
+  // const pathName = window.location.pathname;
+  const [pathName, setPathName] = useState(window.location.pathname);
+  const strsd = "sdsd";
+  // strsd.includes("sdsd")
+
+  useEffect(() => {
+    const updatePathName = () => {
+      setPathName(window.location.pathname);
+    };
+
+    // Attach the event listener to update pathName on location changes
+    window.addEventListener("popstate", updatePathName);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("popstate", updatePathName);
+    };
+  }, []);
   const shouldShowSidebar = useSelector(
     (state) => state.siteCustom.shouldShowSideBar
   );
@@ -57,11 +75,19 @@ const Layout = ({ children }) => {
         </div> */}
         {/* <WithSubnavigation /> */}
         <Navbar />
-        <Navbar2 />
+
+        {pathName.includes("boards") && <Navbar2 />}
       </div>
       {shouldShowSidebar ? (
         // <div className="content t-flex t-flex-row t-pt-[60px] t-pl-[240px]">
-        <div className="content t-flex t-flex-row t-pt-[120px] t-pl-[240px]">
+        // pathName.includes("boards") &&
+        <div
+          className={
+            !pathName.includes("boards")
+              ? "content t-flex t-flex-row t-pt-[90px] t-pl-[240px]"
+              : "content t-flex t-flex-row t-pt-[120px] t-pl-[240px]"
+          }
+        >
           <Sidebar />
           <main className="t-w-full">{children}</main>
         </div>

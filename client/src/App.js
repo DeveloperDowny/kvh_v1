@@ -13,6 +13,7 @@ import GraphComponent from "./components/GraphComponent";
 import GraphVisualization from "./components/GraphViz";
 import Label from "./components/labels/Label";
 import Dashboard from "./components/Dashboard/Dashboard";
+import Monitoring from "./components/Monitoring/Monitoring";
 const App = () => {
   const graphData = generateRandomGraphData();
 
@@ -25,11 +26,10 @@ const App = () => {
   //     </div>
   //   </div>
   // );
-  
 
   return (
-    <Layout>
-      <BrowserRouter>
+    <BrowserRouter>
+      <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/test2" element={<Test2 />} />
@@ -39,9 +39,11 @@ const App = () => {
           <Route path="/boards/:board_id" element={<GraphVisualization />} />
           <Route path="/labels" element={<Label />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/monitoring" element={<Monitoring />} />
+          <Route path="/test" element={<TestComponent />} />
         </Routes>
-      </BrowserRouter>
-    </Layout>
+      </Layout>
+    </BrowserRouter>
   );
 };
 

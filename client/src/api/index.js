@@ -11,8 +11,9 @@ const API = axios.create({
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {
-    req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem("profile")).token
-      }`;
+    req.headers.Authorization = `Bearer ${
+      JSON.parse(localStorage.getItem("profile")).token
+    }`;
   }
 
   return req;
@@ -22,6 +23,9 @@ API.interceptors.request.use((req) => {
 // export const testGet = () => API.get("/");
 
 class APIRequests {
+  static async mtest() {
+    return await API.get("/fixed_label/get/list");
+  }
   static async signIn(data) {
     return await API.post("/auth/login", data);
   }
@@ -82,7 +86,7 @@ class APIRequests {
   static async getLabels() {
     return await API.get(
       // `/api/explore/get/list`
-      '/api/explore/get/list'
+      "/api/explore/get/list"
     );
   }
 

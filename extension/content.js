@@ -1,5 +1,5 @@
 (() => {
-    let buttonPanel, walletAddressNode, statusNode, nazarLogoBtn;
+    let buttonPanel, walletAddressNode, statusNode, nazarLogoBtn, walletAddress;
     let current_address = '';
 
 
@@ -34,9 +34,13 @@
     }
 
     const onNazarBtnClick = () => {
-        walletAddress = walletAddressNode.innerText
-        let rand = Math.random()
-        statusNode = document.createElement('span')
+        // walletAddress = walletAddressNode.innerText
+        // fetch(`http://localhost:5000/api/explore/risk/${walletAddress}`)
+        // .then(() => {
+        //     let data
+        // })        
+        // // let rand = Math.random()
+        // statusNode = document.createElement('span')
 
         // will be replaced by api call
         if (rand < 0.5) {

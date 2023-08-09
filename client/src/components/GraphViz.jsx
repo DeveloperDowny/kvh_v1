@@ -69,11 +69,13 @@ const GraphVisualization = () => {
         if (!res.data.data.data) return;
         console.log("res.data.data.data:", res.data.data.data);
         setData(res.data.data.data.txs);
+        console.log("data is set");
         dispatch(setIsOpen2(true));
       });
   }, [cryptoAddress]);
 
   useEffect(() => {
+    console.log("on data change");
     console.log("dataffsdf:", data);
   }, [data]);
 
@@ -155,6 +157,7 @@ const GraphVisualization = () => {
           // }
         }
       } else {
+        console.log("in else");
         // if (specialId === data[index].to || specialId === data[index].from) {
         //   specialIndex = index;
         // }
@@ -306,58 +309,65 @@ const GraphVisualization = () => {
   }, [cryptoAddress]);
 
   return (
-    <div className="t-h-screen t-flex">
-      <Graph
-        graph={graphData}
-        // options={{
-        //   nodes: {
-        //     size: 42,
-        //   },
-        //   interaction: { hover: true },
-        //   physics: {
-        //     enabled: false,
-        //   },
-        // }}
+    <div className="t-h-[calc(100vh-120px)] t-flex">
+      {graphData.nodes.length === 0 && (
+        <div className="t-h-[calc(100vh-120px)] t-flex t-justify-center t-w-full t-mt-[100px]">
+          Enter Crypto Address To Explore
+        </div>
+      )}
+      {graphData.nodes.length !== 0 && (
+        <Graph
+          graph={graphData}
+          // options={{
+          //   nodes: {
+          //     size: 42,
+          //   },
+          //   interaction: { hover: true },
+          //   physics: {
+          //     enabled: false,
+          //   },
+          // }}
 
-        options={{
-          nodes: {
-            borderWidth: 0,
-            size: 42,
-            color: {
-              border: "#222",
-              background: "transparent",
+          options={{
+            nodes: {
+              borderWidth: 0,
+              size: 42,
+              color: {
+                border: "#222",
+                background: "transparent",
+              },
+              font: {
+                color: "#111",
+                face: "Walter Turncoat",
+                size: 16,
+                strokeWidth: 1,
+                strokeColor: "#222",
+              },
             },
-            font: {
-              color: "#111",
-              face: "Walter Turncoat",
-              size: 16,
-              strokeWidth: 1,
-              strokeColor: "#222",
+            edges: {
+              color: {
+                color: "#CCC",
+                highlight: "#A22",
+              },
+              width: 3,
+              length: 275,
+              hoverWidth: 0.05,
             },
-          },
-          edges: {
-            color: {
-              color: "#CCC",
-              highlight: "#A22",
+          }}
+          // options={{
+          //   nodes: {
+          //     shape: "image",
+          //   },
+          // }}
+          events={{
+            hoverNode: handleNodeHover,
+            click: (event) => {
+              handleNodeClick(event);
             },
-            width: 3,
-            length: 275,
-            hoverWidth: 0.05,
-          },
-        }}
-        // options={{
-        //   nodes: {
-        //     shape: "image",
-        //   },
-        // }}
-        events={{
-          hoverNode: handleNodeHover,
-          click: (event) => {
-            handleNodeClick(event);
-          },
-        }}
-        style={{ height: "100%" }}
-      />
+          }}
+          style={{ height: "100%" }}
+        />
+      )}
 
       <ReportComponent open={open} address={hoveredId} close={closeSideBar} />
     </div>

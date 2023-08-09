@@ -81,12 +81,16 @@ export default function Login() {
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}
     >
-      <VerifyEmailForm email = {email} open = {open} handleClose = {() => setOpen(false)}/>
+      <VerifyEmailForm
+        email={email}
+        open={open}
+        handleClose={() => setOpen(false)}
+      />
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
-          <Heading fontSize={"4xl"}>Sign in to your account</Heading>
+          <Heading fontSize={"4xl"}>Sign In</Heading>
           <Text fontSize={"lg"} color={"gray.600"}>
-            to enjoy all of our cool <Link color={"blue.400"}>features</Link> ✌️
+            Sign in to your account
           </Text>
         </Stack>
         <Box
@@ -119,6 +123,7 @@ export default function Login() {
                   <FormLabel>Password</FormLabel>
                   <Field as={Input} type="password" name="password" />
                 </FormControl>
+                <div className="t-w-[400px]"></div>
                 <Stack spacing={10}>
                   <Stack
                     direction={{ base: "column", sm: "row" }}
@@ -128,6 +133,7 @@ export default function Login() {
                     <Checkbox name="rememberMe">Remember me</Checkbox>
                     <Link color={"blue.400"}>Forgot password?</Link>
                   </Stack>
+
                   <Button
                     type="submit"
                     bg={"blue.400"}

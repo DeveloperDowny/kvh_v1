@@ -331,17 +331,17 @@ class BlockController {
             return res.status(500).send({ message: err.message });
         }
     };
-    
+
     //addRemark
     addRemark = async (req, res) => {
         try {
             const id = req.params.id;
             const remark = req.body.remark;
-            const transaction = await Transactions.findOne({ addr: id}).sort({ date: -1});
+            const transaction = await Transactions.findOne({ addr: id }).sort({ date: -1 });
             transaction.remark = remark;
             await transaction.save();
-            return res.status(200).json({"Added remark": remark});
-        }catch (err) {
+            return res.status(200).json({ "Added remark": remark });
+        } catch (err) {
             console.log(err);
             return res.status(500).send({ error: err });
         }
@@ -472,7 +472,7 @@ class BlockController {
             const axiosConfig = {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/text',
+                    'Content-Type': 'application/text',
                 },
                 url: endpointUrl,
                 data: webhookUrl,
@@ -481,9 +481,9 @@ class BlockController {
             const response = await axios(axiosConfig);
             const jsonResponse = response.data;
             console.log(jsonResponse);
-            const addressData = await AddressTracker.find().sort({_id: -1}).limit(1)
+            const addressData = await AddressTracker.find().sort({ _id: -1 }).limit(1)
             return res.status(200).json({ data: addressData });
-        }catch (error) {
+        } catch (error) {
             console.log(error);
             return res.status(500).json({ error: "An error occurred" });
         }
@@ -495,44 +495,44 @@ class BlockController {
             const response = await axios.get(endpointUrl);
             const jsonResponse = response.data;
             return res.status(200).json({ data: jsonResponse });
-        }catch (error) {
+        } catch (error) {
             console.log(error);
             return res.status(500).json({ error: "An error occurred" });
         }
     }
     addTrackingAddr = async (req, res) => {
         try {
-            
+
             const id = req.params.id;
             const nw = this.checkBlockchainAddress(id)
             let response = await axios.get(`https://services.tokenview.io/vipapi/monitor/address/add/${nw}/${id}?apikey=${process.env.vaTOKEN}`);
             const jsonResponse = response.data;
-            return res.status(200).json({data: jsonResponse});
-        }catch (error) {
-            return res.status(500).json({ error: error});
+            return res.status(200).json({ data: jsonResponse });
+        } catch (error) {
+            return res.status(500).json({ error: error });
         }
     }
     removeTrackingAddr = async (req, res) => {
         try {
-            
+
             const id = req.params.id;
             const nw = this.checkBlockchainAddress(id)
             let response = await axios.get(`https://services.tokenview.io/vipapi/monitor/address/remove/${nw}/${id}?apikey=${process.env.vaTOKEN}`);
             const jsonResponse = response.data;
-            return res.status(200).json({data: jsonResponse});
-        }catch (error) {
-            return res.status(500).json({ error: error});
+            return res.status(200).json({ data: jsonResponse });
+        } catch (error) {
+            return res.status(500).json({ error: error });
         }
     }
-    
+
     showTrackedAddresses = async (req, res) => {
         try {
             const nw = req.params.nw;
             let response = await axios.get(`https://services.tokenview.io/vipapi/monitor/address/list/${nw}?page=0&apikey=${process.env.vaTOKEN}`)
             const jsonResponse = response.data;
-            return res.status(200).json({data : jsonResponse});
-        }catch(e){
-            return res.status(500).json({error : e})
+            return res.status(200).json({ data: jsonResponse });
+        } catch (e) {
+            return res.status(500).json({ error: e })
         }
     };
 
@@ -593,6 +593,17 @@ class BlockController {
             return res.status(500).json({ message: error.message });
         }
 
+    }
+
+    CheckScamData = async (req, res) => {
+        const address = req.params.address;
+        try {
+            const response = await axios.get(`https://scamsearch.io/api/search?search=${address}&type=all&api_token=${process.env.SCAM_SEARCH}`);
+            res.status(200).json(response.data);
+        } catch (error) {
+            console.log(`${error} ERROR_SCAM_DATA_API`);
+            res.status(500).send('An error occurred while trying to fetch the data');
+        }
     }
 }
 

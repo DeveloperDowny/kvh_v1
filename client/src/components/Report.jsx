@@ -1,7 +1,8 @@
 import React from "react";
 import "./Report.css";
 
-import { EditIcon, CopyIcon, CloseIcon, CheckIcon } from "@chakra-ui/icons";
+import { EditIcon, CopyIcon, CloseIcon, CheckIcon, PlusSquareIcon } from "@chakra-ui/icons";
+import { Button } from "@chakra-ui/react";
 import APIRequests from "../api";
 import { CircularProgress } from "@chakra-ui/react";
 
@@ -19,6 +20,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { setIsOpen2 } from "../reducers/SiteCustom";
 
+
+
+
+
 const ReportComponent = ({ open, address, close }) => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState(open);
@@ -26,6 +31,8 @@ const ReportComponent = ({ open, address, close }) => {
   const isOpen2 = useSelector((state) => state.siteCustom.isOpen2);
   const [data, setData] = React.useState(null);
   const [riskData, setRisk] = React.useState(null);
+  // const { isMaximized } = React.useContext(ReportSizeContext);
+  const [isMaximized, setIsMaximized] = React.useState(false);
 
   const mfetchData = async () => {
     if (isOpen2 && address) {
@@ -44,6 +51,7 @@ const ReportComponent = ({ open, address, close }) => {
 
       const res2 = await APIRequests.getRisk(address).catch((err) => {
         console.log("error in risk", err);
+        setRisk(null);
       });
 
       if (!res2) return;
@@ -52,6 +60,7 @@ const ReportComponent = ({ open, address, close }) => {
       setRisk(res2.data);
     } else {
       setData(null);
+      setRisk(null);
       setTimeout(() => {
         setIsOpen(false);
         dispatch(setIsOpen2(false));
@@ -66,12 +75,15 @@ const ReportComponent = ({ open, address, close }) => {
   }, [open, address, isOpen2]);
 
   if (!isOpen2) return null;
-
+  console.log("max", isMaximized)
   return (
     // <div className={`side-bar ${open ? "" : "closed"}`}>
     // <div className={`side-bar ${open ? "" : "closed"}`}>
-    <div className={`side-bar ${isOpen2 ? "" : "closed"}`}>
-      <TopBar address={address} close={close} data={data} />
+    // <div className={`side-bar ${isOpen2 ? "" : "closed"}`}>
+    <div className={`side-bar ${isOpen2 ? "" : "closed"} ${isMaximized ? "maximized" : ""}`}>
+
+      <TopBar address={address} close={close} data={data} isMaximized={isMaximized}
+        setIsMaximized={setIsMaximized} />
       <ReportBody data={data} risk={riskData} />
     </div>
   );
@@ -79,10 +91,14 @@ const ReportComponent = ({ open, address, close }) => {
 
 export default ReportComponent;
 
-const TopBar = ({ address, close, data }) => {
+const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
+  const mainAdd = useSelector((state) => state.siteCustom.address);
   const [title, setTitle] = React.useState("Loading...");
   const [isEditing, setIsEditing] = React.useState(false);
   const [tempTitle, setTempTitle] = React.useState(""); // temporary title when editing
+
+  const [isOpen, setIsOpen] = React.useState(false);
+
 
   const inputRef = React.useRef(null);
 
@@ -103,7 +119,10 @@ const TopBar = ({ address, close, data }) => {
 
   const handleSave = async () => {
     setIsEditing(false);
-    const res = await APIRequests.changeTitle(address, { title: title });
+    const res = await APIRequests.changeTitle(address, {
+      title: title,
+      board_id: mainAdd,
+    });
 
     console.log("update res", res);
     if (res.status === 200) {
@@ -147,6 +166,7 @@ const TopBar = ({ address, close, data }) => {
 
   return (
     <div className="top-bar">
+
       <div className="top-bar-1">
         {isEditing ? (
           <React.Fragment>
@@ -171,6 +191,11 @@ const TopBar = ({ address, close, data }) => {
           </React.Fragment>
         ) : (
           <React.Fragment>
+            <Button className="top-bar-add-icon" style={{
+              width: "10px",
+            }} onClick={() => setIsOpen(true)} width={2} padding={0} height={4}>
+              +
+            </Button>
             <h1 className="top-bar-title">{title}</h1>
             <EditIcon
               className="top-bar-edit-icon"
@@ -179,11 +204,21 @@ const TopBar = ({ address, close, data }) => {
                 color: "#ffffff",
               }}
             />
-            <CloseIcon
-              className="top-bar-close-icon"
-              onClick={close}
-              style={{ color: "#ffffff" }}
-            />
+            <div className='top-bar-right'>
+              <PlusSquareIcon
+                className="top-bar-max-icon"
+                // onClick= {}
+                onClick={() => setIsMaximized(!isMaximized)}
+                width={10}
+                height={5}
+                style={{ color: "#ffffff" }}
+              />
+              <CloseIcon
+                className="top-bar-close-icon"
+                onClick={close}
+                style={{ color: "#ffffff" }}
+              />
+            </div>
           </React.Fragment>
         )}
       </div>
@@ -325,59 +360,87 @@ const ReportBody = ({ data, risk }) => {
         )}
       </div>
 
-      <div className="side-bar-section-main">
-        <div className="side-bar-section-sec">
-          <h2 className="side-bar-section-title">Combined Risk:</h2>
-          <p className="side-bar-section-text">
-            {risk === null || data === undefined ? (
-              // <Loader />
-              <div>-</div>
-            ) : (
-              // set a timeout here maybe?
-              risk.riskScores.combinedRisk.toFixed(2) + "%"
-            )}
-          </p>
+      {risk != null && (
+        <div>
+          <div className="side-bar-section-main">
+            <div className="side-bar-section-sec">
+              <h2 className="side-bar-section-title">Combined Risk:</h2>
+              <p className="side-bar-section-text">
+                {risk === null || data === undefined ? (
+                  // <Loader />
+                  <div>-</div>
+                ) : (
+                  // set a timeout here maybe?
+                  risk.riskScores.combinedRisk.toFixed(2) + "%"
+                )}
+              </p>
+            </div>
+            <div className="side-bar-section-sec">
+              <h2 className="side-bar-section-title">Fraud Risk:</h2>
+              <p className="side-bar-section-text">
+                {risk === null || data === undefined ? (
+                  // <Loader />
+                  <div>-</div>
+                ) : (
+                  risk.riskScores.fraudRisk.toFixed(2) + "%"
+                )}
+              </p>
+            </div>
+          </div>
+
+          <div className="side-bar-section-main">
+            <div className="side-bar-section-sec">
+              <h2 className="side-bar-section-title">Lending Risk:</h2>
+              <p className="side-bar-section-text">
+                {risk === null || data === undefined ? (
+                  // <Loader />
+                  <div>-</div>
+                ) : (
+                  risk.riskScores.lendingRisk.toFixed(2) + "%"
+                )}
+              </p>
+            </div>
+            <div className="side-bar-section-sec">
+              <h2 className="side-bar-section-title">Reputation Risk:</h2>
+              <p className="side-bar-section-text">
+                {risk === null || data === undefined ? (
+                  // <Loader />
+                  <div>-</div>
+                ) : (
+                  risk.riskScores.reputationRisk.toFixed(2) + "%"
+                )}
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="side-bar-section-sec">
-          <h2 className="side-bar-section-title">Fraud Risk:</h2>
-          <p className="side-bar-section-text">
-            {risk === null || data === undefined ? (
-              // <Loader />
-              <div>-</div>
-            ) : (
-              risk.riskScores.fraudRisk.toFixed(2) + "%"
-            )}
-          </p>
+      )}
+      {risk && risk.reasons.length > 0 && (
+        <div className="side-bar-section-2">
+          <h2 className="side-bar-section-title">Risk Reasons:</h2>
+          {risk.reasons.map((reason, index) => (
+            <div key={index}>{renderRiskReason(reason, index + 1)}</div>
+          ))}
         </div>
-      </div>
-      <div className="side-bar-section-main">
-        <div className="side-bar-section-sec">
-          <h2 className="side-bar-section-title">Lending Risk:</h2>
-          <p className="side-bar-section-text">
-            {risk === null || data === undefined ? (
-              // <Loader />
-              <div>-</div>
-            ) : (
-              risk.riskScores.lendingRisk.toFixed(2) + "%"
-            )}
-          </p>
-        </div>
-        <div className="side-bar-section-sec">
-          <h2 className="side-bar-section-title">Reputation Risk:</h2>
-          <p className="side-bar-section-text">
-            {risk === null || data === undefined ? (
-              // <Loader />
-              <div>-</div>
-            ) : (
-              risk.riskScores.reputationRisk.toFixed(2) + "%"
-            )}
-          </p>
-        </div>
-      </div>
+      )}
       {data && (
         // data.txs && undefined &&
         <TransactionsTable txs={data.txs} />
       )}
+    </div>
+  );
+};
+
+const renderRiskReason = (reason, index) => {
+  return (
+    <div className="risk-reason">
+      <h4
+        className="risk-reason-title"
+        style={{
+          fontSize: "14px",
+        }}
+      >
+        {index}. {reason.explanation}
+      </h4>
     </div>
   );
 };
@@ -391,13 +454,9 @@ const TransactionsTable = ({ txs }) => {
     );
   }
 
-  // console.log("txs", txs);
-
-  // format
-  //
-
   return (
-    <Box overflowY="auto" maxH="350px" width="100%">
+    <Box overflowY="auto" marginBottom={180} width="100%">
+
       <Table
         variant="striped"
         colorScheme="messenger"
@@ -418,12 +477,12 @@ const TransactionsTable = ({ txs }) => {
         </TableCaption>
         <Thead>
           <Tr>
-            <Th>Date</Th>
-            <Th>Receiver</Th>
-            <Th>Amount</Th>
+            <Th textAlign="center">Date</Th>
+            <Th textAlign="center">Receiver</Th>
+            <Th textAlign="center">Amount</Th>
           </Tr>
         </Thead>
-        <Tbody padding={0} whiteSpace={0} columnGap={0}>
+        <Tbody padding={0} whiteSpace={0} columnGap={0}>  
           {txs.map((tx, index) => {
             // tx.time (ms to epoch)
 
