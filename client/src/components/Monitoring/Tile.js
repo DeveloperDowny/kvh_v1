@@ -2,6 +2,8 @@ import { Box, Stack, Text, HStack, Flex } from '@chakra-ui/layout'
 import React from 'react'
 import { typeToImgMap } from '../navbar/navbar'
 import { Button } from '@chakra-ui/button'
+import { useDisclosure } from '@chakra-ui/hooks'
+import AddAddressModal from './AddAddressModal'
 
 const Tile = () => {
     return (
@@ -14,6 +16,7 @@ const Tile = () => {
                 <Button variant={'outline'} colorScheme='blue'>
                     Track
                 </Button>
+                <AddAddressModal  />
             </Flex>
 
         </Box>
