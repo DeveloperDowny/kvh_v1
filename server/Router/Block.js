@@ -12,6 +12,8 @@ blockR.get("/get/list", blockC.showTitleList);
 blockR.post("/remark/:id", blockC.addRemark);
 blockR.get("/risk/:id", blockC.getRisk);
 blockR.get("/exchange/:from_currency/:to_currency", blockC.getExchangeRate);
+blockR.post("/board/save", blockC.saveBoard);
+blockR.post("/board/get", blockC.getBoard);
 blockR.get("/set/webhookUrl", blockC.setWebhookUrl);
 blockR.post("/snap", blockC.custMulter, blockC.storeSnap);
 blockR.get("/get/webhookUrl", blockC.getWebhookUrl);

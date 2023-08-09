@@ -3,6 +3,7 @@ const cors = require("cors");
 const axios = require("axios");
 const fs = require("fs");
 const app = express();
+
 app.use(cors());
 
 require("./db/Conn");
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const baseR = express.Router();
 app.use("/api", baseR);
+
 
 baseR.use("/explore", require("./Router/Block"));
 app.use("/auth", require("./Router/Auth"));
