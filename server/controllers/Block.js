@@ -234,19 +234,15 @@ class BlockController {
     try {
       const foundTransaction = await Transactions.find({}).sort({ date: -1 });
       if (!foundTransaction) {
-        return res
-          .status(400)
-          .json({
-            message: "No transaction found",
-            foundTransaction: foundTransaction,
-          });
-      }
-      return res
-        .status(200)
-        .json({
-          message: "Successfully changed title",
+        return res.status(400).json({
+          message: "No transaction found",
           foundTransaction: foundTransaction,
         });
+      }
+      return res.status(200).json({
+        message: "Successfully changed title",
+        foundTransaction: foundTransaction,
+      });
     } catch (err) {
       return res.status(500).send({ message: err.message });
     }
@@ -558,6 +554,66 @@ class BlockController {
     } catch (error) {
       console.log(`${error} ERROR_SCAM_DATA_API`);
       res.status(500).send("An error occurred while trying to fetch the data");
+    }
+  };
+
+  //save board
+  saveBoard = async (req, res) => {
+    try {
+      const { boardId, graphData } = req.body;
+      console.log(boardId, graphData);
+      const board = new Boards({ boardId, graphData });
+      await board.save();
+      return res.status(200).json({ message: "saved successfully", board });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: err });
+    }
+  };
+
+  //get board data
+  getBoard = async (req, res) => {
+    try {
+      const { boardId } = req.body;
+      const board = await Boards.findOne({ boardId: boardId });
+      if (!board) {
+        return res.status(404).json({ message: "board not found" });
+      }
+      return res.status(200).json({ message: "found board", board });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: err });
+    }
+  };
+
+  //Complaint routes
+  // Create a new report
+  createComplaint = async (req, res) => {
+    try {
+      const newReport = new Complaints(req.body);
+      const savedReport = await newReport.save();
+      res.status(201).json(savedReport);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create report" });
+    }
+  };
+
+  // Update an existing report by ID
+  updateComplaint = async (req, res) => {
+    try {
+      const { transactionId } = req.params;
+      // console.log(transactionId)
+      const updatedReport = await Complaints.findOneAndUpdate(
+        { transactionId },
+        req.body,
+        { new: true }
+      );
+      if (!updatedReport) {
+        return res.status(404).json({ error: "Report not found" });
+      }
+      res.json(updatedReport);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update report" });
     }
   };
 }
