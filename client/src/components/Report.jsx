@@ -120,7 +120,7 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
   const [remarks, setRemarks] = React.useState("");
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  // const toast = useToast();
+  const toast = useToast();
   const handleSaveClick = async (e) => {
     e.preventDefault();
     console.log("here")
@@ -128,7 +128,7 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
       console.log("addr", address)
 
       // test
-      const response = await APIRequests.addRemarks(address, {
+      const response = await APIRequests.addRemark(address, {
         remarks: "remarks",
       });
 
@@ -136,24 +136,24 @@ const TopBar = ({ address, close, data, isMaximized, setIsMaximized }) => {
       if (response.status === 200) {
         console.log("remarks added");
 
-        // toast({
-        //   title: "Remarks added",
-        //   duration: 5000,
-        //   isClosable: true,
+        toast({
+          title: "Remarks added",
+          duration: 5000,
+          isClosable: true,
 
-        // });
+        });
         setIsModalOpen(false);
 
       }
     } catch (error) {
       console.log(error)
-      // toast({
-      //   title: "Error",
-      //   description: "Something went wrong",
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      // });
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
     }
 
 
