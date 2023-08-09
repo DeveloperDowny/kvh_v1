@@ -4,6 +4,7 @@ const axios = require("axios");
 const csv = require("csv-parser");
 const fs = require("fs");
 const Transactions = require("../models/TransactionSchema");
+const Boards = require("../models/BoardsSchema");
 
 // for file uploading
 const multer = require("multer");
@@ -47,6 +48,26 @@ const checkCurrencyInCSV = async (currency, filename) => {
       });
   });
 };
+
+const riskRangeMapping = {
+  "0-25": "Good",
+  "26-30": "Neutral",
+  "40-60": "A troublingly high score",
+  "60-100": "A failing score",
+};
+
+// Function to get risk message based on range
+function getRiskMessage(score) {
+  console.log(score);
+  for (const range in riskRangeMapping) {
+    const [min, max] = range.split("-").map(Number);
+    if (score >= min && score <= max) {
+      return riskRangeMapping[range];
+    }
+  }
+  return "Unknown risk score";
+}
+
 class BlockController {
   constructor() {}
 
@@ -84,7 +105,6 @@ class BlockController {
   }
 
   test = async (req, res) => {
-    console.log("in test on");
     var title = "Untitled";
     var dbStatus = {};
     var flag = false;
@@ -230,6 +250,35 @@ class BlockController {
     }
   };
 
+  //save board
+  saveBoard = async (req, res) => {
+    try {
+      const { boardId, graphData } = req.body;
+      console.log(boardId, graphData);
+      const board = new Boards({ boardId, graphData });
+      await board.save();
+      return res.status(200).json({ message: "saved successfully", board });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: err });
+    }
+  };
+
+  //get board data
+  getBoard = async (req, res) => {
+    try {
+      const { boardId } = req.body;
+      const board = await Boards.findOne({ boardId: boardId });
+      if (!board) {
+        return res.status(404).json({ message: "board not found" });
+      }
+      return res.status(200).json({ message: "found board", board });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: err });
+    }
+  };
+
   //search transaction title
   showTitleList = async (req, res) => {
     try {
@@ -259,6 +308,7 @@ class BlockController {
       const id = req.params.id;
       const title = req.body.title;
       const boardID = req.body.boardID;
+      console.log(title, boardID);
       const previousTransaction = await Transactions.findOne({ addr: id }).sort(
         { date: -1 }
       );
@@ -271,6 +321,7 @@ class BlockController {
       previousTransaction.title = title;
       previousTransaction.boardID = boardID;
       await previousTransaction.save();
+      console.log(previousTransaction);
       return res.status(200).json({
         message: "Successfully changed title",
         previousTransaction: previousTransaction,
@@ -300,7 +351,6 @@ class BlockController {
   getRisk = async (req, res) => {
     try {
       const address = req.params.id;
-
       if (!address) {
         return res.status(404).json({ error: "Address not valid" });
       }
@@ -333,8 +383,12 @@ class BlockController {
 
       const response = await axios(axiosConfig);
       const jsonResponse = response.data;
-
-      res.status(200).json(jsonResponse);
+      console.log(jsonResponse);
+      let riskMessage = getRiskMessage(
+        parseInt(jsonResponse.riskScores.combinedRisk)
+      );
+      console.log(riskMessage);
+      res.status(200).json({ data: jsonResponse, riskMessage });
     } catch (error) {
       if (error.response && error.response.status === 400) {
         res.status(400).json({ error: "RequestedNullReport" });
@@ -414,7 +468,7 @@ class BlockController {
     try {
       // Endpoint URL for setting the webhook URL
       const endpointUrl = `https://services.tokenview.io/vipapi/monitor/setwebhookurl?apikey=${process.env.vaTOKEN}`;
-      const webhookUrl = "https://648b-103-120-31-178.ngrok-free.app/webhook";
+      const webhookUrl = "https://cf6f-103-120-31-178.ngrok-free.app/webhook";
       console.log(webhookUrl);
       // Set up the POST request
       const axiosConfig = {
