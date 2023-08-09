@@ -16,8 +16,6 @@ const baseR = express.Router();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-
 baseR.use("/explore", require("./Router/Block"));
 app.use("/auth", require("./Router/Auth"));
 baseR.use("/market", require("./Router/Market"));
@@ -32,7 +30,6 @@ baseR.use("/market", require("./Router/Market"));
 //   next();
 // }, require("./Router/Test"));
 
-
 // app.use((req, res, next) => {
 //   // Allow requests from any origin
 
@@ -43,7 +40,6 @@ baseR.use("/market", require("./Router/Market"));
 //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 //   next();
 // });
-
 
 const PORT = 5000;
 app.listen(PORT, () => {
