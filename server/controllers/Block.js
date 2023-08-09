@@ -330,7 +330,7 @@ class BlockController {
       const response = await axios(axiosConfig);
       const jsonResponse = response.data;
 
-      res.status(200).json(jsonResponse);
+      res.status(200).json({ mdata: jsonResponse });
     } catch (error) {
       if (error.response && error.response.status === 400) {
         res.status(400).json({ error: "RequestedNullReport" });
