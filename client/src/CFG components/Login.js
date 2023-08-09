@@ -56,19 +56,19 @@ export default function Login() {
 
     console.log("res", res);
 
-    // dispatch(
-    //   auth({
-    //     result: {
-    //       name: res.data.name || "",
-    //       email: values.email || "",
-    //       token: res.data.token || "",
-    //       privilege: res.data.privilege || 0,
-    //       uid: res.data.uid || "",
-    //       user_role: res.data.user_role || "",
-    //     },
-    //     type: ActionTypes.AUTH,
-    //   })
-    // );
+    dispatch(
+      auth({
+        result: {
+          name: res.data.name || "",
+          email: values.email || "",
+          token: res.data.token || "",
+          privilege: res.data.privilege || 0,
+          uid: res.data.uid || "",
+          user_role: res.data.user_role || "",
+        },
+        type: ActionTypes.AUTH,
+      })
+    );
 
     // navigate("/boards/71a0d6d8");
   };

@@ -77,14 +77,14 @@ const Layout = ({ children }) => {
         {/* <WithSubnavigation /> */}
         <Navbar />
 
-        {pathName.includes("boards") && <Navbar2 />}
+        {pathName && pathName.includes("boards") && <Navbar2 />}
       </div>
       {shouldShowSidebar ? (
         // <div className="content t-flex t-flex-row t-pt-[60px] t-pl-[240px]">
         // pathName.includes("boards") &&
         <div
           className={
-            !pathName.includes("boards")
+            pathName && !pathName.includes("boards")
               ? "content t-flex t-flex-row t-pt-[90px] t-pl-[240px]"
               : "content t-flex t-flex-row t-pt-[120px] t-pl-[240px]"
           }

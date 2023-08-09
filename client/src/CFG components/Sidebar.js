@@ -1,8 +1,10 @@
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { color } from "framer-motion";
+import { useEffect, useState } from "react";
 import { AiFillDashboard } from "react-icons/ai";
 import {
   FiArrowDownCircle,
+  FiBook,
   FiCalendar,
   FiCodesandbox,
   FiCpu,
@@ -17,6 +19,13 @@ import {
 import { useLocation } from "react-router-dom";
 
 const Sidebar = () => {
+  const [userRole, setUserRole] = useState("investigator");
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("profile"));
+    console.log("userData in sidebar:", userData);
+    setUserRole(userData?.user_role);
+  }, []);
+
   return (
     <Box
       bg="gray.900"
@@ -29,32 +38,56 @@ const Sidebar = () => {
       left="0"
       top="0"
     >
-      <VStack spacing="4" align="flex-start">
-        <SidebarLink icon={FiHome} link="home" label="Home" />
-        <SidebarLink
-          icon={AiFillDashboard}
-          link="dashboard"
-          label="Dashboard"
-        />
-        <SidebarLink icon={FiCalendar} link="boards" label="Boards" />
-        <SidebarLink icon={FiUsers} link="users" label="Users" />
-        <SidebarLink icon={FiList} link="labels" label="Labels" />
-        <SidebarLink icon={FiSearch} link="monitoring" label="Monitoring" />
-        <SidebarLink icon={FiCalendar} link="boards" label="Boards" />
-        <SidebarLink icon={FiSettings} link="settings" label="Settings" />
-      </VStack>
+      {userRole === "investigator" && (
+        <VStack spacing="4" align="flex-start">
+          {/* <SidebarLink icon={FiHome} link="home" label="Home" /> */}
+          <SidebarLink
+            icon={AiFillDashboard}
+            link="dashboard"
+            label="Dashboard"
+          />
+          <SidebarLink icon={FiCalendar} link="boards" label="Boards" />
+          {/* <SidebarLink icon={FiUsers} link="users" label="Users" /> */}
+          <SidebarLink icon={FiList} link="labels" label="Labels" />
+          <SidebarLink icon={FiSearch} link="monitoring" label="Monitoring" />
+          {/* <SidebarLink icon={FiBook} link="blogs" label="Blogs" /> */}
+          <SidebarLink icon={FiSettings} link="settings" label="Settings" />
+        </VStack>
+      )}
+      {userRole === "citizen" && (
+        <VStack spacing="4" align="flex-start">
+          <SidebarLink icon={FiHome} link="home" label="Home" />
+          <SidebarLink
+            icon={AiFillDashboard}
+            link="dashboard"
+            label="Dashboard"
+          />
+          {/* <SidebarLink icon={FiCalendar} link="boards" label="Boards" /> */}
+          {/* <SidebarLink icon={FiUsers} link="users" label="Users" /> */}
+          {/* <SidebarLink icon={FiList} link="labels" label="Labels" /> */}
+          {/* <SidebarLink icon={FiSearch} link="monitoring" label="Monitoring" /> */}
+          <SidebarLink icon={FiBook} link="blogs" label="Blogs" />
+          <SidebarLink icon={FiSettings} link="settings" label="Settings" />
+        </VStack>
+      )}
     </Box>
   );
 };
 
 const SidebarLink = ({ icon, label, link }) => {
   const pathName = window.location.pathname;
-  console.log("pathName", pathName);
+  console.log("pathName for dash", pathName);
   return (
     <a href={`/${link}`}>
       <Flex
         align="center"
-        color={pathName.includes(`/${link}`) ? "blue.300" : ""}
+        color={
+          pathName.includes(`/${link}`)
+            ? pathName === "/"
+              ? ""
+              : "blue.300"
+            : ""
+        }
         cursor="pointer"
         _hover={{ color: "blue.200" }}
         className="test"

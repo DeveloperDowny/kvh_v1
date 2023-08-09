@@ -282,6 +282,14 @@ const GraphVisualization = () => {
   };
 
   const exploreClickedNode = (nodeId) => {
+    const loadingToast = toast({
+      title: "Loading...",
+      description: `Searching transactions for ${hoveredId}`,
+      status: "info",
+      duration: 3000,
+      isClosable: true,
+    });
+
     APIRequests.explore(nodeId)
       .catch((err) => {
         console.log("err in explore:", err);
@@ -304,9 +312,11 @@ const GraphVisualization = () => {
           return [...prevData, ...res.data.data.data.txs];
         });
 
+        // loadingToast.close();
+
         toast({
-          title: "Account created.",
-          description: "We've created your account for you.",
+          title: "Node Extended Successfully.",
+          description: `${hoveredId} has been extended.`,
           status: "success",
           duration: 9000,
           isClosable: true,
@@ -388,7 +398,8 @@ const GraphVisualization = () => {
             },
             nodes: {
               borderWidth: 0,
-              size: 42,
+              // size: 42,
+              size: 32,
               color: {
                 border: "#222",
                 background: "transparent",
