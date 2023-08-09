@@ -118,6 +118,9 @@ router.post('/otp', async (req, res) => {
   }
 })
 
+async function verifyToken(email, otp){
+    
+}
 
 
 async function sendEmail(toEmail) {
