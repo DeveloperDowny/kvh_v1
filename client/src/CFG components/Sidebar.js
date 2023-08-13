@@ -88,7 +88,7 @@ const SidebarLink = ({ icon, label, link }) => {
       <Flex
         align="center"
         color={
-          pathName.includes(`/${link}`)
+          pathName && pathName.includes(`/${link}`)
             ? pathName === "/"
               ? ""
               : "blue.300"

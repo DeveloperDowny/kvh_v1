@@ -31,6 +31,9 @@ const validationSchema = object({
 });
 
 export default function Login() {
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   useEffect(() => {
@@ -76,7 +79,7 @@ export default function Login() {
   return (
     <Flex
       // className="t-w-full t-min-h-[calc(100vh-172px)]"
-      className="t-w-full t-min-h-[calc(100vh-120px)]"
+      className="t-w-full t-min-h-[calc(100vh-120px+32px)] t-mt-[-32px]"
       align={"center"}
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}

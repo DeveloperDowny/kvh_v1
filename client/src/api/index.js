@@ -22,6 +22,10 @@ API.interceptors.request.use((req) => {
 // export const testGet = () => API.get("/");
 
 class APIRequests {
+  static async snap(formData) {
+    return await API.post("/api/explore/snap", formData);
+  }
+
   static async mtest() {
     return await API.get(
       "/api/explore/risk/0xeEE27662c2B8EBa3CD936A23F039F3189633e4C8"

@@ -12,9 +12,21 @@ const siteCustom = createSlice({
     isOpen2: false,
     address: "",
     mCryptoType: "unk",
-    trackedAddress: ''
+    trackedAddress: "",
+    isPressed: false,
+    isReleased: false,
   },
   reducers: {
+    setIsReleased: (state, action) => {
+      console.log("minereleased");
+      state.isReleased = action.payload;
+    },
+
+    setPressed: (state, action) => {
+      console.log("minepressed");
+      state.isPressed = action.payload;
+    },
+
     setTrackedAddress: (state, action) => {
       state.trackedAddress = action.payload;
     },
@@ -60,5 +72,7 @@ export const {
   setIsOpen2,
   setAddress,
   setMCryptoType,
-  setTrackedAddress
+  setTrackedAddress,
+  setPressed,
+  setIsReleased,
 } = siteCustom.actions;

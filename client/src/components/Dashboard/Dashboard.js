@@ -13,17 +13,26 @@ import LabelTable from "./LabelTable";
 import WebHook from "./WebHook";
 import APIRequests from "../../api";
 import ComplainsTable from "../ComplaintsTable";
+import { useAppDispatch } from "../../store";
+import { setShouldShowSideBar } from "../../reducers/SiteCustom";
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setShouldShowSideBar(true));
+  }, []);
+
   useEffect(() => {
     APIRequests.getLabels()
       .then((res) => {
         let arr = [];
         let label = res.data.foundTransaction;
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < label.length; i++) {
           arr.push({
             label: label[i].title,
             boardId: label[i].boardID ?? "",
@@ -67,7 +76,7 @@ const Dashboard = () => {
           <WebHook />
         </GridItem>
 
-        <GridItem colSpan={2} bg="papayawhip">
+        <GridItem colSpan={2} bg="transaparent">
           {/* <div>Test</div> */}
           {/* add complaints table here */}
         </GridItem>
