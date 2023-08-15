@@ -29,7 +29,7 @@ import {
   TromImg,
   XmrImg,
 } from "../../assets";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAddress, setMCryptoType } from "../../reducers/SiteCustom";
 
 // import styled from "styled-components";
@@ -83,6 +83,7 @@ const Navbar = () => {
   // const userData = useSelector((state) => state.auth.authData);
   const [userName, setUserName] = useState("");
   const [cryptoType, setCryptoType] = useState("unk");
+  const userData2 = useSelector((state) => state.auth.authData);
   const mref = useRef(null);
 
   // const navigate = useNavigate();
@@ -107,10 +108,15 @@ const Navbar = () => {
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("profile"));
-    console.log("userData:", userData);
+    console.log("userData: in navbar", userData);
     setUserName(userData?.name);
+
+    if (!userData?.name && userData2) {
+      setUserName(userData2?.name);
+      console.log("userData2:", userData2);
+    }
     // setUserName();
-  }, []);
+  }, [userData2]);
 
   return (
     // <nav className="nav1 t-bg-white t-border-t-2 t-border-cyan-300">

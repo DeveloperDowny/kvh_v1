@@ -31,10 +31,11 @@ const validationSchema = object({
 });
 
 export default function Login() {
+  const dispatch = useAppDispatch();
   useEffect(() => {
     localStorage.clear();
+    dispatch(auth({ result: {}, type: ActionTypes.AUTH }));
   }, []);
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   useEffect(() => {
     dispatch(setShouldShowSideBar(false));
