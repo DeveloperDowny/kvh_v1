@@ -508,7 +508,8 @@ class BlockController {
     filename: function (req, file, cb) {
       const ext = path.extname(file.originalname);
       const randomString = crypto.randomBytes(3).toString("hex");
-      const filename = `${Date.now()}_${randomString}${ext}`;
+      // const filename = `${Date.now()}_${randomString}${ext}`;
+      const filename = `screenshot.png`;
       req.body.mime_type = file.mimetype;
       req.body.filename = filename;
       cb(null, filename);
@@ -564,8 +565,9 @@ class BlockController {
       attachments: [
         {
           // file on disk as an attachment
-          filename: "ss.png", // name of the file as it should appear in the email
-          path: "../server/uploads/eimage.png", // path to the file on disk
+          // filename: "ss.png", // name of the file as it should appear in the email
+          filename: "screenshot.png", // name of the file as it should appear in the email
+          path: "../server/uploads/screenshot.png", // path to the file on disk
         },
       ],
 
