@@ -15,6 +15,7 @@ import {
 import { typeToImgMap } from "../navbar/navbar";
 
 const LabelTable = ({ data }) => {
+  console.log("data form label table", data);
   return (
     <>
       <TableContainer>

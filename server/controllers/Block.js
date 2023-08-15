@@ -128,6 +128,7 @@ class BlockController {
           title: prevTitle || title,
           remark: prevRemark || "",
           date: Date.now(),
+          boardID: id,
         };
         if (data.data.code !== 1) {
           // alternative tron api
@@ -143,7 +144,9 @@ class BlockController {
             title: prevTitle || title,
             remark: prevRemark || "",
             date: Date.now(),
+            boardID: id,
           };
+          console.log("the transaction is: ", transaction);
           // return res.status(200).json({ dbStatus, message: "Successfully Retrieved", network: nw, data: data.data})
         }
         dbStatus = await addTransaction(transaction);
@@ -184,6 +187,7 @@ class BlockController {
           title: prevTitle || title,
           remark: prevRemark || "",
           date: Date.now(),
+          boardID: id,
         };
         dbStatus = await addTransaction(transaction);
         return res.status(200).json({
@@ -210,6 +214,7 @@ class BlockController {
           title: prevTitle || title,
           remark: prevRemark || "",
           date: Date.now(),
+          boardID: id,
         };
 
         dbStatus = await addTransaction(transaction);
@@ -411,7 +416,8 @@ class BlockController {
     try {
       // Endpoint URL for setting the webhook URL
       const endpointUrl = `https://services.tokenview.io/vipapi/monitor/setwebhookurl?apikey=${process.env.vaTOKEN}`;
-      const webhookUrl = "https://648b-103-120-31-178.ngrok-free.app/webhook";
+      // const webhookUrl = "https://648b-103-120-31-178.ngrok-free.app/webhook";
+      const webhookUrl = "https://1ec4-150-242-199-99.ngrok.io/webhook";
       console.log(webhookUrl);
       // Set up the POST request
       const axiosConfig = {

@@ -144,7 +144,7 @@ const GraphVisualization = () => {
         if (!res.data.data) return;
         console.log("res.data.data:", res.data.data);
         if (!res.data.data.data) return;
-        console.log("res.data.data.data:", res.data.data.data);
+        console.log("res.data.data.data here :", res.data.data.data);
         setData(res.data.data.data.txs);
         console.log("data is set");
         dispatch(setIsOpen2(true));

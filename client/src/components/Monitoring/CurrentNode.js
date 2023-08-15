@@ -27,7 +27,7 @@ const CurrenNode = () => {
     setData(data.data.data[0].data);
   };
   useEffect(() => {
-    mFetch();
+    // mFetch();
   }, []);
 
   console.log(data);
@@ -48,10 +48,15 @@ const CurrenNode = () => {
         {/* <Text fontSize={'3xl'} fontWeight={'bold'} color="primary" >
                      Current Address being tracked
                 </Text> */}
-        <HStack>
-          {/* <img width={20} height={20} src={typeToImgMap['btc']} alt="" /> */}
+        {/* <HStack>
           <Text ml={3} fontWeight={"semibold"} fontSize={"xl"}>
             NA
+          </Text>
+        </HStack> */}
+        <HStack>
+          <img width={20} height={20} src={typeToImgMap["eth"]} alt="" />
+          <Text ml={3} fontWeight={"semibold"} fontSize={"xl"}>
+            0xab5c66752a9e8167967685f1450532fb96d5d24f
           </Text>
         </HStack>
         <Divider />
@@ -65,13 +70,13 @@ const CurrenNode = () => {
           <Box display={"inline"}>
             Conformations:
             <Tag ml={2} variant={"outline"} colorScheme="blue">
-              {data.confirmations}
+              {data.confirmations ?? 2}
             </Tag>
           </Box>
           <Box display={"inline"}>
             Time:
             <Tag ml={2} variant={"outline"} colorScheme="blue">
-              {data.time}
+              {data.time ?? "15/08/2023"}
             </Tag>
           </Box>
           <Box display={"inline"}>

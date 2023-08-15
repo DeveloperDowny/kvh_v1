@@ -32,17 +32,18 @@ const WebHook = () => {
             mt={8}
           >
             <Stack align={"center"}>
-              <HStack>
-                {/* <img width={20} height={20} src={typeToImgMap['btc']} alt="" /> */}
+              {/* <HStack>
                 <Text ml={3} fontWeight={"semibold"} fontSize={"xl"}>
                   NA
                 </Text>
+              </HStack> */}
+
+              <HStack>
+                <img width={20} height={20} src={typeToImgMap["eth"]} alt="" />
+                <Text ml={3} fontWeight={"semibold"} fontSize={"xl"}>
+                  0xab5c66752a9e8167967685f1450532fb96d5d24f
+                </Text>
               </HStack>
-              {/* 
-                            <HStack>
-                                <img width={20} height={20} src={typeToImgMap['btc']} alt="" />
-                                <Text ml={3} fontWeight={'semibold'} fontSize={'xl'}>0xab5c66752a9e8167967685f1450532fb96d5d24f</Text>
-                            </HStack> */}
               <Divider />
               <Flex
                 gap={4}
