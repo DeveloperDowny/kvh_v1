@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (data.riskScores.combinedRisk > 60 && data.riskScores.combinedRisk <= 100) {
                 riskMessage = "The address is highly risky. It is recommended to avoid using this address.";
                 riskScoreDiv.style.color = "red";
-                riskMessageDiv.style.color = "red";
+                riskMessageDiv.style.color = "red"; 
             }
             
             riskMessageDiv.innerHTML = `Risk Message:<br /> \n ${riskMessage}`;
