@@ -106,7 +106,7 @@
   align-items: center;
 }
 .user-bar {
-  width: 10rem;
+  width: 12rem;
   height: 2rem;
   display: grid;
   /* grid-column: 4/5; */

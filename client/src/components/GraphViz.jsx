@@ -5,7 +5,9 @@ import { useAppDispatch } from "../store";
 import {
   setAddress,
   setIsOpen2,
+  setIsReleased,
   setMCryptoType,
+  setPressed,
   setShouldShowSideBar,
 } from "../reducers/SiteCustom";
 import APIRequests from "../api";
@@ -14,6 +16,8 @@ import { EthImg } from "../assets";
 import { useSelector } from "react-redux";
 import { useToast } from "@chakra-ui/react";
 import { regexes } from "./navbar/navbar";
+
+import html2canvas from "html2canvas";
 
 const forGraphTypeToImgMap = {
   btc: "/bitcoin_logo.png",
@@ -26,6 +30,55 @@ const forGraphTypeToImgMap = {
   unk: "/question_mark.png",
 };
 const GraphVisualization = () => {
+  const componentRef = React.useRef(null);
+
+  const captureScreenshotAndSend = async () => {
+    try {
+      const canvas = await html2canvas(componentRef.current);
+
+      const imageData = canvas.toDataURL("image/png");
+
+      console.log("imageData:", imageData);
+
+      const blob = await fetch(imageData).then((res) => res.blob());
+
+      // get the blob from dom to blob
+
+      const formData = new FormData();
+      formData.append("img", blob);
+      const userData = JSON.parse(localStorage.getItem("profile"));
+      console.log("userData:", userData);
+      formData.append("email", userData.email);
+      console.log("caddr:", cryptoAddress);
+
+      const response = await APIRequests.snap(formData);
+      console.log(response);
+      if (response.status === 200) {
+        toast({
+          title: "Image sent successfully.",
+        });
+      }
+      console.log("Image sent!", response.data);
+    } catch (error) {
+      console.error("Failed to send image:", error);
+      toast({
+        title: "Failed to send image.",
+      });
+    } finally {
+      dispatch(setIsReleased(false));
+      dispatch(setPressed(false));
+    }
+  };
+
+  const isPressed = useSelector((state) => state.siteCustom.isPressed);
+  const isReleased = useSelector((state) => state.siteCustom.isReleased);
+
+  useEffect(() => {
+    if (isPressed && !isReleased) {
+      captureScreenshotAndSend();
+      dispatch(setIsReleased(true));
+    }
+  }, [isPressed]);
   const toast = useToast();
   const dispatch = useAppDispatch();
   const { board_id } = useParams();
@@ -91,7 +144,7 @@ const GraphVisualization = () => {
         if (!res.data.data) return;
         console.log("res.data.data:", res.data.data);
         if (!res.data.data.data) return;
-        console.log("res.data.data.data:", res.data.data.data);
+        console.log("res.data.data.data here :", res.data.data.data);
         setData(res.data.data.data.txs);
         console.log("data is set");
         dispatch(setIsOpen2(true));
@@ -114,7 +167,8 @@ const GraphVisualization = () => {
     let specialIndex = 0; // Index of the specialId in the data array
     // let yPos = 0; // Initialize y position
     let yPos = -100; // Initialize y position
-    const incrementCont = 20; // Increment y position by 100 for each node
+    // const incrementCont = 20; // Increment y position by 100 for each node
+    const incrementCont = 30; // Increment y position by 100 for each node
     console.log("mtransData:", data);
     for (let index in data) {
       if (cryptoType === "btc") {
@@ -373,7 +427,7 @@ const GraphVisualization = () => {
   }, [cryptoAddress]);
 
   return (
-    <div className="t-h-[calc(100vh-120px)] t-flex">
+    <div className="t-h-[calc(100vh-120px)] t-flex" ref={componentRef}>
       {graphData.nodes.length === 0 && (
         <div className="t-h-[calc(100vh-120px)] t-flex t-justify-center t-w-full t-mt-[100px]">
           Enter Crypto Address To Explore

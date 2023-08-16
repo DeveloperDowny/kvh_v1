@@ -29,7 +29,7 @@ import {
   TromImg,
   XmrImg,
 } from "../../assets";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAddress, setMCryptoType } from "../../reducers/SiteCustom";
 
 // import styled from "styled-components";
@@ -69,6 +69,13 @@ export const regexes = {
 };
 
 const Navbar = () => {
+  const [userRole, setUserRole] = useState("investigator");
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("profile"));
+    console.log("userData in sidebar:", userData);
+    setUserRole(userData?.user_role);
+  }, []);
+
   const dispatch = useDispatch();
   // const navigate = useNavigate();
 
@@ -76,7 +83,10 @@ const Navbar = () => {
   // const userData = useSelector((state) => state.auth.authData);
   const [userName, setUserName] = useState("");
   const [cryptoType, setCryptoType] = useState("unk");
+  const userData2 = useSelector((state) => state.auth.authData);
   const mref = useRef(null);
+
+  // const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
@@ -98,10 +108,15 @@ const Navbar = () => {
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("profile"));
-    console.log("userData:", userData);
+    console.log("userData: in navbar", userData);
     setUserName(userData?.name);
+
+    if (!userData?.name && userData2) {
+      setUserName(userData2?.name);
+      console.log("userData2:", userData2);
+    }
     // setUserName();
-  }, []);
+  }, [userData2]);
 
   return (
     // <nav className="nav1 t-bg-white t-border-t-2 t-border-cyan-300">
@@ -113,75 +128,76 @@ const Navbar = () => {
         {/* <h2 className="t-italic t-font-bold t-text-[2rem] t-text-[#0262AF]">
           NAZAR
         </h2> */}
-      <img src="/nazar-logo.png" alt="Nazar" />
+        <img src="/nazar-logo.png" alt="Nazar" />
       </div>
       {/* <div className="search-bar"> */}
       <div className="t-flex t-justify-center">
-        <div className="t-flex t-items-center t-w-[500px]">
-          <InputGroup>
-            {/* <InputLeftAddon
+        {userRole !== "citizen" && (
+          <div className="t-flex t-items-center t-w-[500px]">
+            <InputGroup>
+              {/* <InputLeftAddon
               children={cryptoType}
               borderRadius="100px 0 0 100px"
               // onChange={handleInputChange}
             /> */}
-            <InputLeftAddon
-              padding={2}
-              children={
-                <Image
-                  src={typeToImgMap[cryptoType]}
-                  alt="crypto logo"
-                  // className="t-h-[32px]"
-                  className="t-h-[22px]"
-                />
-              }
-              borderRadius="100px 0 0 100px"
-            />
-            <Input
-              ref={mref}
-              type="text"
-              placeholder="Enter Crypto Address Here..."
-              background={"white"}
-              borderRadius={100}
-              onChange={handleInputChange}
-            />
-            {/* <InputRightElement>
+              <InputLeftAddon
+                padding={2}
+                children={
+                  <Image
+                    src={typeToImgMap[cryptoType]}
+                    alt="crypto logo"
+                    // className="t-h-[32px]"
+                    className="t-h-[22px]"
+                  />
+                }
+                borderRadius="100px 0 0 100px"
+              />
+              <Input
+                ref={mref}
+                type="text"
+                placeholder="Enter Crypto Address Here..."
+                background={"white"}
+                borderRadius={100}
+                onChange={handleInputChange}
+              />
+              {/* <InputRightElement>
               <SearchIcon color="gray.300" />
             </InputRightElement> */}
 
-            <InputRightAddon
-              padding={0}
-              children={
-                <IconButton
-                  icon={<SearchIcon />}
-                  colorScheme="gray"
-                  aria-label="Search"
-                  borderRadius="0 100px 100px 0"
-                  onClick={() => {
-                    const inputValue = mref.current.value;
-                    for (const type in regexes) {
-                      if (
-                        regexes[type].some((pattern) =>
-                          pattern.test(inputValue)
-                        )
-                      ) {
-                        setCryptoType(type); // Set the matched crypto type in state
-                        dispatch(setMCryptoType(type));
-                        dispatch(setAddress(inputValue));
-                        navigate(`/boards/${inputValue}`);
-                        return; // Break the loop once a match is found
+              <InputRightAddon
+                padding={0}
+                children={
+                  <IconButton
+                    icon={<SearchIcon />}
+                    colorScheme="gray"
+                    aria-label="Search"
+                    borderRadius="0 100px 100px 0"
+                    onClick={() => {
+                      const inputValue = mref.current.value;
+                      for (const type in regexes) {
+                        if (
+                          regexes[type].some((pattern) =>
+                            pattern.test(inputValue)
+                          )
+                        ) {
+                          setCryptoType(type); // Set the matched crypto type in state
+                          dispatch(setMCryptoType(type));
+                          dispatch(setAddress(inputValue));
+                          navigate(`/boards/${inputValue}`);
+                          return; // Break the loop once a match is found
+                        }
                       }
-                    }
 
-                    setCryptoType("unk"); // Reset the crypto type if no match is found
-                    dispatch(setMCryptoType("unk"));
-                    console.log(cryptoType);
-                  }} // Replace with your search logic function
-                />
-              }
-              borderRadius="0 100px 100px 0"
-            />
-          </InputGroup>
-          {/* <IconButton
+                      setCryptoType("unk"); // Reset the crypto type if no match is found
+                      dispatch(setMCryptoType("unk"));
+                      console.log(cryptoType);
+                    }} // Replace with your search logic function
+                  />
+                }
+                borderRadius="0 100px 100px 0"
+              />
+            </InputGroup>
+            {/* <IconButton
               icon={<SearchIcon />}
               colorScheme="gray"
               aria-label="Search"
@@ -189,7 +205,8 @@ const Navbar = () => {
               onClick={() => {}} // Replace with your search logic function
             />
           </InputGroup> */}
-        </div>
+          </div>
+        )}
       </div>
 
       {!userName && (

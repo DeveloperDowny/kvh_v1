@@ -51,23 +51,29 @@ const Sidebar = () => {
           <SidebarLink icon={FiList} link="labels" label="Labels" />
           <SidebarLink icon={FiSearch} link="monitoring" label="Monitoring" />
           {/* <SidebarLink icon={FiBook} link="blogs" label="Blogs" /> */}
-          <SidebarLink icon={FiSettings} link="settings" label="Settings" />
+          <SidebarLink icon={FiSettings} link="auth/signin" label="Log Out" />
         </VStack>
       )}
       {userRole === "citizen" && (
         <VStack spacing="4" align="flex-start">
-          <SidebarLink icon={FiHome} link="home" label="Home" />
-          <SidebarLink
+          {/* <SidebarLink icon={FiHome} link="home" label="Home" /> */}
+          {/* <SidebarLink
             icon={AiFillDashboard}
             link="dashboard"
             label="Dashboard"
-          />
+          /> */}
           {/* <SidebarLink icon={FiCalendar} link="boards" label="Boards" /> */}
           {/* <SidebarLink icon={FiUsers} link="users" label="Users" /> */}
           {/* <SidebarLink icon={FiList} link="labels" label="Labels" /> */}
-          {/* <SidebarLink icon={FiSearch} link="monitoring" label="Monitoring" /> */}
+
           <SidebarLink icon={FiBook} link="blogs" label="Blogs" />
-          <SidebarLink icon={FiSettings} link="settings" label="Settings" />
+          <SidebarLink
+            icon={FiSearch}
+            link="complaint"
+            label="File Complaint"
+          />
+
+          <SidebarLink icon={FiSettings} link="auth/signin" label="Log Out" />
         </VStack>
       )}
     </Box>
@@ -75,14 +81,14 @@ const Sidebar = () => {
 };
 
 const SidebarLink = ({ icon, label, link }) => {
-  const pathName = window.location.pathname;
+  const pathName = window.location.pathname || "/none";
   console.log("pathName for dash", pathName);
   return (
     <a href={`/${link}`}>
       <Flex
         align="center"
         color={
-          pathName.includes(`/${link}`)
+          pathName && pathName.includes(`/${link}`)
             ? pathName === "/"
               ? ""
               : "blue.300"

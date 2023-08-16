@@ -40,6 +40,7 @@ const App = () => {
           <Route path="/auth/signin" element={<Login />} />
           <Route path="/auth/signup" element={<SignupCardOg />} />
           <Route path="/boards/:board_id" element={<GraphVisualization />} />
+          <Route path="/boards" element={<GraphVisualization />} />
           <Route path="/labels" element={<Label />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/monitoring" element={<Monitoring />} />

@@ -4,7 +4,9 @@ require("dotenv").config();
 
 const express = require("express");
 const router = express.Router();
+
 const nodemailer = require("nodemailer");
+
 const crypto = require("crypto");
 
 require("../db/Conn");
@@ -121,6 +123,7 @@ async function verifyToken(email, otp) {}
 
 async function sendEmail(toEmail) {
   // create reusable transporter object using the default SMTP transport
+
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {

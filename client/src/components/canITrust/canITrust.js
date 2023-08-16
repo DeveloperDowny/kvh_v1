@@ -1,11 +1,20 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input, InputGroup, InputRightAddon } from "@chakra-ui/react";
 import APIRequests from "../../api";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../store";
+import { setShouldShowSideBar } from "../../reducers/SiteCustom";
 
 const Trust = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const mInputRef = useRef();
   const [isRisky, setIsRisky] = useState(null); // Initialize isRisky as null
   const [combinedRiskValue, setCombinedRiskValue] = useState(null);
+
+  useEffect(() => {
+    dispatch(setShouldShowSideBar(true));
+  }, []);
   const handleInputChange = async (add) => {
     const address = add; // Get the entered address from the input
     try {
@@ -47,6 +56,15 @@ const Trust = () => {
           />
         </InputGroup>
       </div>
+
+      {/* <div
+        className="t-mt-[60px] t-underline t-cursor-pointer"
+        onClick={() => {
+          navigate("/complaint");
+        }}
+      >
+        Launch Complaint
+      </div> */}
       <div style={{ flex: 1, padding: "16px" }}>
         {isRisky && (
           <div>

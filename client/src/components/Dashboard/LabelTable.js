@@ -15,6 +15,7 @@ import {
 import { typeToImgMap } from "../navbar/navbar";
 
 const LabelTable = ({ data }) => {
+  console.log("data form label table", data);
   return (
     <>
       <TableContainer>
@@ -64,7 +65,7 @@ const TableRow = ({ label, boardId, cryptoType }) => {
             alt={cryptoType}
           />
           <Text fontWeight={"semibold"} fontSize={"xl"}>
-            {cryptoType}
+            {cryptoType.toUpperCase()}
           </Text>
         </HStack>
       </Td>

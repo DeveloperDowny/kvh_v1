@@ -2,8 +2,9 @@ from flask import Flask, request, jsonify
 import pickle
 import pandas as pd
 import requests
+import mapi_key
 
-model = pickle.load(open("/Users/stephen03/Dev/Repos/kvh_v1/server-py/model.pkl", "rb"))
+model = pickle.load(open("model.pkl", "rb"))
 
 
 
@@ -19,7 +20,7 @@ def get_data():
         return jsonify({'error': 'Missing "id" parameter'}), 400
     
     # Make a request to the external API
-    api_key = '6jk1pKXjCGxjiXnT6ASc'  # Replace with your API key
+    api_key = mapi_key.key 
     api_url = f'https://services.tokenview.io/vipapi/eth/address/{id_param.lower()}?apikey={api_key}'
     
     try:

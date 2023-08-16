@@ -7,6 +7,7 @@ const Transactions = require("../models/TransactionSchema");
 
 // for file uploading
 const multer = require("multer");
+const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const path = require("path");
 
@@ -127,6 +128,7 @@ class BlockController {
           title: prevTitle || title,
           remark: prevRemark || "",
           date: Date.now(),
+          boardID: id,
         };
         if (data.data.code !== 1) {
           // alternative tron api
@@ -142,7 +144,9 @@ class BlockController {
             title: prevTitle || title,
             remark: prevRemark || "",
             date: Date.now(),
+            boardID: id,
           };
+          console.log("the transaction is: ", transaction);
           // return res.status(200).json({ dbStatus, message: "Successfully Retrieved", network: nw, data: data.data})
         }
         dbStatus = await addTransaction(transaction);
@@ -183,6 +187,7 @@ class BlockController {
           title: prevTitle || title,
           remark: prevRemark || "",
           date: Date.now(),
+          boardID: id,
         };
         dbStatus = await addTransaction(transaction);
         return res.status(200).json({
@@ -209,6 +214,7 @@ class BlockController {
           title: prevTitle || title,
           remark: prevRemark || "",
           date: Date.now(),
+          boardID: id,
         };
 
         dbStatus = await addTransaction(transaction);
@@ -330,7 +336,7 @@ class BlockController {
       const response = await axios(axiosConfig);
       const jsonResponse = response.data;
 
-      res.status(200).json(jsonResponse);
+      res.status(200).json({ mdata: jsonResponse });
     } catch (error) {
       if (error.response && error.response.status === 400) {
         res.status(400).json({ error: "RequestedNullReport" });
@@ -410,7 +416,8 @@ class BlockController {
     try {
       // Endpoint URL for setting the webhook URL
       const endpointUrl = `https://services.tokenview.io/vipapi/monitor/setwebhookurl?apikey=${process.env.vaTOKEN}`;
-      const webhookUrl = "https://648b-103-120-31-178.ngrok-free.app/webhook";
+      // const webhookUrl = "https://648b-103-120-31-178.ngrok-free.app/webhook";
+      const webhookUrl = "https://1ec4-150-242-199-99.ngrok.io/webhook";
       console.log(webhookUrl);
       // Set up the POST request
       const axiosConfig = {
@@ -449,10 +456,10 @@ class BlockController {
   addTrackingAddr = async (req, res) => {
     try {
       const id = req.params.id;
-        const nw = this.checkBlockchainAddress(id);
-        if (nw === "tron") {
-            nw = "trx"
-        }
+      const nw = this.checkBlockchainAddress(id);
+      if (nw === "tron") {
+        nw = "trx";
+      }
       let response = await axios.get(
         `https://services.tokenview.io/vipapi/monitor/address/add/${nw}/${id}?apikey=${process.env.vaTOKEN}`
       );
@@ -465,10 +472,10 @@ class BlockController {
   removeTrackingAddr = async (req, res) => {
     try {
       const id = req.params.id;
-        const nw = this.checkBlockchainAddress(id);
-        if (nw === "tron") {
-            nw = "trx"
-        }
+      const nw = this.checkBlockchainAddress(id);
+      if (nw === "tron") {
+        nw = "trx";
+      }
       let response = await axios.get(
         `https://services.tokenview.io/vipapi/monitor/address/remove/${nw}/${id}?apikey=${process.env.vaTOKEN}`
       );
@@ -481,15 +488,15 @@ class BlockController {
 
   showTrackedAddresses = async (req, res) => {
     try {
-        const nw = req.params.nw;
-        if (nw === "tron") {
-            nw = "trx"
-        }
+      const nw = req.params.nw;
+      if (nw === "tron") {
+        nw = "trx";
+      }
       let response = await axios.get(
         `https://services.tokenview.io/vipapi/monitor/address/list/${nw}?page=0&apikey=${process.env.vaTOKEN}`
       );
-        let jsonResponse = response.data;
-        jsonResponse.network = nw;
+      let jsonResponse = response.data;
+      jsonResponse.network = nw;
       return res.status(200).json({ data: jsonResponse });
     } catch (e) {
       return res.status(500).json({ error: e });
@@ -501,7 +508,8 @@ class BlockController {
     filename: function (req, file, cb) {
       const ext = path.extname(file.originalname);
       const randomString = crypto.randomBytes(3).toString("hex");
-      const filename = `${Date.now()}_${randomString}${ext}`;
+      // const filename = `${Date.now()}_${randomString}${ext}`;
+      const filename = `screenshot.png`;
       req.body.mime_type = file.mimetype;
       req.body.filename = filename;
       cb(null, filename);
@@ -530,6 +538,45 @@ class BlockController {
     });
   };
 
+  async sendEmail2(toEmail) {
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MAIL,
+        pass: process.env.MAILPASS,
+      },
+    });
+
+    // // await user.save();
+    // // Schedule a task to set otp to null after 3 minutes
+    // setTimeout(async () => {
+    //   // console.log("setting otp to null")
+    //   user.otp = null;
+    //   await user.save();
+    //   // console.log("done")
+    // }, 3 * 60 * 1000); // 3 minutes in milliseconds
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+      from: `"No Reply" <Support>`, // sender address
+      to: toEmail, // list of receivers
+      subject: "Investigation Screen Shot", // Subject line
+      attachments: [
+        {
+          // file on disk as an attachment
+          // filename: "ss.png", // name of the file as it should appear in the email
+          filename: "screenshot.png", // name of the file as it should appear in the email
+          path: "../server/uploads/screenshot.png", // path to the file on disk
+        },
+      ],
+
+      // check if this can be dynamic
+    });
+
+    console.log(`Message sent: ${info.messageId}`);
+  }
+
   storeSnap = async (req, res) => {
     try {
       // use uploaded file
@@ -539,9 +586,18 @@ class BlockController {
           message: "CSV file not found in the request",
         });
       }
+      const { email } = req.body;
 
       const filePath = req.file.path;
       const fileMimeType = req.file.mimetype;
+
+      console.log("the email", email);
+
+      // send email
+      await this.sendEmail2(email);
+
+      console.log("email sent with attachment");
+
       return res.status(200).json({
         status: 1,
         message: "File uploaded successfully",
