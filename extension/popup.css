@@ -4,6 +4,7 @@ body{
   width: 300px;
   margin: 0;
   padding: 0;
+  background-color: #090029;
 }
 
 .Nazar-logo{
@@ -18,6 +19,7 @@ body{
 
   width: 100%;
   height: 100%;
+  
 }
 .submit-for-check{
   width: 100px;
@@ -77,6 +79,7 @@ body{
   align-items: center;
   justify-content: center;
   color: #FFF;
+  cursor: pointer;
 }
 
 .footer a{
@@ -84,4 +87,21 @@ body{
   color: #FFF;
   margin: 0;
   padding: 0;
+}
+
+/* Add these styles to your popup.css */
+.risk-container {
+  position: absolute;
+  width: 80vw;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.risk-message,
+.risk-score {
+  color: #FFF;
+  font-size: large;
+  margin-bottom: 10px;
 }
