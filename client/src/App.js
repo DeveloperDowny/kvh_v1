@@ -6,8 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TestComponent from "./components/test";
 import Test2 from "./components/Test2";
 import Layout from "./Layout";
-import Login from "./CFG components/Login";
-import SignupCardOg from "./CFG components/SignUp";
+import Login from "./kvh_components/Login";
+import SignupCardOg from "./kvh_components/SignUp";
 import generateRandomGraphData from "./sampleData/graphData";
 import GraphComponent from "./components/GraphComponent";
 import GraphVisualization from "./components/GraphViz";
@@ -17,6 +17,7 @@ import Monitoring from "./components/Monitoring/Monitoring";
 import ComplaintForm from "./components/Complaint";
 import Blogs from "./Blogs";
 import ComplainsTable from "./components/ComplaintsTable";
+
 const App = () => {
   const graphData = generateRandomGraphData();
 

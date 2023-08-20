@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import WithSubnavigation from "./CFG components/Navbar";
-import Sidebar from "./CFG components/Sidebar";
+import WithSubnavigation from "./kvh_components/Navbar";
+import Sidebar from "./kvh_components/Sidebar";
 import { useSelector } from "react-redux";
 import { NavbarImg, NavbarImgWO } from "./assets";
 import { Select } from "@chakra-ui/react";

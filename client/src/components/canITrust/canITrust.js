@@ -65,7 +65,7 @@ const Trust = () => {
       >
         Launch Complaint
       </div> */}
-      <div style={{ flex: 1, padding: "16px" }}>
+      <div style={{ flex: 1, padding: "16px" }} className="t-mt-[50px]">
         {isRisky && (
           <div>
             <p
