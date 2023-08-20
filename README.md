@@ -16,12 +16,12 @@ We are thrilled to announce that our team, Team Semicolon, emerged triumphant at
 
 
 # Team Members
-Vedant Panchal: Led the team and worked on frontend and backend.
-Stephen Vaz: His expertise spanned from backend development to training ML models for Ethereum fraud detection, and even contributing to the frontend.
-Malay Phadke: Backend developer; he flawlessly designed API endpoints quickly and collaborated on backend and database tasks effectively.
-Prathamesh Paradkar: Frontend developer; transformed our vision into a visually stunning reality. His exceptional designing skills were instrumental in crafting a seamless user experience. He made major contributions to the browser extension as well.
-Prathamesh Mundada: ML developer; engineered the Bitcoin fraud detection model using Elliptic Data Set and helped in frontend development as well.
-Aakanksha Dhawale: Frontend developer; helped in designing the frontend and almost entirely developed the citizen-facing portal.
+Vedant Panchal: Led the team and worked on frontend and backend.</br>
+Stephen Vaz: His expertise spanned from backend development to training ML models for Ethereum fraud detection, and even contributing to the frontend.</br>
+Malay Phadke: Backend developer; he flawlessly designed API endpoints quickly and collaborated on backend and database tasks effectively.</br>
+Prathamesh Paradkar: Frontend developer; transformed our vision into a visually stunning reality. His exceptional designing skills were instrumental in crafting a seamless user experience. He made major contributions to the browser extension as well.</br>
+Prathamesh Mundada: ML developer; engineered the Bitcoin fraud detection model using Elliptic Data Set and helped in frontend development as well.</br>
+Aakanksha Dhawale: Frontend developer; helped in designing the frontend and almost entirely developed the citizen-facing portal.</br>
 
 # Acknowledgements
 We'd also like to express our heartfelt gratitude to our esteemed mentors, Prof. Dayanand Ambawade and Dr. Nataasha Nitin Raul, for their invaluable guidance and unwavering support throughout this journey.
